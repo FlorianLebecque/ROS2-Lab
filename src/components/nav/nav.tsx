@@ -10,7 +10,7 @@ export default function Nav() {
     const first = pathname.split("/")[1];
 
     return (
-        <nav className="navbar navbar-dark bg-dark p-3 mb-3 shade">
+        <nav className="navbar navbar-light bg-light p-3 mb-3 shade">
             <Link className={first == "" ? style.active : ""} href="/">Home</Link>
             <Link className={first == "waypoint" ? style.active : ""} href="/">Waypoint</Link>
             <Link className={first == "about" ? style.active : ""} href="/about">About</Link>

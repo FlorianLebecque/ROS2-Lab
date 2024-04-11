@@ -39,10 +39,10 @@ export default function Status() {
     }, []);
 
     return (
-        <div className="bg-dark d-flex gap-3 justify-content-end align-items-center p-3">
-            <div className="text-white">Status: <span className={connected ? "" : "text-danger"}>{connected ? "Connected" : "Disconnected"}</span></div>
-            <div className="text-white">ROS<span>2 Humble</span></div>
-            <div className="text-white"><span>{time}</span></div>
+        <div className="bg-light d-flex gap-3 justify-content-end align-items-center p-3">
+            <div className="">Status: <span className={connected ? "" : "text-danger"}>{connected ? "Connected" : "Disconnected"}</span></div>
+            <div className="">ROS<span>2 Humble</span></div>
+            <div className=""><span>{time}</span></div>
         </div>
     );
 }
