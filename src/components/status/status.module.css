@@ -1,0 +1,4 @@
+.status {
+    --bs-bg-opacity: 1;
+    background-color: (var(--bs-dark-rgb), var(--bs-bg-opacity)) !important
+}

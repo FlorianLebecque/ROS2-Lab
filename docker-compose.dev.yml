@@ -1,0 +1,17 @@
+services:
+  frontend:
+    container_name: summitxllabs-frontend
+    build:
+      context: .
+      target: dev
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - 3000:3000

@@ -1,0 +1,5 @@
+.active {
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 2px solid var(--text);
+}
