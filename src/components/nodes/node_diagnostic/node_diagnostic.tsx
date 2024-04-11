@@ -27,11 +27,11 @@ export default function NodeDiagnostic(props: { name: string }) {
     }, [name, rosWeb]);
 
     return (
-        <div className='row'>
+        <div className='row' style={{ height: "100%" }}>
             <div className="col-lg-3" style={{ height: "100%" }}>
                 <div className={style.LeftPanel}>
-                    <div className={style.Card + " "}>
-                        <h2>Node: </h2><p>{name}</p>
+                    <div className={style.Card + " d-flex justify-content-center align-items-center"}>
+                        <h2>{name}</h2>
                     </div>
                     <div id="SubscribersList" className={style.Card + " "}>
                         <ul>
@@ -55,7 +55,7 @@ export default function NodeDiagnostic(props: { name: string }) {
                 </div>
             </div>
             <div className='col-lg-9' style={{ height: "100%" }}>
-                <div className={style.Card}>
+                <div className={style.Card} style={{ height: "100%" }}>
 
                 </div>
             </div>
