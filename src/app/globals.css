@@ -20,7 +20,7 @@
 body {
     width: 100vw;
     overflow-x: hidden;
-    height: 100vh;
+    height: 100dvh;
     display: grid;
     grid-template-rows: 5em 1fr 2em;
     grid-template-columns: 1fr;
