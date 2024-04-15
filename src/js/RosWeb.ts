@@ -137,4 +137,16 @@ export class RosWebSingleton{
         }
     }
 
+    SubscribeToTopic(topic: string, callback: (message: any) => void) {
+        const topic_listeners = new ROSLIB.Topic({
+            ros: this.ros,
+            name: topic,
+        });
+
+        topic_listeners.subscribe(callback);
+
+        return topic_listeners;
+    }
+
+
 }
