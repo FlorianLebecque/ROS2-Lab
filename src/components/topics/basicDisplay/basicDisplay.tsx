@@ -1,7 +1,11 @@
 'use client';
 
+import { useData } from "../topicProvider/topicProvider";
 
-export default function ControlBar(props: { name: string }) {
+
+export default function BasicDisplay(props: { name: string }) {
+
+    const { data, setData } = useData();
 
     return (
         <div style={{ height: "100%", overflowY: "auto" }}>

@@ -1,9 +1,17 @@
+
 'use client';
+
+import { useData } from "../topicProvider/topicProvider";
 
 export default function ControlBar(props: { name: string }) {
 
+    // use context to get the data
+    const { data, setData } = useData();
+
+
+    // handle clear
     const handleClear = () => {
-        //setData([]);
+        setData([]);
     };
 
     return (
