@@ -20,6 +20,11 @@ export default function NodeCart(props: { name: string }) {
         };
 
         fetchNodeDetails();
+
+        setInterval(() => {
+            fetchNodeDetails();
+        }, 2000);
+
     }, [name, rosWeb]);
 
     // ... rest of the component logic
