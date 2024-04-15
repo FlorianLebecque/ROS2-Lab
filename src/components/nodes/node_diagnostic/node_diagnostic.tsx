@@ -47,22 +47,22 @@ export default function NodeDiagnostic(props: { name: string }) {
         <div className='row' style={{ height: "100%" }}>
             <div className="col-lg-3" style={{ height: "100%" }}>
                 <div className={style.LeftPanel}>
-                    <div className={style.Card + " d-flex justify-content-center align-items-center"}>
+                    <div className={style.Card + " d-flex justify-content-center align-items-center border"}>
                         <h2>{name}</h2>
                     </div>
-                    <div id="SubscribersList" className={style.Card + " "}>
+                    <div id="SubscribersList" className={style.Card + " border"}>
                         <ul>
                             {nodeDetails.subscribers.map((sub: string) => {
                                 return <li key={sub}>{sub}</li>;
                             })}
                         </ul>
                     </div>
-                    <div id="TopicsList" className={style.Card + " d-flex flex-column gap-1"}>
+                    <div id="TopicsList" className={style.Card + " d-flex flex-column gap-1 border"}>
                         {nodeDetails.topics.map((topic: string) => {
                             return <button onClick={() => handleTopicClick(topic)} className="btn btn-outline-secondary" key={topic}>{topic}</button>;
                         })}
                     </div>
-                    <div id="ServicesList" className={style.Card + " "}>
+                    <div id="ServicesList" className={style.Card + " border"}>
                         <ul>
                             {nodeDetails.services.map((service: string) => {
                                 return <li key={service}>{service}</li>;
@@ -72,7 +72,7 @@ export default function NodeDiagnostic(props: { name: string }) {
                 </div>
             </div>
             <div className='col-lg-9' style={{ height: "100%" }}>
-                <div id="node_container" className={style.Card} style={{ height: "100%" }}>
+                <div id="node_container" className={style.Card + " border"} style={{ height: "100%" }}>
                     {activeComponentType && (
                         <ComponentFactory type={activeComponentType} props={activeComponentProp} />
                     )}
