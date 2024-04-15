@@ -23,6 +23,11 @@ export default function NodesGrid() {
         };
 
         fetchNodes();
+
+        setInterval(() => {
+            fetchNodes();
+        }, 2000);
+
     }, [rosWeb]);
 
     useEffect(() => {
