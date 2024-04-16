@@ -1,7 +1,9 @@
+import NodesGrid from "@/components/nodes/nodes_grid/nodes_grid";
+
 export default function Diagnostic() {
     return (
         <main>
-            <h1 className="display-1">Diagnostic</h1>
+            <NodesGrid />
         </main>
     );
 }

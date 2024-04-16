@@ -1,9 +1,9 @@
-import NodesGrid from "@/components/nodes/nodes_grid/nodes_grid";
+import RobotsGrid from "@/components/robots/robots_grid/robots_grid";
 
 export default function Home() {
     return (
         <main>
-            <NodesGrid />
+            <RobotsGrid />
         </main>
     );
 }

@@ -1,6 +1,6 @@
 const ROSLIB = require('roslib');
 import AAI from './AsyncInterface';
-
+import Robot from './Robot';
 
 export class RosWeb{
 
@@ -141,5 +141,35 @@ export class RosWebSingleton{
         return topic_listeners;
     }
 
+    async GetRobotsList() {
+        const nodes = await this.GetNodesList();
+
+        //check every nodes and sort them by namespace
+        // node -> /robot1/...  -> namespace -> robot1 node -> /...
+        // node -> /robot2/...  -> namespace -> robot2 node -> /...
+        // node -> /...         -> namespace -> ND     node -> /...
+
+        let robots = new Map<string, Robot>();
+
+        for(let node of nodes){
+
+            //check if the nodes has a namespace
+            let node_split = node.split("/");   
+
+            if(node_split.length > 2){
+                
+                let robot_name = node_split[2];
+
+                if(!robots.has(robot_name)){
+                    robots.set(robot_name, new Robot(this, robot_name));
+                }
+
+                robots.get(robot_name)?.AddNode(node);
+
+            }
+        }
+
+        return Array.from(robots.values());
+    }
 
 }
