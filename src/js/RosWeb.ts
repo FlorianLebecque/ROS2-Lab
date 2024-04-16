@@ -30,8 +30,6 @@ export class RosWebSingleton{
     id : number = 0;
 
     constructor(){
-        console.log("RosWeb constructor");
-
         this.id = Math.floor(Math.random() * 1000);
 
         //Only connect if we are in the frontend (client side)
@@ -69,12 +67,7 @@ export class RosWebSingleton{
     handleConnection() {
         this.connected = true;
 
-        console.log("Calling connection handler");
-
-        console.log(this.id);
-
         this.connectionHandlers.forEach((handler) => {
-            console.log(handler.name);
             handler(true);
         });
     }

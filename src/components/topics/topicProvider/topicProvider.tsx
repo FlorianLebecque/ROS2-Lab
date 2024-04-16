@@ -38,7 +38,6 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
             const topic_listeners = rosWeb.SubscribeToTopic(topicName, handleData);
 
             const Disconnect = () => {
-                console.log("Disconnecting from topic: ", topicName);
                 topic_listeners.unsubscribe();
             };
 
