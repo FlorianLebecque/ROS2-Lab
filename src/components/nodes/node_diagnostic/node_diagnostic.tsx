@@ -20,7 +20,7 @@ export default function NodeDiagnostic(props: { name: string }) {
     useEffect(() => {
         const fetchNodeDetails = async () => {
             try {
-                const details = await rosWeb.GetNodeDetails("/" + name);
+                const details = await rosWeb.GetNodeDetails(name);
 
                 setNodeDetails(details);
             } catch (error) {
