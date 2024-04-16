@@ -20,7 +20,14 @@ export default function NodeCart(props: { name: string }) {
         };
 
         fetchNodeDetails();
+
+        setInterval(() => {
+            fetchNodeDetails();
+        }, 2000);
+
     }, [name, rosWeb]);
+
+    const address = name.replace(/\/+/g, '@');
 
     // ... rest of the component logic
 
@@ -44,7 +51,7 @@ export default function NodeCart(props: { name: string }) {
                         </tr>
                     </tbody>
                 </table>
-                <Link href={"diagnostic/" + name} className="btn btn-primary">Details</Link>
+                <Link href={"diagnostic/" + address} className="btn btn-primary">Details</Link>
             </div>
         </div>
     );

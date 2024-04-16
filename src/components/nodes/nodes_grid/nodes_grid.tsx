@@ -33,7 +33,6 @@ export default function NodesGrid() {
     useEffect(() => {
 
         const handleConnectionStatusChangeGrid = (isConnected: boolean) => {
-            console.log("Connection status changed:", isConnected);
             setConnected(isConnected);
         };
 

@@ -4,20 +4,6 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 const RosWebContext = createContext<RosWebSingleton | null>(null);
 
 export const RosWebProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    // const [rosWeb, setRosWeb] = useState<RosWebSingleton | null>(null);
-
-    // useEffect(() => {
-    //     console.log("Initializing ROS connection...");
-    //     try {
-    //         if (!rosWeb) {
-    //             setRosWeb(RosWeb.Instance());
-    //         }
-    //     } catch (error) {
-    //         console.error("Error initializing ROS connection:", error);
-    //     }
-    // }, [rosWeb]);
-
-    // ... rest of the component
 
     const rosWeb = RosWeb.Instance();
 
