@@ -4,7 +4,12 @@ import NodeCart from "../node_cart/node_cart";
 
 import { useRosWeb } from '@/components/RosContext';
 
-export default function NodesGrid() {
+interface NodesGridProps {
+    namespace?: string;
+    banner: boolean;
+}
+
+export default function NodesGrid({ namespace = '', banner = false }: NodesGridProps) {
 
     const rosWeb = useRosWeb();
 
@@ -16,6 +21,13 @@ export default function NodesGrid() {
         const fetchNodes = async () => {
             try {
                 const nodes = await rosWeb.GetNodesList();
+
+                if (namespace !== '') {
+                    const filteredNodes = nodes.filter((node: string) => node.includes(namespace));
+                    setNodes(filteredNodes);
+                    return;
+                }
+
                 setNodes(nodes);
             } catch (error) {
                 console.error("Error fetching nodes:", error);
@@ -44,16 +56,20 @@ export default function NodesGrid() {
 
     }, [rosWeb]);
 
+    const css_class = banner ? "d-iflex gap-3" : "d-flex flex-wrap justify-content-evenly gap-3";
+
 
     return (
-        <div className="d-flex flex-wrap justify-content-evenly gap-3">
-            {!connected && <div className="alert alert-danger" role="alert"> No connection to ROSBridge server </div>}
+        <div>
+            <div className={css_class}>
+                {!connected && <div className="alert alert-danger" role="alert"> No connection to ROSBridge server </div>}
 
-            {connected && nodes.length === 0 && <div className="alert alert-warning" role="alert"> Loading... </div>}
+                {connected && nodes.length === 0 && <div className="alert alert-warning" role="alert"> Loading... </div>}
 
-            {connected && nodes.map((node, index) => {
-                return <NodeCart key={index} name={node} />
-            })}
+                {connected && nodes.map((node, index) => {
+                    return <NodeCart key={index} name={node} />
+                })}
+            </div>
         </div>
     );
 }
