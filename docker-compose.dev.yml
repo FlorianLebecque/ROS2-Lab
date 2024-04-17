@@ -1,6 +1,7 @@
 services:
   frontend:
     container_name: summitxllabs-frontend
+    network_mode: host
     build:
       context: .
       target: dev
@@ -13,5 +14,11 @@ services:
       - .:/app
       - /app/node_modules
       - /app/.next
-    ports:
-      - 3000:3000
+  backend:
+    container_name: Rosweb-ws
+    image: florianlbcqu/ros2bridge_suite:firstpush
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    environment:
+      - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
