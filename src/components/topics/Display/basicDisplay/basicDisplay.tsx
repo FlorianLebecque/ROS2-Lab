@@ -1,6 +1,6 @@
 'use client';
 
-import { useData } from "../topicProvider/topicProvider";
+import { useData } from "@/components/topics/topicProvider/topicProvider";
 
 
 export default function BasicDisplay(props: { name: string }) {

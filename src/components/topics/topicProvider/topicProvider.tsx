@@ -31,7 +31,7 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
                 ros: message,
             };
 
-            setData((prevData) => [...prevData, new_data]);
+            setData((prevData) => [...prevData.slice(-100), new_data]);
         };
 
         if (rosWeb && topicName) {
@@ -45,6 +45,9 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
                 Disconnect();
             };
         }
+
+        setData((prevData) => prevData.slice(-100)); // Keep only last 100 elements
+
     }, [rosWeb, topicName]); // Dependency on both rosWeb and topicName
 
     return (
