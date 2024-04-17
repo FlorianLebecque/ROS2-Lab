@@ -48,9 +48,17 @@ export class RosWebSingleton{
             this.ros.close();
         }
 
+        let host = window.location.origin;  // remove the http:// and the port if exists
+        host = host.replace("http://", "");
+        host = host.replace("https://", "");
+
+        //remove the port
+        let host_split = host.split(":");
+        host = host_split[0];
+
         console.log("Connecting to ROS...");
         this.ros = new ROSLIB.Ros({
-            url : 'ws://localhost:9090'
+            url : 'ws://' + host + ':9090' 
         });
 
         this.ros.on('connection', () => this.handleConnection());
