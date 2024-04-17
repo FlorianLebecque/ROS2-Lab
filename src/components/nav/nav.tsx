@@ -13,7 +13,7 @@ export default function Nav() {
         <nav className="navbar navbar-light bg-light p-3 mb-3 shade">
             <Link className={first == "" ? style.active : ""} href="/">Home</Link>
             <Link className={first == "diagnostic" ? style.active : ""} href="/diagnostic">Nodes</Link>
-            <Link className={first == "waypoint" ? style.active : ""} href="/">Waypoint</Link>
+            <Link className={first == "waypoint" ? style.active : ""} href="/waypoint">Waypoint</Link>
             <Link className={first == "about" ? style.active : ""} href="/about">About</Link>
         </nav>
     );
