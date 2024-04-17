@@ -1,49 +1,49 @@
 const ROSLIB = require('roslib');
 import AAI from './AsyncInterface';
+import Robot from './Robot';
 
+export class RosWeb {
 
-export class RosWeb{
+    static instance: RosWebSingleton;
 
-    static instance : RosWebSingleton;
+    static Instance(): RosWebSingleton {
 
-    static Instance() : RosWebSingleton{
-
-        if(RosWeb.instance == null){
+        if (RosWeb.instance == null) {
             RosWeb.instance = new RosWebSingleton();
         }
 
         return RosWeb.instance;
     }
 
-    constructor(){
+    constructor() {
         throw new Error("Use RosWeb.Instance() instead of new RosWeb()");
     }
 }
 
-export class RosWebSingleton{
+export class RosWebSingleton {
 
-    ros : any;
-    connected : boolean = false;
+    ros: any;
+    connected: boolean = false;
     connectionHandlers: ((connected: boolean) => void)[] = [];
-    is_reconnecting : boolean = false;
+    is_reconnecting: boolean = false;
 
-    id : number = 0;
+    id: number = 0;
 
-    constructor(){
+    constructor() {
         this.id = Math.floor(Math.random() * 1000);
 
         //Only connect if we are in the frontend (client side)
-        if(typeof window !== 'undefined'){
+        if (typeof window !== 'undefined') {
             this.connect();
-        }else{
+        } else {
             console.log("Not connecting to ROS, we are in the backend");
         }
     }
 
     connect() {
 
-        console.log( this.id + ' Init ROS...');
-        if(this.ros != null){
+        console.log(this.id + ' Init ROS...');
+        if (this.ros != null) {
             console.log("Closing existing connection");
             this.ros.close();
         }
@@ -58,11 +58,11 @@ export class RosWebSingleton{
 
         console.log("Connecting to ROS...");
         this.ros = new ROSLIB.Ros({
-            url : 'ws://' + host + ':9090' 
+            url: 'ws://' + host + ':9090'
         });
 
         this.ros.on('connection', () => this.handleConnection());
-        this.ros.on('error', (error:any) => this.handleError(error));
+        this.ros.on('error', (error: any) => this.handleError(error));
         this.ros.on('close', () => this.handleClose());
     }
 
@@ -94,7 +94,7 @@ export class RosWebSingleton{
         this.reconnect();
     }
 
-    subscribeToConnection(handler :any) {
+    subscribeToConnection(handler: any) {
         this.connectionHandlers.push(handler);
     }
 
@@ -103,7 +103,7 @@ export class RosWebSingleton{
     }
 
     reconnect() {
-        if(this.is_reconnecting){
+        if (this.is_reconnecting) {
             console.log("Already reconnecting");
             return;
         }
@@ -127,7 +127,7 @@ export class RosWebSingleton{
         }
     }
 
-    async GetNodeDetails(node : string) {
+    async GetNodeDetails(node: string) {
 
         const details_array = await AAI.Execute(this.ros.getNodeDetails, this.ros, node);
 
@@ -149,5 +149,35 @@ export class RosWebSingleton{
         return topic_listeners;
     }
 
+    async GetRobotsList() {
+        const nodes = await this.GetNodesList();
+
+        //check every nodes and sort them by namespace
+        // node -> /robot1/...  -> namespace -> robot1 node -> /...
+        // node -> /robot2/...  -> namespace -> robot2 node -> /...
+        // node -> /...         -> namespace -> ND     node -> /...
+
+        let robots = new Map<string, Robot>();
+
+        for (let node of nodes) {
+
+            //check if the nodes has a namespace
+            let node_split = node.split("/");
+
+            if (node_split.length > 2) {
+
+                let robot_name = node_split[1];
+
+                if (!robots.has(robot_name)) {
+                    robots.set(robot_name, new Robot(this, robot_name));
+                }
+
+                robots.get(robot_name)?.AddNode(node);
+
+            }
+        }
+
+        return Array.from(robots.values());
+    }
 
 }

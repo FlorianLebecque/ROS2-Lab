@@ -51,7 +51,7 @@ export default function NodeCart(props: { name: string }) {
                         </tr>
                     </tbody>
                 </table>
-                <Link href={"diagnostic/" + address} className="btn btn-primary">Details</Link>
+                <Link href={"/diagnostic/" + address} className="btn btn-primary">Details</Link>
             </div>
         </div>
     );

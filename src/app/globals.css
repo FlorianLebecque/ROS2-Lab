@@ -65,3 +65,17 @@ p {
 .shade {
     box-shadow: var(--shadow);
 }
+
+.d-iflex {
+    display: inline-flex;
+}
+
+.overflow-x {
+    overflow-x: auto;
+}
+
+.card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
