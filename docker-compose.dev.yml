@@ -5,6 +5,7 @@ services:
     build:
       context: .
       target: dev
+      dockerfile: front.Dockerfile
     restart: always
     environment:
       - NODE_ENV=development
@@ -16,9 +17,14 @@ services:
       - /app/.next
   backend:
     container_name: Rosweb-ws
-    image: florianlbcqu/ros2bridge_suite:firstpush
+    build:
+      context: . # Build context (optional, defaults to current directory)
+      dockerfile: back.Dockerfile
     restart: unless-stopped
     privileged: true
     network_mode: host
+    ipc: host
+    pid: host
+    command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml
     environment:
       - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
