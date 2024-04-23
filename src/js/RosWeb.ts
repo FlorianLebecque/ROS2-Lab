@@ -180,6 +180,36 @@ export class RosWebSingleton {
         });
     }
 
+    async GetServiceType(service: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.ros.getServiceType(service, (type: string) => {
+                resolve(type);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
+    async GetServiceRequestDetails(service_type: string): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            this.ros.getServiceRequestDetails(service_type, (details: string[]) => {
+                resolve(details);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
+    async GetServiceResponseDetails(service_type: string): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            this.ros.getServiceResponseDetails(service_type, (details: string[]) => {
+                resolve(details);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
     SubscribeToTopic(topic: string, callback: (message: any) => void) {
         const topic_listeners = new ROSLIB.Topic({
             ros: this.ros,
