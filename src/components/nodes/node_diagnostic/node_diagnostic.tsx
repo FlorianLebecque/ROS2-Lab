@@ -4,7 +4,7 @@ import style from './node_diagnostic.module.css';
 import React from 'react';
 
 import { useRosWeb } from "@/components/RosContext";
-import { NodeDetail } from "@/js/RosWeb";
+import { NodeDetail, TopicDetail } from "@/js/RosWeb";
 import { useState, useEffect } from "react";
 import ComponentFactory from './node_componentFactory';
 
@@ -13,10 +13,12 @@ export default function NodeDiagnostic(props: { name: string }) {
 
     const { name } = props;
     const rosWeb = useRosWeb();
+
     const [nodeDetails, setNodeDetails] = useState<NodeDetail>({ subscribers: [], topics: [], services: [] });
 
     const [activeComponentType, setActiveComponentType] = useState(null as string | null);
     const [activeComponentProp, setActiveComponentProp] = useState(null) as any;
+    const [activeComponentId, setActiveComponentId] = useState(null as string | null);
 
     useEffect(() => {
         const fetchNodeDetails = async () => {
@@ -39,12 +41,44 @@ export default function NodeDiagnostic(props: { name: string }) {
 
     }, [name, rosWeb]);
 
-    const handleTopicClick = (topic: string) => {
+    const handleTopicClick = async (topicName: string) => {
+
+        SetActiveClass(topicName);
+
+        const topicType = await rosWeb.GetTopicType(topicName);
+
+        setActiveComponentId(topicName);
         setActiveComponentType("topic");
-        setActiveComponentProp({ topic: topic });
+        setActiveComponentProp({
+            topicName: topicName,
+            topicType: topicType
+        });
     };
 
+    const handleServiceClick = async (serviceName: string) => {
 
+        SetActiveClass(serviceName);
+
+        setActiveComponentId(serviceName);
+        setActiveComponentType("service");
+        setActiveComponentProp({
+            serviceName: serviceName,
+        });
+    }
+
+    const SetActiveClass = (id: string) => {
+
+        let old_button = document.getElementById(activeComponentId!);
+        let button = document.getElementById(id);
+
+        if (old_button) {
+            old_button.classList.remove("active");
+        }
+
+        if (button) {
+            button.classList.add("active");
+        }
+    }
 
     return (
         <div className='row' style={{ height: "100%" }}>
@@ -62,15 +96,13 @@ export default function NodeDiagnostic(props: { name: string }) {
                     </div>
                     <div id="TopicsList" className={style.Card + " d-flex flex-column gap-1 border"}>
                         {nodeDetails.topics.map((topic: string) => {
-                            return <button onClick={() => handleTopicClick(topic)} className="btn btn-outline-secondary" key={topic}>{topic}</button>;
+                            return <button id={topic} onClick={() => handleTopicClick(topic)} className="btn btn-outline-secondary" key={topic}>{topic}</button>;
                         })}
                     </div>
-                    <div id="ServicesList" className={style.Card + " border"}>
-                        <ul>
-                            {nodeDetails.services.map((service: string) => {
-                                return <li key={service}>{service}</li>;
-                            })}
-                        </ul>
+                    <div id="ServicesList" className={style.Card + " d-flex flex-column gap-1 border"}>
+                        {nodeDetails.services.map((service: string) => {
+                            return <button id={service} onClick={() => handleServiceClick(service)} className="btn btn-outline-secondary" key={service}>{service}</button>;
+                        })}
                     </div>
                 </div>
             </div>

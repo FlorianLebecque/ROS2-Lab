@@ -5,14 +5,15 @@ import { TopicProvider } from './topicProvider/topicProvider';
 import ControlBar from './controlbar/controlbar';
 import TopicVisualizerFactory from './topicVisualizerFactory';
 
-export default function BasicTopic(props: { name: string }) {
-    const { name } = props;
+export default function BasicTopic(props: { name: string, type: string }) {
+
+    const { name, type } = props;
 
     return (
-        <TopicProvider topicName={name}> {/* Pass topicName as a prop */}
+        <TopicProvider topicName={name}>
             <div className="d-flex flex-column" style={{ height: "100%" }}>
-                <ControlBar name={name} />
-                <TopicVisualizerFactory topic={name} />
+                <ControlBar topicName={name} topicType={type} />
+                <TopicVisualizerFactory topicName={name} topicType={type} />
             </div>
         </TopicProvider>
     );
