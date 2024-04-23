@@ -3,28 +3,22 @@ import BasicDisplay from '@/components/topics/Display/basicDisplay/basicDisplay'
 import ImuDataDisplay from './Display/imu_data/imu_data';
 
 interface ComponentFactoryProps {
-    topic: string;
+    topicName: string;
+    topicType: string;
 }
 
-const TopicVisualizerFactory = ({ topic }: ComponentFactoryProps) => {
+const TopicVisualizerFactory = ({ topicName, topicType }: ComponentFactoryProps) => {
+
+    // Define the components that can be displayed 
     const components: { [key: string]: JSX.Element } = {
-        '/imu/data': (<ImuDataDisplay name={topic} />),
-        'default': (<BasicDisplay name={topic} />)
+        'sensor_msgs/msg/Imu': (<ImuDataDisplay name={topicName} />),
+        'default': (<BasicDisplay name={topicName} />)
     };
 
 
-    let key = 'default';
+    if (!components[topicType]) return components['default'];
 
-    // find the key that matches the topic (the topic contains the key)
-    Object.keys(components).forEach((componentKey) => {
-        if (topic.includes(componentKey)) {
-            key = componentKey;
-        }
-    });
-
-    if (!components[key]) return components['default'];
-
-    return components[key];
+    return components[topicType];
 };
 
 export default TopicVisualizerFactory;

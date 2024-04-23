@@ -42,6 +42,7 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
             };
 
             return () => {
+                setData([]);
                 Disconnect();
             };
         }

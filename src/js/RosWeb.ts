@@ -7,6 +7,11 @@ export interface NodeDetail {
     services: string[];
 }
 
+export interface TopicDetail {
+    name: string;
+    type: string;
+}
+
 
 export class RosWeb {
 
@@ -153,17 +158,26 @@ export class RosWebSingleton {
         }
 
         return new Promise((resolve, reject) => {
-            this.ros.getNodeDetails(node, (sub: any, pub: any, ser: any) => {
+            this.ros.getNodeDetails(node, (sub: string[], topics: string[], ser: string[]) => {
                 resolve({
                     subscribers: sub,
-                    topics: pub,
+                    topics: topics,
                     services: ser
                 });
             }, (error: any) => {
                 reject(error);
             });
         });
+    }
 
+    async GetTopicType(topic: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.ros.getTopicType(topic, (type: string) => {
+                resolve(type);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
     }
 
     SubscribeToTopic(topic: string, callback: (message: any) => void) {
