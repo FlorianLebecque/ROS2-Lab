@@ -1,6 +1,12 @@
 const ROSLIB = require('roslib');
-import AAI from './AsyncInterface';
 import Robot from './Robot';
+
+export interface NodeDetail {
+    subscribers: string[];
+    topics: string[];
+    services: string[];
+}
+
 
 export class RosWeb {
 
@@ -116,26 +122,48 @@ export class RosWebSingleton {
     }
 
     async GetNodesList() {
-        try {
-            const nodes = await AAI.Execute(this.ros.getNodes, this.ros);
-
-            return nodes[0];
-
-        } catch (error) {
-            console.error("Error fetching nodes:", error);
-            return []; // or handle the error accordingly
-        }
+        return new Promise<string[]>((resolve, reject) => {
+            this.ros.getNodes((nodes: string[]) => {
+                resolve(nodes);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
     }
 
-    async GetNodeDetails(node: string) {
+    async NodeExist(node: string): Promise<boolean> {
 
-        const details_array = await AAI.Execute(this.ros.getNodeDetails, this.ros, node);
+        let node_list: any = await this.GetNodesList();
 
-        return {
-            subscribers: details_array[0],
-            topics: details_array[1],
-            services: details_array[2]
+        if (node_list.includes(node)) {
+            return true;
         }
+
+        return false;
+    }
+
+    async GetNodeDetails(node: string): Promise<NodeDetail> {
+
+        if (!await this.NodeExist(node)) {
+            return {
+                subscribers: [],
+                topics: [],
+                services: []
+            };
+        }
+
+        return new Promise((resolve, reject) => {
+            this.ros.getNodeDetails(node, (sub: any, pub: any, ser: any) => {
+                resolve({
+                    subscribers: sub,
+                    topics: pub,
+                    services: ser
+                });
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+
     }
 
     SubscribeToTopic(topic: string, callback: (message: any) => void) {

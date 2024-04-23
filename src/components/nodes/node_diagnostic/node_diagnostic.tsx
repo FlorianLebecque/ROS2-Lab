@@ -4,6 +4,7 @@ import style from './node_diagnostic.module.css';
 import React from 'react';
 
 import { useRosWeb } from "@/components/RosContext";
+import { NodeDetail } from "@/js/RosWeb";
 import { useState, useEffect } from "react";
 import ComponentFactory from './node_componentFactory';
 
@@ -12,7 +13,7 @@ export default function NodeDiagnostic(props: { name: string }) {
 
     const { name } = props;
     const rosWeb = useRosWeb();
-    const [nodeDetails, setNodeDetails] = useState({ subscribers: [], topics: [], services: [] });
+    const [nodeDetails, setNodeDetails] = useState<NodeDetail>({ subscribers: [], topics: [], services: [] });
 
     const [activeComponentType, setActiveComponentType] = useState(null as string | null);
     const [activeComponentProp, setActiveComponentProp] = useState(null) as any;
@@ -30,9 +31,11 @@ export default function NodeDiagnostic(props: { name: string }) {
 
         fetchNodeDetails();
 
-        setInterval(() => {
+        const interval = setInterval(() => {
             fetchNodeDetails();
         }, 2000);
+
+        return () => { clearInterval(interval); }
 
     }, [name, rosWeb]);
 

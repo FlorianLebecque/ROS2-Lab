@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import { useRosWeb } from '@/components/RosContext';
 import Link from 'next/link';
+import { NodeDetail } from '@/js/RosWeb';
 
 export default function NodeCart(props: { name: string }) {
     const { name } = props;
     const rosWeb = useRosWeb();
 
-    const [nodeDetails, setNodeDetails] = useState({ subscribers: [], topics: [], services: [] });
+    const [nodeDetails, setNodeDetails] = useState<NodeDetail>({ subscribers: [], topics: [], services: [] });
 
     useEffect(() => {
         const fetchNodeDetails = async () => {
@@ -21,9 +22,11 @@ export default function NodeCart(props: { name: string }) {
 
         fetchNodeDetails();
 
-        setInterval(() => {
+        const interval = setInterval(() => {
             fetchNodeDetails();
         }, 2000);
+
+        return () => { clearInterval(interval); }
 
     }, [name, rosWeb]);
 

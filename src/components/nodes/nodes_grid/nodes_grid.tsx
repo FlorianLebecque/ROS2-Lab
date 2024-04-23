@@ -13,7 +13,7 @@ export default function NodesGrid({ namespace = '', banner = false }: NodesGridP
 
     const rosWeb = useRosWeb();
 
-    const [nodes, setNodes] = useState([]);
+    const [nodes, setNodes] = useState<string[]>([]);
     const [connected, setConnected] = useState(rosWeb.connected);
 
     useEffect(() => {
@@ -36,9 +36,11 @@ export default function NodesGrid({ namespace = '', banner = false }: NodesGridP
 
         fetchNodes();
 
-        setInterval(() => {
+        const interval = setInterval(() => {
             fetchNodes();
         }, 2000);
+
+        return () => { clearInterval(interval); }
 
     }, [rosWeb]);
 

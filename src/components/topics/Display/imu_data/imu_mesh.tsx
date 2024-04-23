@@ -25,7 +25,7 @@ export default function ImuDataDisplayMesh(props: { name: string }) {
 
     return (
         <mesh ref={meshRef}>
-            <boxGeometry args={[1, 1, 1]} /> {/* Replace with your desired geometry */}
+            <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial color="white" />
         </mesh>
     );
