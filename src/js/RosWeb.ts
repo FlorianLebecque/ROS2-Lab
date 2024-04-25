@@ -1,16 +1,9 @@
 const ROSLIB = require('roslib');
 import Robot from './Robot';
+import { NodeDetail } from './interfaces/inodes';
+import { TopicDetail } from './interfaces/itopics';
 
-export interface NodeDetail {
-    subscribers: string[];
-    topics: string[];
-    services: string[];
-}
 
-export interface TopicDetail {
-    name: string;
-    type: string;
-}
 
 
 export class RosWeb {
