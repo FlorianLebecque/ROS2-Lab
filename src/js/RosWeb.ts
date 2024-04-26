@@ -245,4 +245,28 @@ export class RosWebSingleton {
         return Array.from(robots.values());
     }
 
+    async CallService(service: string, service_type: string, request: any) {
+
+        return new Promise((resolve, reject) => {
+            const service_client = new ROSLIB.Service({
+                ros: this.ros,
+                name: service,
+                serviceType: service_type
+            });
+
+            const request_msg = new ROSLIB.ServiceRequest(request);
+
+            console.log(request_msg);
+
+            service_client.callService(request_msg, (response: any) => {
+                resolve(response);
+            }, (error: any) => {
+                console.log("Error calling service: ", error);
+
+                reject(error);
+            });
+        });
+
+    }
+
 }
