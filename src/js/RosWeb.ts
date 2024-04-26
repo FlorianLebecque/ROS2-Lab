@@ -119,6 +119,16 @@ export class RosWebSingleton {
         }, 1000);
     }
 
+    async GetTopicsList() {
+        return new Promise<string[]>((resolve, reject) => {
+            this.ros.getTopics((topics: any) => {
+                resolve(topics.topics);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
     async GetNodesList() {
         return new Promise<string[]>((resolve, reject) => {
             this.ros.getNodes((nodes: string[]) => {
