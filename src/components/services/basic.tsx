@@ -13,7 +13,7 @@ export default function BasicService(props: { name: string, type: string, detail
             <h2>{name}</h2>
             <p>{type}</p>
             <div>
-                <RosDynamicForm schema={details.request} />
+                <RosDynamicForm name={name} type={type} schema={details.request} />
             </div>
         </div>
     );
