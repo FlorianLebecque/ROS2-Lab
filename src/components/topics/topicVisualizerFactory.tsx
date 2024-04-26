@@ -15,7 +15,7 @@ const TopicVisualizerFactory = ({ topicName, topicType }: ComponentFactoryProps)
         'sensor_msgs/msg/Imu': (<ImuDataDisplay name={topicName} />),
         'sensor_msgs/msg/CompressedImage': (<VideoDisplayJPEG name={topicName} />),
         'sensor_msgs/msg/Image': (<VideoDisplayUncompressed name={topicName} />),
-        'default': (<BasicDisplay name={topicName} />)
+        'default': (<BasicDisplay name={topicName} list={false} />)
     };
 
 

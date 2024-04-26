@@ -4,7 +4,9 @@ import { useData } from "@/components/topics/topicProvider/topicProvider";
 import { useEffect, useRef } from "react";
 
 
-export default function BasicDisplay(props: { name: string }) {
+export default function BasicDisplay(props: { name: string, list: boolean }) {
+
+    const { name, list } = props;
 
     const { data, setData } = useData();
 
@@ -21,7 +23,7 @@ export default function BasicDisplay(props: { name: string }) {
 
     return (
         <div style={{ height: "100%", overflowY: "auto" }}>
-            {data.map((message, index) => {
+            {list && data.map((message, index) => {
                 return (
                     <div key={index}>
                         <p>{message.time}</p>
@@ -30,6 +32,14 @@ export default function BasicDisplay(props: { name: string }) {
                     </div>
                 );
             })}
+
+            {!list && data[data.length - 1] && (
+                <div>
+                    <p>{data[data.length - 1].time}</p>
+                    <hr />
+                    <pre>{JSON.stringify(data[data.length - 1].ros, null, 2)}</pre>
+                </div>
+            )}
             <div ref={messagesEndRef} />
         </div >
     );
