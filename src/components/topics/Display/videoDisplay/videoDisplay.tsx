@@ -66,7 +66,6 @@ const convertDataToImage = (imageMessage: any): any => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    console.log(imageMessage)
     const imgData = ctx.createImageData(width, height);
     encodeRawImage(imageData, imgData, encoding)
     ctx.putImageData(imgData, 0, 0);
