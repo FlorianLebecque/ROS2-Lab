@@ -1,37 +1,10 @@
-import { useRosWeb } from "@/components/RosContext";
-import Spinner from "@/components/spinner/Spinner";
-import { Suspense, useEffect, useState } from "react";
+import { services_description } from "@/js/interfaces/iservices";
 
 const ResquestForm = (props: any) => {
-    const { schema, current_typeDef, name, type } = props;
-    const rosWeb = useRosWeb();
-
-    const [result, setResult] = useState<any>(null); // State for service call result
-
-    useEffect(() => {
-
-        const service_array = name.split('/');
-        const service_get_parameters = service_array.slice(0, service_array.length - 1).join('/') + '/list_parameters';
-
-        const GetParameterList = async () => {
-            const current_result = await rosWeb.CallService(service_get_parameters, "rcl_interfaces/srv/DescribeParameters", {});
-
-            setResult(current_result);
-        }
-
-        GetParameterList();
-
-        return () => {
-            // Cleanup
-            setResult(null);
-        }
-
-    }, [schema]); // Re-render on schema change
+    const { schema, current_typeDef } = props;
 
     const AddElements = (event: any) => {
-        if (event) {
-            event.preventDefault();
-        }
+        event.preventDefault();
 
         let div_container = document.getElementById('container');
 
@@ -46,16 +19,14 @@ const ResquestForm = (props: any) => {
         button.onclick = () => RemoveElement(id);
 
         let label = document.createElement('span');
-        label.innerHTML = 'Name';
+        label.innerHTML = 'Prefixe';
         label.className = 'input-group-text';
 
         let input = document.createElement('input');
         input.type = 'text';
-        input.name = 'names[]';
+        input.name = 'prefixes[]';
         input.className = 'form-control';
         input.autocomplete = 'off';
-        input.placeholder = "Type to search...";
-        input.setAttribute("list", "datalistOptions");
 
         div.appendChild(button);
         div.appendChild(label);
@@ -73,28 +44,20 @@ const ResquestForm = (props: any) => {
     }
 
     return (
-        <Suspense fallback={<Spinner />}>
-            <datalist id="datalistOptions">
-                {result && result.result.names.map((element: any, index: number) => {
-                    return <option key={index} value={element} />
-                })}
-            </datalist>
-
+        <div>
+            <div className="input-group mb-3">
+                <span className="input-group-text">Depth</span>
+                <input type="number" data-type="number" defaultValue={1} className="form-control" name="depth" autoComplete="off" />
+            </div>
             <button className="btn btn-success mb-3" onClick={AddElements}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                 </svg>
             </button>
             <div id="container">
-                <div id="0" className="input-group mb-3">
-                    <button className="btn btn-danger" onClick={() => RemoveElement("0")}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-dash" viewBox="0 0 16 16"><path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" /></svg >
-                    </button>
-                    <span className="input-group-text">Name</span>
-                    <input placeholder="Type to search..." list="datalistOptions" type="text" name="names[]" className="form-control" autoComplete="off" />
-                </div>
+
             </div>
-        </Suspense>
+        </div>
     );
 }
 

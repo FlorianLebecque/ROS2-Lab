@@ -1,11 +1,14 @@
 import { services_description } from '@/js/interfaces/iservices';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GetFieldsFromTypeDef from './serviceFieldsGenerator';
+import { useRosWeb } from '@/components/RosContext';
 
 
-const RosDynamicForm = ({ schema }: { schema: services_description }) => {
-    const [formData, setFormData] = useState({}); // State for form data
+const RosDynamicForm = ({ schema, type, name }: { schema: services_description, type: string, name: string }) => {
     const [formElements, setFormElements] = useState<JSX.Element[] | any>([]); // State for generated form elements
+    const [result, setResult] = useState<any>(null); // State for service call result
+    const formRef = useRef(null);
+    const rosWeb = useRosWeb();
 
     useEffect(() => {
 
@@ -14,29 +17,113 @@ const RosDynamicForm = ({ schema }: { schema: services_description }) => {
             return;
         }
 
-        const elements = GetFieldsFromTypeDef(schema, schema.typedefs[0], handleChange);//generateFormElements(fieldnames, fieldtypes);
+        const elements = GetFieldsFromTypeDef(schema, schema.typedefs[0], name, type);//generateFormElements(fieldnames, fieldtypes);
 
-        setFormData([]);
         setFormElements(elements || []); // Initialize with an empty array
+
+        return () => {
+            // Cleanup
+            setResult(null);
+        }
 
     }, [schema]); // Re-render on schema change
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [event.target.name]: event.target.value });
-    };
+    const getFormDataFromId = (formId: string) => {
+        // Ensure the form exists before accessing elements to avoid errors
+        if (!formRef.current) {
+            console.warn(`Form with ID "${formId}" not found.`);
+            return {};
+        }
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        // Create an object to store form data
+        // Ensure the form exists before accessing elements to avoid errors
+        if (!formRef.current) {
+            console.warn(`Form with ID "${formId}" not found.`);
+            return {};
+        }
+
+        // Iterate through form elements using FormData API for better compatibility
+        const formData: { [key: string]: any } = {}; // Add index signature to allow indexing with a string key
+
+        // Iterate through form elements
+        for (const element of formRef.current.elements) {
+            if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
+                const key = element.name;
+                const dataType = element.dataset.type;
+
+                // Handle data types based on attribute
+                let value: any;
+                switch (dataType) {
+                    case 'number':
+                        value = parseFloat(element.value);
+
+                        if (isNaN(value)) {
+                            console.warn(`Invalid uint32 value for field "${key}"`);
+                            value = 0; // Or handle it differently (e.g., throw error)
+                        }
+                        break;
+                    case 'string':
+                        value = element.value;
+                        break;
+                    case 'bool':
+                        if (element instanceof HTMLInputElement) {
+                            value = element.checked;
+                        } else {
+                            console.warn(`Invalid element type for field "${key}"`);
+                            value = false; // Or handle it differently (e.g., throw error)
+                        }
+                        break;
+                    case 'double':
+                        value = parseFloat(element.value);
+                        if (isNaN(value)) {
+                            console.warn(`Invalid double value for field "${key}"`);
+                            value = 0.0; // Or handle it differently (e.g., throw error)
+                        }
+                        break;
+                    default:
+                        value = element.value;
+                        console.warn(`Unknown data type "${dataType}" for field "${key}"`);
+                }
+
+                // Handle array-like names (e.g., "names[]")
+                if (key.endsWith('[]')) {
+                    const baseKey = key.slice(0, -2); // Remove "[]" from the key
+                    formData[baseKey] = formData[baseKey] || []; // Initialize as array if not present
+                    formData[baseKey].push(value);
+                } else {
+                    formData[key] = value;
+                }
+            }
+        }
+
+        return formData;
+    }
+
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
+        const data = getFormDataFromId('myFormId'); // Replace with your actual form ID
 
-        console.log('Form data:', formData);
+        console.log('Form data:', data);
+
+        let result = await rosWeb.CallService(name, type, data);
+
+        console.log(result);
+
+        setResult(result);
+
+        // Send data for processing (e.g., API call, state update)
     };
-
 
     return (
-        <form className='mt-3' onSubmit={handleSubmit}>
-            {formElements}
-            <button className='btn btn-primary' type="submit">Call</button>
-        </form>
+        <div>
+            <form ref={formRef} id="serviceForm" className='mt-3 mb-3' onSubmit={handleSubmit}>
+                {formElements}
+                <button className='btn btn-primary btn-lg' type="submit">Call</button>
+            </form>
+            <div>
+                {result && <pre>{JSON.stringify(result, null, 2)}</pre> || null}
+            </div>
+        </div>
     );
 };
 

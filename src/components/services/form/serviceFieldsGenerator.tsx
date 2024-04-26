@@ -1,7 +1,8 @@
 import Spinner from '@/components/spinner/Spinner';
 import { services_description } from '@/js/interfaces/iservices';
-import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
+import loadable from '@loadable/component';
+import { ErrorBoundary } from "react-error-boundary";
 
 function TypeTranslator(type: string): string {
     // convert all number primitive types to number
@@ -55,7 +56,7 @@ const GetComponentPathForServiceType = (fieldtype: string): string | null => {
 
 }
 
-const GetFieldsFromTypeDef = (schema: services_description, current_typeDef: any, handleChange: any) => {
+const GetFieldsFromTypeDef = (schema: services_description, current_typeDef: any, name: string, type: string) => {
 
     let fieldtype = TypeTranslator(current_typeDef.type);
 
@@ -70,26 +71,35 @@ const GetFieldsFromTypeDef = (schema: services_description, current_typeDef: any
     // const comp = "./types/string";
     const componentPath = GetComponentPathForServiceType(fieldtype);
 
-    try {
-        const DynamicComponent = dynamic<any>(() => import(`${componentPath}`));
-        const props = {
-            schema: schema,
-            current_typeDef: current_typeDef,
-            handleChange: handleChange
-        };
 
-        return (
+    const DynamicComponent = loadable(() => import(`${componentPath}`), {
+        fallback: <Spinner />, // Display the Spinner component while loading
+    });
+    const props = {
+        name: name,
+        type: type,
+        schema: schema,
+        current_typeDef: current_typeDef,
+    };
+
+    return (
+        <ErrorBoundary
+            fallback={
+                <div>
+                    <h1>Something went wrong!</h1>
+                    <p>Component: {componentPath}</p>
+                    <pre>
+                        {JSON.stringify(props, null, 2)}
+                    </pre>
+                </div>
+            }
+        >
             <Suspense fallback={<Spinner />}>
                 <DynamicComponent {...props} />
             </Suspense>
-        );
-    } catch (error) {
-        return (
-            <div>
-                <p> No information for this type : {fieldtype} </p>
-            </div>
-        );
-    }
+        </ErrorBoundary>
+    );
+
 
 }
 
