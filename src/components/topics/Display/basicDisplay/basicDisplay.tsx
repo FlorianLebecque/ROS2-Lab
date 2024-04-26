@@ -13,6 +13,9 @@ export default function BasicDisplay(props: { name: string, list: boolean }) {
     const messagesEndRef = useRef<null | HTMLDivElement>(null)
 
     const scrollToBottom = () => {
+        if (!list) {
+            return;
+        }
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
