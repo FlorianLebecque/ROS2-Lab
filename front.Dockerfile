@@ -12,28 +12,15 @@ WORKDIR /app
 # **********
 FROM base AS deps
 
+WORKDIR /app
 # Copy package.json to /app
 COPY package.json ./
 
 # Copy available lock file
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+#COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
 # Instal dependencies according to the lockfile
-RUN if [ -f "pnpm-lock.yaml" ]; then \
-    npm install -g pnpm && \
-    pnpm install; \
-    elif [ -f "yarn.lock" ]; then \
-    npm install -g yarn && \
-    yarn install; \
-    elif [ -f "package-lock.json" ]; then \
-    npm install; \
-    else \
-    npm install; \
-    # If you want to throw error on lockfile not being available, 
-    # uncomment the following lines
-    # echo "No Lockfile!"; \
-    # exit 1; \
-    fi
+RUN npm i
 
 # Disable the telementary
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -52,11 +39,11 @@ EXPOSE 3000
 # **********
 # prod stage
 # **********
-FROM inter AS prod
+#FROM inter AS prod
 
-RUN npm run build
+#RUN npm run build
 
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
 
 # **********
 # dev stage
