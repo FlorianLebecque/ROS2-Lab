@@ -3,6 +3,8 @@ import BasicDisplay from '@/components/topics/Display/basicDisplay/basicDisplay'
 import ImuDataDisplay from './Display/imu_data/imu_data';
 import { VideoDisplayJPEG, VideoDisplayUncompressed } from './Display/videoDisplay/videoDisplay';
 import ThreadHandleDisplay from './Display/ime/thread_handle';
+import PulseRaw from './Display/ime/PulseRaw';
+import DiodeTemp from './Display/ime/DiodeTemp';
 
 interface ComponentFactoryProps {
     topicName: string;
@@ -13,6 +15,7 @@ const TopicVisualizerFactory = ({ topicName, topicType }: ComponentFactoryProps)
 
     const componentsByName: { [key: string]: JSX.Element } = {
         'ime_thread_handle': (<ThreadHandleDisplay name={topicName} />),
+        'ime_diode_adc_temperatur': (<DiodeTemp name={topicName} />),
     };
 
     // If the topic name is partially matched, return the component, if not check with the topic type
@@ -27,6 +30,7 @@ const TopicVisualizerFactory = ({ topicName, topicType }: ComponentFactoryProps)
         'sensor_msgs/msg/Imu': (<ImuDataDisplay name={topicName} />),
         'sensor_msgs/msg/CompressedImage': (<VideoDisplayJPEG name={topicName} />),
         'sensor_msgs/msg/Image': (<VideoDisplayUncompressed name={topicName} />),
+        'vmc4_msgs/msg/PulseRaw': (<PulseRaw name={topicName} />),
         'default': (<BasicDisplay name={topicName} list={false} />)
     };
 
