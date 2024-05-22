@@ -27,6 +27,7 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
     const [data, setData] = useState<DataItem[]>([]);
     const rosWeb = useRosWeb(); // Assuming useRosWeb provides ROS access
     const [pause, setPause] = useState(false);
+    const [lasttopic, setLastTopic] = useState<string | null>(null);
 
     useEffect(() => {
         const handleData = (message: any) => {
@@ -45,7 +46,13 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
                 return;
             }
 
+            if (lasttopic && lasttopic !== topicName) {
+                setData([]);
+            }
+
             const topic_listeners = rosWeb.SubscribeToTopic(topicName, handleData);
+
+            setLastTopic(topicName);
 
             const Disconnect = () => {
                 console.log("Unsubscribe");
