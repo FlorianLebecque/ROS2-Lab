@@ -4,7 +4,7 @@ import style from './node_diagnostic.module.css';
 import React from 'react';
 
 import { useRosWeb } from "@/components/RosContext";
-import { NodeDetail, TopicDetail } from "@/js/RosWeb";
+import { NodeDetail } from "@/js/interfaces/inodes";
 import { useState, useEffect } from "react";
 import ComponentFactory from './node_componentFactory';
 
@@ -42,10 +42,9 @@ export default function NodeDiagnostic(props: { name: string }) {
     }, [name, rosWeb]);
 
     const handleTopicClick = async (topicName: string) => {
+        const topicType = await rosWeb.GetTopicType(topicName);
 
         SetActiveClass(topicName);
-
-        const topicType = await rosWeb.GetTopicType(topicName);
 
         setActiveComponentId(topicName);
         setActiveComponentType("topic");
@@ -57,12 +56,23 @@ export default function NodeDiagnostic(props: { name: string }) {
 
     const handleServiceClick = async (serviceName: string) => {
 
-        SetActiveClass(serviceName);
+        const serviceType = await rosWeb.GetServiceType(serviceName);
+        const serviceRequestDetails = await rosWeb.GetServiceRequestDetails(serviceType);
+        const serviceResponseDetails = await rosWeb.GetServiceResponseDetails(serviceType);
 
+        // const serviceRequestDetails = {};
+        // const serviceResponseDetails = {};
+
+        SetActiveClass(serviceName);
         setActiveComponentId(serviceName);
         setActiveComponentType("service");
         setActiveComponentProp({
             serviceName: serviceName,
+            serviceType: serviceType,
+            details: {
+                request: serviceRequestDetails,
+                response: serviceResponseDetails
+            }
         });
     }
 

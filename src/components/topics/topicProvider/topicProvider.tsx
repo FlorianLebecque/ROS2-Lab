@@ -9,11 +9,15 @@ interface DataItem {
 interface DataContextValue {
     data: DataItem[];
     setData: React.Dispatch<React.SetStateAction<DataItem[]>>;
+    setPause: React.Dispatch<React.SetStateAction<boolean>>;
+    pause: boolean;
 }
 
 const DataContext = createContext<DataContextValue>({
     data: [],
     setData: () => { },
+    setPause: () => { },
+    pause: false,
 });
 
 export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: string }> = ({
@@ -22,6 +26,8 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
 }) => {
     const [data, setData] = useState<DataItem[]>([]);
     const rosWeb = useRosWeb(); // Assuming useRosWeb provides ROS access
+    const [pause, setPause] = useState(false);
+    const [lasttopic, setLastTopic] = useState<string | null>(null);
 
     useEffect(() => {
         const handleData = (message: any) => {
@@ -35,24 +41,39 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
         };
 
         if (rosWeb && topicName) {
+
+            if (pause) {
+                return;
+            }
+
+            if (lasttopic && lasttopic !== topicName) {
+                setData([]);
+            }
+
             const topic_listeners = rosWeb.SubscribeToTopic(topicName, handleData);
 
+            setLastTopic(topicName);
+
             const Disconnect = () => {
+                console.log("Unsubscribe");
+                if (pause) {
+                    setData([]);
+                }
+
                 topic_listeners.unsubscribe();
             };
 
             return () => {
-                setData([]);
                 Disconnect();
             };
         }
 
         setData((prevData) => prevData.slice(-100)); // Keep only last 100 elements
 
-    }, [rosWeb, topicName]); // Dependency on both rosWeb and topicName
+    }, [rosWeb, topicName, pause]); // Dependency on both rosWeb and topicName
 
     return (
-        <DataContext.Provider value={{ data, setData }}>
+        <DataContext.Provider value={{ data, setData, pause, setPause }}>
             {children}
         </DataContext.Provider>
     );

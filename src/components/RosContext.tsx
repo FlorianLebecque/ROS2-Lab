@@ -7,6 +7,13 @@ export const RosWebProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const rosWeb = RosWeb.Instance();
 
+    useEffect(() => {
+
+        return () => {
+            rosWeb.disconnect();  // Disconnect from ROS server on unmount
+        };
+    }, [rosWeb]);
+
     return (
         <RosWebContext.Provider value={rosWeb}>{children}</RosWebContext.Provider>
     );

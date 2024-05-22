@@ -1,16 +1,9 @@
 const ROSLIB = require('roslib');
 import Robot from './Robot';
+import { NodeDetail } from './interfaces/inodes';
+import { TopicDetail } from './interfaces/itopics';
 
-export interface NodeDetail {
-    subscribers: string[];
-    topics: string[];
-    services: string[];
-}
 
-export interface TopicDetail {
-    name: string;
-    type: string;
-}
 
 
 export class RosWeb {
@@ -126,6 +119,16 @@ export class RosWebSingleton {
         }, 1000);
     }
 
+    async GetTopicsList() {
+        return new Promise<string[]>((resolve, reject) => {
+            this.ros.getTopics((topics: any) => {
+                resolve(topics.topics);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
     async GetNodesList() {
         return new Promise<string[]>((resolve, reject) => {
             this.ros.getNodes((nodes: string[]) => {
@@ -180,6 +183,36 @@ export class RosWebSingleton {
         });
     }
 
+    async GetServiceType(service: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.ros.getServiceType(service, (type: string) => {
+                resolve(type);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
+    async GetServiceRequestDetails(service_type: string): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            this.ros.getServiceRequestDetails(service_type, (details: string[]) => {
+                resolve(details);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
+    async GetServiceResponseDetails(service_type: string): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            this.ros.getServiceResponseDetails(service_type, (details: string[]) => {
+                resolve(details);
+            }, (error: any) => {
+                reject(error);
+            });
+        });
+    }
+
     SubscribeToTopic(topic: string, callback: (message: any) => void) {
         const topic_listeners = new ROSLIB.Topic({
             ros: this.ros,
@@ -220,6 +253,30 @@ export class RosWebSingleton {
         }
 
         return Array.from(robots.values());
+    }
+
+    async CallService(service: string, service_type: string, request: any) {
+
+        return new Promise((resolve, reject) => {
+            const service_client = new ROSLIB.Service({
+                ros: this.ros,
+                name: service,
+                serviceType: service_type
+            });
+
+            const request_msg = new ROSLIB.ServiceRequest(request);
+
+            console.log(request_msg);
+
+            service_client.callService(request_msg, (response: any) => {
+                resolve(response);
+            }, (error: any) => {
+                console.log("Error calling service: ", error);
+
+                reject(error);
+            });
+        });
+
     }
 
 }
