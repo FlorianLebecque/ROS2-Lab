@@ -1,0 +1,24 @@
+.addContainer {
+    /*
+        bottom right corner button
+    */
+    position: fixed;
+    bottom: 3.5rem;
+    right: 2.5rem;
+    z-index: 1000;
+}
+
+.addbtn {
+    transform: scale(1);
+    transition: 0.2s;
+}
+
+.addbtn:hover {
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+
+.catbtn {
+    opacity: 0;
+}
