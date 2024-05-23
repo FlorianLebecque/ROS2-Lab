@@ -12,6 +12,32 @@ import { useSettings } from '@/utils/SettingsProvider';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
+export function Clear(props: { robot: string }) {
+    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
+    const { settings, setSettings, saveSettings } = useSettings();
+
+    const clearDashboard = () => {
+
+        // ask for confirmation
+        if (!window.confirm("Are you sure you want to clear the dashboard?")) return;
+
+        setLayout([]);
+        setBoxes(new Map());
+        setNextBoxId(1);
+
+        settings[props.robot].layout = [];
+        settings[props.robot].boxes = [];
+        settings[props.robot].nextBoxId = 1;
+
+        setSettings(settings);
+        saveSettings();
+    }
+
+    return (
+        <button onClick={() => clearDashboard()} name="category" className={style.catbtn + " hide btn btn-outline-danger"}>Clear</button>
+    );
+}
+
 export default function DynamicDashboard(props: { robot: string }) {
 
     const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
