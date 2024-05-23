@@ -4,7 +4,7 @@ import style from './node_diagnostic.module.css';
 import React from 'react';
 
 import { useRosWeb } from "@/components/RosContext";
-import { NodeDetail } from "@/js/interfaces/inodes";
+import { NodeDetail } from "@/utils/interfaces/inodes";
 import { useState, useEffect } from "react";
 import ComponentFactory from './node_componentFactory';
 

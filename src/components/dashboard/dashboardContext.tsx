@@ -1,4 +1,4 @@
-import IDynamicComponent from '@/js/interfaces/iDynamicComponent';
+import IDynamicComponent from '@/utils/interfaces/iDynamicComponent';
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
 interface IBox {

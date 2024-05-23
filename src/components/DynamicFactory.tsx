@@ -4,7 +4,7 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from "react-error-boundary";
 import Spinner from '@/components/spinner/Spinner';
-import IDynamicComponent from '@/js/interfaces/iDynamicComponent';
+import IDynamicComponent from '@/utils/interfaces/iDynamicComponent';
 import dynamic from 'next/dynamic';
 
 const DynamicFactory = (dynamicComponent?: IDynamicComponent) => {

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRosWeb } from '@/components/RosContext';
 
-import Robot from '@/js/Robot';
+import Robot from '@/utils/Robot';
 import RobotCart from '../robot_card/robot_cart';
 
 export default function RobotsGrid() {

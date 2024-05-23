@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRosWeb } from '@/components/RosContext';
 import Link from 'next/link';
-import { NodeDetail } from "@/js/interfaces/inodes";
+import { NodeDetail } from "@/utils/interfaces/inodes";
 
 
 export default function NodeCart(props: { name: string }) {

@@ -1,4 +1,4 @@
-import { services_description } from "@/js/interfaces/iservices";
+import { services_description } from "@/utils/interfaces/iservices";
 
 const StringField = ({ fieldname, fieldtype, schema, handleChange }: { fieldname: string, fieldtype: string, schema: services_description, handleChange: any }) => {
     return (

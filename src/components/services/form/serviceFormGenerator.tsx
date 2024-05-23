@@ -1,4 +1,4 @@
-import { services_description } from '@/js/interfaces/iservices';
+import { services_description } from '@/utils/interfaces/iservices';
 import React, { useState, useEffect, useRef } from 'react';
 import GetFieldsFromTypeDef from './serviceFieldsGenerator';
 import { useRosWeb } from '@/components/RosContext';

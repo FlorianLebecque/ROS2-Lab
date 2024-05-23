@@ -5,7 +5,7 @@ import { useRosWeb } from '../RosContext';
 
 import { IVisualizerDefinition, TopicVisualizerLink, visualizers } from '../topics/topicVisualizerLink';
 import { useDashboard } from '../dashboard/dashboardContext';
-import IDynamicComponent from '@/js/interfaces/iDynamicComponent';
+import IDynamicComponent from '@/utils/interfaces/iDynamicComponent';
 
 export default function TopicAdder(props: { robot: string }) {
 

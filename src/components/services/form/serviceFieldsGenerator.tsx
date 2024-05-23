@@ -1,5 +1,5 @@
 import Spinner from '@/components/spinner/Spinner';
-import { services_description } from '@/js/interfaces/iservices';
+import { services_description } from '@/utils/interfaces/iservices';
 import { Suspense } from 'react';
 import loadable from '@loadable/component';
 import { ErrorBoundary } from "react-error-boundary";

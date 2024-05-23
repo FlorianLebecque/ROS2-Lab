@@ -1,4 +1,4 @@
-import IDynamicComponent from "@/js/interfaces/iDynamicComponent";
+import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
 
 
 export interface IVisualizerDefinition extends IDynamicComponent {
