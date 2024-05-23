@@ -28,69 +28,7 @@ const StringToRGB = (inputString: string) => {
 
 export default function BasicGraph(props: { name: string, dataset: string, title: string, min: number, max: number }) {
 
-    const { name } = props;
     const { data } = useData();
-
-    /*
-        {
-            "header": {
-                "stamp": {
-                    "sec": 1716464925,
-                    "nanosec": 205498969
-                },
-                "frame_id": "imu_link"
-            },
-            "orientation": {
-                "x": 0.009194226539437557,
-                "y": -0.0006690249049031842,
-                "z": 0.9390314762476476,
-                "w": 0.3437075867946207
-            },
-            "orientation_covariance": [
-                0.01,
-                0,
-                0,
-                0,
-                0.01,
-                0,
-                0,
-                0,
-                0.01
-            ],
-            "angular_velocity": {
-                "x": 0.009440377354621887,
-                "y": -0.0009491894161328673,
-                "z": 0.0006035732221789658
-            },
-            "angular_velocity_covariance": [
-                0.01,
-                0,
-                0,
-                0,
-                0.01,
-                0,
-                0,
-                0,
-                0.01
-            ],
-            "linear_acceleration": {
-                "x": -0.08117734155196953,
-                "y": -0.11251254612207806,
-                "z": 9.816385942942707
-            },
-            "linear_acceleration_covariance": [
-                0.01,
-                0,
-                0,
-                0,
-                0.01,
-                0,
-                0,
-                0,
-                0.01
-            ]
-        }
-    */
 
     if (!data[data.length - 1]) return (<div>Waiting for data...</div>);
     // use chart.js to display the pulse data in a line chart with two lines for positive and negative pulses
@@ -175,6 +113,9 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                         },
                         options: {
                             animation: false,
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1,
                             scales: {
                                 x: {
                                     title: {
