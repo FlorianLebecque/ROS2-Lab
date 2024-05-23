@@ -48,7 +48,7 @@ export default function DynamicDashboard() {
                                 </svg>
                             </button>
                         </div>
-                        <div className={style.content + " p-3"}>
+                        <div style={{ overflow: "clip" }} className={style.content + " p-3 mb-3"}>
                             {DynamicFactory(boxes.get(box.i)?.contentDef)}
                         </div>
                     </div>
