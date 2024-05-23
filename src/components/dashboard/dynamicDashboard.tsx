@@ -8,12 +8,22 @@ import 'react-resizable/css/styles.css';
 
 import { useDashboard } from './dashboardContext';
 import DynamicFactory from '@/components/DynamicFactory'
+import { useSettings } from '@/utils/SettingsProvider';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export default function DynamicDashboard() {
+export default function DynamicDashboard(props: { robot: string }) {
 
     const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
+    const { settings, setSettings, saveSettings } = useSettings();
+
+    useEffect(() => {
+        if (settings[props.robot]) {
+            setLayout(settings[props.robot].layout);
+            setBoxes(jsonObjectToMap(settings[props.robot].boxes));
+            setNextBoxId(settings[props.robot].nextBoxId);
+        }
+    }, [settings]);
 
     const removeBox = (id: string, event: any) => {
         event.stopPropagation(); // Stop the propagation of the event
@@ -21,12 +31,59 @@ export default function DynamicDashboard() {
 
         boxes.delete(id); // Remove the box from the boxes map
         setBoxes(new Map(boxes)); // Update the boxes map
+
+        updateSettings();
     };
 
     const onLayoutChange = (l: any) => {
         // Update the layout state when resizing or dragging occurs
+
         setLayout(l);
+        updateSettings(l);
     };
+
+    function mapToJsonObject(map: Map<string, any>) {
+        const jsonObject: any = {};
+        for (const [key, value] of map.entries()) {
+            jsonObject[key] = value;
+        }
+        return jsonObject;
+    }
+
+    function jsonObjectToMap(jsonObject: any) {
+        const map = new Map<string, any>();
+        for (const key in jsonObject) {
+            map.set(key, jsonObject[key]);
+        }
+        return map;
+    }
+
+    const updateSettings = (l: any = null) => {
+
+        let current_layout = layout;
+        if (l) {
+            current_layout = l;
+        }
+
+        // settings[robot][layout] = layout;
+        // settings[robot][boxes] = boxes;
+
+        // check if settings[robot] exists
+        if (!settings[props.robot]) settings[props.robot] = {};
+
+        // update the layout and boxes in the settings, add the robot key if it doesn't exist
+        if (!settings[props.robot].layout) settings[props.robot].layout = [];
+        if (!settings[props.robot].boxes) settings[props.robot].boxes = new Map();
+        if (!settings[props.robot].nextBoxId) settings[props.robot].nextBoxId = 1;
+        console.log(boxes);
+
+        settings[props.robot].layout = current_layout;
+        settings[props.robot].boxes = mapToJsonObject(boxes);
+        settings[props.robot].nextBoxId = nextBoxId;
+
+        setSettings(settings);
+        saveSettings();
+    }
 
     return (
         <div>

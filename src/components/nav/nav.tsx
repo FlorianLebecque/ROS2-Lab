@@ -4,12 +4,14 @@ import { usePathname } from 'next/navigation';
 import style from './nav.module.css';
 import Link from 'next/link'
 import { useEffect } from 'react';
+import { useSettings } from '@/utils/SettingsProvider';
 
 export default function Nav() {
 
     const pathname = usePathname();
     const first = pathname.split("/")[1];
 
+    const { exportToJson, importFromJson } = useSettings();
 
     const ToggleDialog = () => {
         const dialog = document.getElementById('settings-dialog') as HTMLDialogElement;
@@ -36,6 +38,51 @@ export default function Nav() {
         };
     }, []);
 
+    const ExportClick = () => {
+        exportToJson();
+    }
+
+    const ImportLayout = async (e: any) => {
+
+        if (e.target.files.length == 0) return;
+
+        const parsedJson = await handleFileUpload(e);
+        importFromJson(parsedJson);
+
+        // clear input
+        const input = document.getElementById('settingsFileInput') as HTMLInputElement;
+        input.value = '';
+
+
+        // close dialog
+        const dialog = document.getElementById('settings-dialog') as HTMLDialogElement;
+        dialog.close();
+    }
+
+    const handleFileUpload = (event: any): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            if (event === null || event.target === null) {
+                reject(new Error("No file selected."));
+                return;
+            }
+
+            const fileReader = new FileReader();
+            fileReader.readAsText(event.target.files[0], "UTF-8");
+            fileReader.onload = (e: any) => {
+                try {
+                    const parsedJson = JSON.parse(e.target.result);
+                    resolve(parsedJson);
+                } catch (err) {
+                    console.error("Error parsing JSON:", err);
+                    reject(err);
+                }
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
     return (
         <div>
             <nav className="navbar navbar-light bg-light p-3 mb-3 shade">
@@ -50,12 +97,12 @@ export default function Nav() {
                 <h1>Settings</h1>
                 <div>
                     <div className='input-group mb-3'>
-                        <button className='btn btn-outline-primary' >Export to JSON</button>
+                        <button onClick={() => ExportClick()} className='btn btn-outline-primary' >Export to JSON</button>
                     </div>
 
                     <div className="input-group mb-3">
                         <label className="input-group-text">Import</label>
-                        <input type="file" className="form-control" id="inputGroupFile01" />
+                        <input onChange={ImportLayout} type="file" className="form-control" id="settingsFileInput" />
                     </div>
                 </div>
             </dialog>

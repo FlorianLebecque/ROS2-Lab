@@ -70,7 +70,7 @@ export default function Page({ params }: { params: { robot: string } }) {
                     <TopicAdder robot={currentRobot} />
                 </div>
                 <div>
-                    <DynamicDashboard />
+                    <DynamicDashboard robot={currentRobot} />
                 </div>
             </DashboardProvider>
         </main>
