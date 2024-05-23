@@ -95,15 +95,25 @@ export default function Nav() {
             </nav>
             <dialog className='border p-3 shade rounded' id="settings-dialog">
                 <h1>Settings</h1>
-                <div>
-                    <div className='input-group mb-3'>
-                        <button onClick={() => ExportClick()} className='btn btn-outline-primary' >Export to JSON</button>
+                <div className='mt-3'>
+
+                    <div className='mb-3'>
+                        <h2>Pages</h2>
+                        <Link href="/diagnostic" className='btn btn-primary' >Diagnostic</Link>
                     </div>
 
-                    <div className="input-group mb-3">
-                        <label className="input-group-text">Import</label>
-                        <input onChange={ImportLayout} type="file" className="form-control" id="settingsFileInput" />
+                    <div className='mb-3'>
+                        <h2>Export/Import</h2>
+                        <div className='input-group mb-3'>
+                            <button onClick={() => ExportClick()} className='btn btn-outline-primary' >Export to JSON</button>
+                        </div>
+
+                        <div className="input-group mb-3">
+                            <label className="input-group-text">Import</label>
+                            <input onChange={ImportLayout} type="file" className="form-control" id="settingsFileInput" />
+                        </div>
                     </div>
+
                 </div>
             </dialog>
         </div>
