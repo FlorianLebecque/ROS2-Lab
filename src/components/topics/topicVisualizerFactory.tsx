@@ -2,9 +2,11 @@ import React from 'react';
 import BasicDisplay from '@/components/topics/Display/basicDisplay/basicDisplay';
 import ImuDataDisplay from './Display/imu_data/imu_data';
 import { VideoDisplayJPEG, VideoDisplayUncompressed } from './Display/videoDisplay/videoDisplay';
-import ThreadHandleDisplay from './Display/ime/thread_handle';
-import PulseRaw from './Display/ime/PulseRaw';
-import DiodeTemp from './Display/ime/DiodeTemp';
+import ThreadHandleDisplay from './Display/emi/thread_handle';
+import PulseRaw from './Display/emi/PulseRaw';
+import DiodeTemp from './Display/emi/DiodeTemp';
+
+
 
 interface ComponentFactoryProps {
     topicName: string;
