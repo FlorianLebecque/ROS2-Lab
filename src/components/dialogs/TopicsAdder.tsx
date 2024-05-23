@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useRosWeb } from '../RosContext';
 
-import { IVisualizerDefinition, TopicVisualizerLink } from '../topics/topicVisualizerLink';
+import { IVisualizerDefinition, TopicVisualizerLink, visualizers } from '../topics/topicVisualizerLink';
+import { useDashboard } from '../dashboard/dashboardContext';
+import IDynamicComponent from '@/js/interfaces/iDynamicComponent';
 
 export default function TopicAdder(props: { robot: string }) {
 
@@ -16,6 +18,7 @@ export default function TopicAdder(props: { robot: string }) {
     const [activeComponentId, setActiveComponentId] = useState(null as string | null);
     const [possibleVisualizers, setActivePossibleVisualizer] = useState<IVisualizerDefinition[]>([]);
 
+    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
 
     useEffect(() => {
 
@@ -104,6 +107,70 @@ export default function TopicAdder(props: { robot: string }) {
         }
     }
 
+    const AddVisualizers = async () => {
+
+        if (!activeComponentId) {
+            console.log("No topic selected");
+            return;
+        };
+
+        let topicName = activeComponentId;
+        let topicType = await rosWeb.GetTopicType(topicName);
+
+        console.log(topicName, topicType);
+
+        let visualizers = document.querySelectorAll('input[type="checkbox"]');
+        let checkedVisualizers = Array.from(visualizers).filter(visualizer => (visualizer as HTMLInputElement).checked);
+
+        let nextId = nextBoxId;
+        let newLayout = layout;
+
+        checkedVisualizers.forEach(visualizer => {
+            let visualizerId = (visualizer as HTMLInputElement).id;
+            let visualizerDefinition = possibleVisualizers.find(visualizer => visualizer.id == visualizerId);
+
+            if (visualizerDefinition) {
+                const visualizerBox = {
+                    i: `box${nextId}`,
+                    x: (layout.length * 2) % (12 / 2),
+                    y: getNextYPosition(newLayout), // puts it at the bottom
+                    w: 2,
+                    h: 4,
+                };
+
+                if (visualizerDefinition.params === undefined) {
+                    visualizerDefinition.params = {};
+                }
+
+                visualizerDefinition.params.topic = topicName;
+                visualizerDefinition.params.type = topicType;
+
+                const newBoxContent = {
+                    title: topicName,
+                    contentDef: {
+                        id: visualizerDefinition.id,
+                        path: visualizerDefinition.path,
+                        name: visualizerDefinition.name,
+                        description: visualizerDefinition.description,
+                        params: visualizerDefinition.params
+                    }
+                };
+
+                newLayout.push(visualizerBox);
+                boxes.set(visualizerBox.i, newBoxContent);
+                nextId++
+
+            }
+        });
+
+        setBoxes(new Map(boxes));
+        setLayout(newLayout);
+        setNextBoxId(nextId); // Increment the ID for the next box
+
+        const dialog = document.getElementById('topics-adder') as HTMLDialogElement;
+        dialog.close();
+    }
+
     return (
         <dialog id="topics-adder" className='border p-3 shade rounded'>
             <h1>Add topic visualization</h1>
@@ -122,12 +189,12 @@ export default function TopicAdder(props: { robot: string }) {
                 </div>
                 <div className='col'>
                     <div className="form-floating mb-3">
-                        <input type="text" className="form-control" id="visualizerFilter" placeholder="Type to filter visualizer" />
+                        <input readOnly={true} type="text" className="form-control" id="visualizerFilter" placeholder="Type to filter visualizer" />
                         <label htmlFor="visualizerFilter">Type to filter visualizer</label>
                     </div>
                     <div className='d-flex flex-column gap-1' style={{ maxHeight: "40dvh", overflow: "auto" }}>
                         {possibleVisualizers.map(visualizer => (
-                            <div>
+                            <div key={visualizer.id + "-container"}>
                                 <input type="checkbox" className="btn-check" key={visualizer.id} id={visualizer.id} />
                                 <label className="btn btn-outline-primary" style={{ width: "100%" }} htmlFor={visualizer.id}>{visualizer.name}</label>
                             </div>
@@ -136,7 +203,7 @@ export default function TopicAdder(props: { robot: string }) {
                 </div>
             </div>
             <div className='mt-3 d-flex flex-row-reverse'>
-                <button className='btn btn-primary' style={{ width: "5rem" }}>
+                <button onClick={() => AddVisualizers()} className='btn btn-primary' style={{ width: "5rem" }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
                         <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
                     </svg>
