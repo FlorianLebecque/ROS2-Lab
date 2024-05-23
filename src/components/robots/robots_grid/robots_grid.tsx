@@ -52,9 +52,12 @@ export default function RobotsGrid() {
 
             {connected && robots.length === 0 && <div className="alert alert-warning" role="alert"> No robots found... </div>}
 
+            <RobotCart name="Global Dashboard" />
+
             {connected && robots.map((robot, index) => {
                 return <RobotCart key={index} name={robot.name} />
             })}
+
         </div>
     );
 }
