@@ -37,6 +37,7 @@ export default function DynamicDashboard() {
                 draggableHandle={`.${style.dragHandle}`}
                 compactType={null}
                 cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+                preventCollision={true}
                 rowHeight={30}>
                 {layout.map(box => (
                     <div key={box.i} data-grid={box} className={"d-flex card border shadow"}>
