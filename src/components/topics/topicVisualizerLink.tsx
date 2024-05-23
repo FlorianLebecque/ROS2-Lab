@@ -1,53 +1,84 @@
+import IDynamicComponent from "@/js/interfaces/iDynamicComponent";
 
 
-export interface IVisualizerDefinition {
-    id: string,
-    name: string,
-    description: string,
+export interface IVisualizerDefinition extends IDynamicComponent {
     types: string[],
     topics: string[]
 }
 
-
-export function TopicVisualizerLink(topicName: string, topicType: string): IVisualizerDefinition[] {
-
-    const visualizer: IVisualizerDefinition[] = [
+export const visualizers: Map<string, IVisualizerDefinition> = new Map([
+    [
+        "basic",
         {
             id: "basic",
+            path: "Display/basicDisplay/basicDisplay",
+            params: {
+                list: false
+            },
             name: "Basic",
             description: "Basic visualizer, display last data as JSON",
             types: ["*"],
             topics: ["*"]
-        },
+        }
+    ],
+    [
+        "basicList",
         {
             id: "basicList",
+            path: "Display/basicDisplay/basicDisplay",
             name: "Basic List",
             description: "Basic List visualizer, display list of data as JSON",
             types: ["*"],
             topics: ["*"]
-        },
+        }
+    ],
+    [
+        "imudata",
         {
             id: "imudata",
+            path: "Display/imu_data/imu_data",
             name: "IMU Data",
             description: "IMU Data visualizer, display IMU data in 3D",
             types: ["sensor_msgs/msg/Imu"],
-            topics: ["imu/data"]
-        },
+            topics: ["*"]
+        }
+    ],
+    [
+        "imepulse",
         {
             id: "imepulse",
+            path: "Display/ime/PulseRaw",
             name: "IME Pulse",
             description: "IME Pulse visualizer, display IME pulse data",
             types: ["vmc4_msgs/msg/PulseRaw"],
             topics: ["ime_pulse_raw"]
-        },
+        }
+    ],
+    [
+        "imediodetemp",
         {
             id: "imediodetemp",
+            path: "Display/ime/DiodeTemp",
             name: "IME Diode Temp",
             description: "IME Diode Temp visualizer, display IME diode temperature data",
             types: ["std_msgs/msg/String"],
             topics: ["ime_diode_adc_temperatur"]
         }
-    ];
+    ],
+    [
+        "videoDisplayJPEG",
+        {
+            id: "videoDisplayJPEG",
+            path: "Display/videoDisplay/videoDisplay",
+            name: "Video Display JPEG",
+            description: "Video Display JPEG visualizer, display video stream in JPEG format",
+            types: ["sensor_msgs/msg/CompressedImage", "sensor_msgs/msg/Image"],
+            topics: ["*"]
+        }
+    ]
+]);
+
+export function TopicVisualizerLink(topicName: string, topicType: string): IVisualizerDefinition[] {
 
     /*
         To be a possible visualizer:
@@ -65,8 +96,7 @@ export function TopicVisualizerLink(topicName: string, topicType: string): IVisu
 
     let possibleVisualizers: IVisualizerDefinition[] = [];
 
-    for (let i = 0; i < visualizer.length; i++) {
-        let v = visualizer[i];
+    for (let v of visualizers.values()) {
 
         if (v.types.includes("*") && v.topics.includes("*")) {
             possibleVisualizers.push(v);
