@@ -6,12 +6,13 @@ export interface IVisualizerDefinition extends IDynamicComponent {
     topics: string[]
 }
 
+// Path relative to src/components/DynamicFactory.tsx
 export const visualizers: Map<string, IVisualizerDefinition> = new Map([
     [
         "basic",
         {
             id: "basic",
-            path: "Display/basicDisplay/basicDisplay",
+            path: "./topics/Display/basicDisplay/basicDisplay",
             params: {
                 list: false
             },
@@ -25,8 +26,11 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "basicList",
         {
             id: "basicList",
-            path: "Display/basicDisplay/basicDisplay",
+            path: "./topics/Display/basicDisplay/basicDisplay",
             name: "Basic List",
+            params: {
+                list: true
+            },
             description: "Basic List visualizer, display list of data as JSON",
             types: ["*"],
             topics: ["*"]
@@ -36,7 +40,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imudata",
         {
             id: "imudata",
-            path: "Display/imu_data/imu_data",
+            path: "./topics/Display/imu_data/imu_data",
             name: "IMU Data",
             description: "IMU Data visualizer, display IMU data in 3D",
             types: ["sensor_msgs/msg/Imu"],
@@ -47,7 +51,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imepulse",
         {
             id: "imepulse",
-            path: "Display/ime/PulseRaw",
+            path: "./topics/Display/ime/PulseRaw",
             name: "IME Pulse",
             description: "IME Pulse visualizer, display IME pulse data",
             types: ["vmc4_msgs/msg/PulseRaw"],
@@ -58,7 +62,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imediodetemp",
         {
             id: "imediodetemp",
-            path: "Display/ime/DiodeTemp",
+            path: "./topics/Display/ime/DiodeTemp",
             name: "IME Diode Temp",
             description: "IME Diode Temp visualizer, display IME diode temperature data",
             types: ["std_msgs/msg/String"],
@@ -69,7 +73,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "videoDisplayJPEG",
         {
             id: "videoDisplayJPEG",
-            path: "Display/videoDisplay/videoDisplay",
+            path: "./topics/Display/videoDisplay/videoDisplay",
             name: "Video Display JPEG",
             description: "Video Display JPEG visualizer, display video stream in JPEG format",
             types: ["sensor_msgs/msg/CompressedImage", "sensor_msgs/msg/Image"],

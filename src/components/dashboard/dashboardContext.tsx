@@ -1,3 +1,4 @@
+import IDynamicComponent from '@/js/interfaces/iDynamicComponent';
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
 interface IBox {
@@ -6,26 +7,37 @@ interface IBox {
     y: number;
     w: number;
     h: number;
-    content: any;
+}
+
+interface IBoxContent {
+    title: string;
+    contentDef: IDynamicComponent;
 }
 
 interface IDashboardContext {
     layout: IBox[];
     setLayout: React.Dispatch<React.SetStateAction<IBox[]>>;
 
-    nextBoxId?: number;
-    setNextBoxId?: React.Dispatch<React.SetStateAction<number>>;
+    boxes: Map<string, IBoxContent>;
+    setBoxes: React.Dispatch<React.SetStateAction<Map<string, IBoxContent>>>;
 
-    getNextYPosition?: () => number;
+    nextBoxId: number;
+    setNextBoxId: React.Dispatch<React.SetStateAction<number>>;
+
+    getNextYPosition: (currentLayout: any) => number;
 }
 
 
 const DashboardContext = createContext<IDashboardContext>({
     layout: [],
     setLayout: () => { },
+
+    boxes: new Map(),
+    setBoxes: () => { },
+
     nextBoxId: 0,
     setNextBoxId: () => { },
-    getNextYPosition: () => 0,
+    getNextYPosition: (currentLayout: any) => 0,
 })
 
 
@@ -33,8 +45,10 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
     const [layout, setLayout] = useState<IBox[]>([]);
     const [nextBoxId, setNextBoxId] = useState(0);
 
-    const getNextYPosition = () => {
-        const maxY = layout.reduce((acc, curr) => {
+    const [boxes, setBoxes] = useState<Map<string, IBoxContent>>(new Map());
+
+    const getNextYPosition = (currentLayout: any) => {
+        const maxY = currentLayout.reduce((acc: number, curr: { y: any; h: any; }) => {
             const bottomY = curr.y + curr.h;
             return bottomY > acc ? bottomY : acc;
         }, 0);
@@ -42,7 +56,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
 
     return (
-        <DashboardContext.Provider value={{ layout, setLayout, nextBoxId, setNextBoxId, getNextYPosition }}>{children}</DashboardContext.Provider> // Use DashboardContext.Provider instead of DashboardProvider.Provider
+        <DashboardContext.Provider value={{ layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition }}>{children}</DashboardContext.Provider> // Use DashboardContext.Provider instead of DashboardProvider.Provider
     );
 };
 
