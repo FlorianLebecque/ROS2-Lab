@@ -12,7 +12,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "basic",
         {
             id: "basic",
-            path: "./topics/Display/basicDisplay/basicDisplay",
+            path: "./topics/visualizer/basic/basic",
             params: {
                 list: false
             },
@@ -26,7 +26,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "basicList",
         {
             id: "basicList",
-            path: "./topics/Display/basicDisplay/basicDisplay",
+            path: "./topics/visualizer/basic/basic",
             name: "Basic List",
             params: {
                 list: true
@@ -37,10 +37,10 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
-        "imudata",
+        "imu3D",
         {
-            id: "imudata",
-            path: "./topics/Display/imu_data/imu_data",
+            id: "imu3D",
+            path: "./topics/visualizer/imu/imu3D",
             name: "IMU Data",
             description: "IMU Data visualizer, display IMU data in 3D",
             types: ["sensor_msgs/msg/Imu"],
@@ -48,10 +48,61 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
-        "imepulse",
+        "imuACC",
         {
-            id: "imepulse",
-            path: "./topics/Display/ime/PulseRaw",
+            id: "imuACC",
+            path: "./topics/visualizer/basic/basicGraph",
+            params: {
+                dataset: "linear_acceleration",
+                title: "IMU Acceleration",
+                min: -50,
+                max: 50
+            },
+            name: "IMU Acceleration",
+            description: "IMU Acceleration visualizer, display IMU acceleration data",
+            types: ["sensor_msgs/msg/Imu"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "imuORR",
+        {
+            id: "imuORR",
+            path: "./topics/visualizer/basic/basicGraph",
+            params: {
+                dataset: "orientation",
+                title: "IMU orientation",
+                min: -1.5,
+                max: 1.5
+            },
+            name: "IMU Orientation",
+            description: "IMU Orientation visualizer, display IMU orientation data",
+            types: ["sensor_msgs/msg/Imu"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "imuAVEL",
+        {
+            id: "imuAVEL",
+            path: "./topics/visualizer/basic/basicGraph",
+            params: {
+                dataset: "angular_velocity",
+                title: "IMU Angular velocity",
+                min: -20,
+                max: 20
+            },
+            name: "IMU Angular velocity",
+            description: "IMU angular velocity visualizer, display IMU orientation data",
+            types: ["sensor_msgs/msg/Imu"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "emiPulse",
+        {
+            id: "emiPulse",
+            path: "./topics/visualizer/emi/pulse",
             name: "IME Pulse",
             description: "IME Pulse visualizer, display IME pulse data",
             types: ["vmc4_msgs/msg/PulseRaw"],
@@ -59,10 +110,10 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
-        "imediodetemp",
+        "imeDiode",
         {
-            id: "imediodetemp",
-            path: "./topics/Display/ime/DiodeTemp",
+            id: "imeDiode",
+            path: "./topics/visualizer/emi/diode",
             name: "IME Diode Temp",
             description: "IME Diode Temp visualizer, display IME diode temperature data",
             types: ["std_msgs/msg/String"],
@@ -70,13 +121,24 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
-        "videoDisplayJPEG",
+        "jpeg",
         {
-            id: "videoDisplayJPEG",
-            path: "./topics/Display/videoDisplay/videoDisplay",
+            id: "jpeg",
+            path: "./topics/visualizer/image/jpeg",
             name: "Video Display JPEG",
             description: "Video Display JPEG visualizer, display video stream in JPEG format",
-            types: ["sensor_msgs/msg/CompressedImage", "sensor_msgs/msg/Image"],
+            types: ["sensor_msgs/msg/CompressedImage"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "uncompressed",
+        {
+            id: "uncompressed",
+            path: "./topics/visualizer/image/uncompressed",
+            name: "Video Display Uncompressed",
+            description: "Video Display Uncompressed visualizer, display video stream in uncompressed format",
+            types: ["sensor_msgs/msg/Image"],
             topics: ["*"]
         }
     ]
