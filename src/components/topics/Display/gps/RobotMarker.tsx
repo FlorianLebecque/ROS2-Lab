@@ -12,9 +12,24 @@ export default function RobotMarker() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setLocation([location[0] + Math.random() * 0.00001, location[1] + Math.random() * 0.00001]);
-            map.setView([location[0], location[1]]);
-        }, 1000);
+
+            let dx = Math.random() * 0.00001;
+            let dy = Math.random() * 0.00001;
+            let dir_x = Math.random() > 0.5 ? 1 : -1;
+            let dir_y = Math.random() > 0.5 ? 1 : -1;
+
+            location[0] += dx * dir_x;
+            location[1] += dy * dir_y;
+
+            setLocation([location[0], location[1]]);
+
+            // move the map if the robot is out of the view
+            if (location[0] > map.getBounds().getNorth() || location[0] < map.getBounds().getSouth() || location[1] > map.getBounds().getEast() || location[1] < map.getBounds().getWest()) {
+                map.panTo(new LatLng(location[0], location[1]), { animate: true, duration: 1 });
+            }
+
+
+        }, 200);
         return () => clearInterval(interval);
     });
 
