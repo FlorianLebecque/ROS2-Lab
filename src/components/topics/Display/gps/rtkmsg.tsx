@@ -10,12 +10,12 @@ import RobotMarker from "./RobotMarker";
 // import "leaflet-defaulticon-compatibility"
 // import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
 
-export default function GPSMap(props: any) {
+export default function GPSMap(props: { robot: string }) {
 
     return <MapContainer center={[50.843941, 4.3930369]} zoom={20} scrollWheelZoom={true}>
         <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <RobotMarker />
+        <RobotMarker robot={props.robot} />
     </MapContainer>
 }

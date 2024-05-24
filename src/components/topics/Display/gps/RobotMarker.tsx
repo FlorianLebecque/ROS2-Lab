@@ -2,8 +2,9 @@ import { MapContainer, Marker, Popup, TileLayer, Tooltip, useMap } from "react-l
 
 import { useEffect, useState } from "react";
 import L, { LatLng } from "leaflet";
+import Link from "next/link";
 
-export default function RobotMarker() {
+export default function RobotMarker(props: { robot: string }) {
 
     // use map
     const map = useMap();
@@ -34,9 +35,9 @@ export default function RobotMarker() {
     });
 
     return (
-        <Marker icon={L.icon({ iconUrl: "http://news.blr.com/app/uploads/sites/3/2016/10/Llama-1.jpg", iconSize: [30, 30] })} position={new LatLng(location[0], location[1])}>
+        <Marker icon={L.icon({ iconUrl: "https://api.dicebear.com/8.x/bottts/svg?seed=" + props.robot, iconSize: [30, 30] })} position={new LatLng(location[0], location[1])}>
             <Popup>
-                <span>A robot</span>
+                <Link className="btn btn-primary" href={"/" + props.robot}> {props.robot} </Link>
             </Popup>
         </Marker>
     );
