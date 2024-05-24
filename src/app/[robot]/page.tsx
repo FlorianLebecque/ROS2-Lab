@@ -6,11 +6,15 @@ import style from './page.module.css';
 import { DashboardProvider } from '@/components/dashboard/dashboardContext';
 import TopicAdder from '@/components/dialogs/TopicsAdder';
 import DynamicDashboard, { Clear } from '@/components/dashboard/dynamicDashboard';
+import { useSettings } from '@/utils/SettingsProvider';
 
 
 export default function Page({ params }: { params: { robot: string } }) {
 
-    //const [hidden, SetHidden] = useState(true);
+    const { settings, setSettings } = useSettings();
+    settings.robot = params.robot;
+    setSettings(settings);
+
     let hidden = true;
 
     const currentRobot = params.robot;
