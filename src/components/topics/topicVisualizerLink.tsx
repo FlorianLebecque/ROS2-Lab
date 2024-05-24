@@ -37,6 +37,17 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "gpsRTK",
+        {
+            id: "gpsRTK",
+            path: "./topics/visualizer/gps/rtk",
+            name: "GPS RTK",
+            description: "GPS RTK visualizer, display GPS RTK data",
+            types: ["*", "sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
         "imu3D",
         {
             id: "imu3D",
