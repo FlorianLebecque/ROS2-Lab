@@ -18,7 +18,7 @@ export default function TopicAdder(props: { robot: string }) {
     const [activeComponentId, setActiveComponentId] = useState(null as string | null);
     const [possibleVisualizers, setActivePossibleVisualizer] = useState<IVisualizerDefinition[]>([]);
 
-    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
+    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId } = useDashboard();
 
     useEffect(() => {
 
@@ -132,8 +132,8 @@ export default function TopicAdder(props: { robot: string }) {
             if (visualizerDefinition) {
                 const visualizerBox = {
                     i: `box${nextId}`,
-                    x: (layout.length * 2) % (12 / 2),
-                    y: getNextYPosition(newLayout), // puts it at the bottom
+                    x: 0,
+                    y: 0, // puts it at the bottom
                     w: 2,
                     h: 4,
                 };

@@ -23,8 +23,6 @@ interface IDashboardContext {
 
     nextBoxId: number;
     setNextBoxId: React.Dispatch<React.SetStateAction<number>>;
-
-    getNextYPosition: (currentLayout: any) => number;
 }
 
 
@@ -37,7 +35,6 @@ const DashboardContext = createContext<IDashboardContext>({
 
     nextBoxId: 0,
     setNextBoxId: () => { },
-    getNextYPosition: (currentLayout: any) => 0,
 })
 
 
@@ -55,8 +52,16 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
         return maxY;
     };
 
+    const getNextXPosition = (currentLayout: any) => {
+        const maxX = currentLayout.reduce((acc: number, curr: { x: any; w: any; }) => {
+            const rightX = curr.x + curr.w;
+            return rightX > acc ? rightX : acc;
+        }, 0);
+        return maxX;
+    }
+
     return (
-        <DashboardContext.Provider value={{ layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition }}>{children}</DashboardContext.Provider> // Use DashboardContext.Provider instead of DashboardProvider.Provider
+        <DashboardContext.Provider value={{ layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId }}>{children}</DashboardContext.Provider> // Use DashboardContext.Provider instead of DashboardProvider.Provider
     );
 };
 
