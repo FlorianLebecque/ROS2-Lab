@@ -12,14 +12,6 @@ import RobotMarker from "./RobotMarker";
 
 export default function GPSMap(props: any) {
 
-
-    // animate the location using a random walk
-    const [location, setLocation] = useState([50.843941, 4.3930369]);
-
-
-
-
-
     return <MapContainer center={[50.843941, 4.3930369]} zoom={20} scrollWheelZoom={true}>
         <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
