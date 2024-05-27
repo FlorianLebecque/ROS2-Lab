@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useData } from "@/components/topics/topicProvider/topicProvider";
+import { useData } from "@/components/topics/topicProvider";
 import { useFrame } from '@react-three/fiber'; // Hook for animation
 
 export default function ImuDataDisplayMesh(props: { name: string }) {

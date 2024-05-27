@@ -1,6 +1,6 @@
 'use client';
 
-import { useData } from "@/components/topics/topicProvider/topicProvider";
+import { useData } from "@/components/topics/topicProvider";
 import { useEffect, useRef, useState } from "react";
 
 export function VideoDisplayJPEG(props: { name: string }) {

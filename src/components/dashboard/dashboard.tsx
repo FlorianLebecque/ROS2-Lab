@@ -7,7 +7,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { useRosWeb } from '@/components/RosContext';
-import { TopicProvider } from '../topics/topicProvider/topicProvider';
+import { TopicProvider } from '../topics/topicProvider';
 import TopicVisualizerFactory from '../topics/topicVisualizerFactory';
 import { exportToJson, handleFileUpload } from './export';
 

@@ -1,6 +1,6 @@
 import BasicDisplay from "../../Display/basicDisplay/basicDisplay";
 import ControlBar from "../../controlbar/controlbar";
-import { TopicProvider } from "../../topicProvider/topicProvider";
+import { TopicProvider } from "../../topicProvider";
 
 export default function BasicVisualizer(props: { topic: string, type: string, list: boolean }) {
 

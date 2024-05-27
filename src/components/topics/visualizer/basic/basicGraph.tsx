@@ -1,5 +1,5 @@
 import BasicGraph from "../../Display/basicDisplay/basicGraph";
-import { TopicProvider } from "../../topicProvider/topicProvider";
+import { TopicProvider } from "../../topicProvider";
 
 export default function BasicGraphVisualizer(props: { topic: string, type: string, dataset: string, title: string, min: number, max: number }) {
 

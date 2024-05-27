@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TopicProvider } from './topicProvider/topicProvider';
+import { TopicProvider } from './topicProvider';
 import ControlBar from './controlbar/controlbar';
 import TopicVisualizerFactory from './topicVisualizerFactory';
 

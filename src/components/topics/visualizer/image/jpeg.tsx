@@ -1,5 +1,5 @@
 import { VideoDisplayJPEG } from "../../Display/videoDisplay/videoDisplay";
-import { TopicProvider } from "../../topicProvider/topicProvider";
+import { TopicProvider } from "../../topicProvider";
 
 export default function JPEGVisualizer(props: { topic: string, type: string }) {
 

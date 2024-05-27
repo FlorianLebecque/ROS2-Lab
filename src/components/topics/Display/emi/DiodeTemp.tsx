@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Chart from 'chart.js/auto';
-import { useData } from '../../topicProvider/topicProvider';
+import { useData } from '../../topicProvider';
 import { useEffect, useRef } from 'react';
 
 export default function DiodeTemp(props: { name: string }) {

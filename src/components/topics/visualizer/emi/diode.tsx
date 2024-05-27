@@ -1,5 +1,5 @@
 import DiodeTemp from "../../Display/emi/DiodeTemp";
-import { TopicProvider } from "../../topicProvider/topicProvider";
+import { TopicProvider } from "../../topicProvider";
 
 export default function DiodeTempVisualizer(props: { topic: string, type: string }) {
 
