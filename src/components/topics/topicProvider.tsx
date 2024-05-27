@@ -55,7 +55,6 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
             setLastTopic(topicName);
 
             const Disconnect = () => {
-                console.log("Unsubscribe");
                 if (pause) {
                     setData([]);
                 }
