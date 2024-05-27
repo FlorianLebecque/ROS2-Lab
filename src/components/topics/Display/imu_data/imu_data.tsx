@@ -10,7 +10,6 @@ export default function ImuDataDisplay(props: { name: string }) {
             <ambientLight intensity={Math.PI / 2} />
             <directionalLight position={[0, 3, 2]} intensity={1} castShadow />
             <ImuDataDisplayMesh name={props.name} />
-            <ImuDataDisplayText name={props.name} />
         </Canvas>
     );
 }

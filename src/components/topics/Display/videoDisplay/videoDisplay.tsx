@@ -20,7 +20,7 @@ export function VideoDisplayJPEG(props: { name: string }) {
 
     return (
         <div>
-            {imageUrl && <img src={imageUrl} alt="Video Stream" />}
+            {imageUrl && <img style={{ width: "100%" }} src={imageUrl} alt="Video Stream" />}
         </div>
     );
 }
@@ -37,7 +37,7 @@ export function VideoDisplayUncompressed(props: { name: string }) {
 
     return (
         <div>
-            <img src={imageUrl} alt="Video Stream" style={{ maxWidth: '100%' }} />
+            <img style={{ width: "100%" }} src={imageUrl} alt="Video Stream" />
         </div>
     );
 }

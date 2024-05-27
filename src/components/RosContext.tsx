@@ -1,4 +1,4 @@
-import { RosWeb, RosWebSingleton } from '@/js/RosWeb';
+import { RosWeb, RosWebSingleton } from '@/utils/RosWeb';
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const RosWebContext = createContext<RosWebSingleton | null>(null);

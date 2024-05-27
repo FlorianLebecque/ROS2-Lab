@@ -1,4 +1,4 @@
-import { services_description } from "@/js/interfaces/iservices";
+import { services_description } from "@/utils/interfaces/iservices";
 
 const ResquestForm = (props: any) => {
     const { schema, current_typeDef } = props;
