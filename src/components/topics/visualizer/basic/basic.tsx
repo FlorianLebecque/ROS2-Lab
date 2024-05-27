@@ -1,4 +1,4 @@
-import BasicDisplay from "../../Display/basicDisplay/basicDisplay";
+import BasicDisplay from "../../display/basicDisplay/basicDisplay";
 import ControlBar from "../../controlbar/controlbar";
 import { TopicProvider } from "../../topicProvider";
 

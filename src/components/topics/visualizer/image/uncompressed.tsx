@@ -1,4 +1,4 @@
-import { VideoDisplayUncompressed } from "../../Display/videoDisplay/videoDisplay";
+import { VideoDisplayUncompressed } from "../../display/videoDisplay/videoDisplay";
 import { TopicProvider } from "../../topicProvider";
 
 export default function UncompressVisualizer(props: { topic: string, type: string }) {

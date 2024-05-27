@@ -1,7 +1,7 @@
 "use client";
 
 import { useSettings } from "@/utils/SettingsProvider";
-import GPSMap from "../../Display/gps/rtkmsg";
+import GPSMap from "../../display/gps/rtkmsg";
 import { TopicProvider } from "../../topicProvider";
 
 export default function BasicVisualizer(props: { topic: string, type: string, list: boolean }) {

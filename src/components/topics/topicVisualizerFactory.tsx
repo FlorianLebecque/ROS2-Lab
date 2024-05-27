@@ -1,10 +1,10 @@
 import React from 'react';
-import BasicDisplay from '@/components/topics/Display/basicDisplay/basicDisplay';
-import ImuDataDisplay from './Display/imu_data/imu_data';
-import { VideoDisplayJPEG, VideoDisplayUncompressed } from './Display/videoDisplay/videoDisplay';
-import ThreadHandleDisplay from './Display/emi/thread_handle';
-import PulseRaw from './Display/emi/PulseRaw';
-import DiodeTemp from './Display/emi/DiodeTemp';
+import BasicDisplay from '@/components/topics/display/basicDisplay/basicDisplay';
+import ImuDataDisplay from './display/imu_data/imu_data';
+import { VideoDisplayJPEG, VideoDisplayUncompressed } from './display/videoDisplay/videoDisplay';
+import ThreadHandleDisplay from './display/emi/thread_handle';
+import PulseRaw from './display/emi/PulseRaw';
+import DiodeTemp from './display/emi/DiodeTemp';
 
 
 

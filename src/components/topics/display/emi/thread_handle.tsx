@@ -1,6 +1,6 @@
 'use client';
 
-import BasicDisplay from '@/components/topics/Display/basicDisplay/basicDisplay';
+import BasicDisplay from '@/components/topics/display/basicDisplay/basicDisplay';
 
 export default function ThreadHandleDisplay(props: { name: string }) {
 
