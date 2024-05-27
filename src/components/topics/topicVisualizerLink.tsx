@@ -43,7 +43,18 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
             path: "./topics/visualizer/gps/rtk",
             name: "GPS RTK",
             description: "GPS RTK visualizer, display GPS RTK data",
-            types: ["*", "sensor_msgs/msg/NavSatFix"],
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "pointCloud",
+        {
+            id: "pointCloud",
+            path: "./topics/visualizer/image/pointCloud",
+            name: "Point Cloud",
+            description: "Point Cloud visualizer, display Point Cloud data",
+            types: ["sensor_msgs/msg/PointCloud2"],
             topics: ["*"]
         }
     ],
