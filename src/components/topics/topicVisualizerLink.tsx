@@ -227,5 +227,5 @@ export function TopicVisualizerLink(topicName: string, topicType: string): IVisu
 
     }
 
-    return possibleVisualizers;
+    return JSON.parse(JSON.stringify(possibleVisualizers));
 }
