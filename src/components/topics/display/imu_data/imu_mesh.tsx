@@ -3,20 +3,18 @@ import { useData } from "@/components/topics/topicProvider";
 import { useFrame } from '@react-three/fiber'; // Hook for animation
 
 export default function ImuDataDisplayMesh(props: { name: string }) {
-    const dataRef = useRef<any[]>([]);
     const { data } = useData();
-
-    useEffect(() => {
-        // Update data reference on data change (optional)
-        if (data) {
-            dataRef.current = data;
-        }
-    }, [data]);
 
     const meshRef = useRef<any>(null);
 
+    if (!data) {
+        return (<div>Waiting for data</div>);
+    }
+
     useFrame(() => {
-        const latestData = dataRef.current[dataRef.current.length - 1];
+
+        const latestData = data[data.length - 1];
+
         if (latestData && latestData.ros && latestData.ros.orientation) {
             const { x, y, z, w } = latestData.ros.orientation;
             meshRef.current.quaternion.set(x, y, z, w);
