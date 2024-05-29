@@ -12,6 +12,8 @@ export default function PointCloudDisplay(props: { name: string }) {
         <Canvas>
             <OrbitControls />
             <PointsDataDisplay name={props.name} />
+            <gridHelper args={[10, 10]} />
+
         </Canvas>
     );
 }
