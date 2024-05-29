@@ -1,26 +1,39 @@
 'use client';
 
 import { useData } from "@/components/topics/topicProvider";
+import { cp } from "fs";
 import { useEffect, useRef, useState } from "react";
 
 export function VideoDisplayJPEG(props: { name: string }) {
 
-    const { data, setData } = useData();
-    const [imageUrl, setImageUrl] = useState("");
+    const { data } = useData();
+    const canvas = useRef<HTMLCanvasElement>(null);
 
-    const processImage = (imageMessage: any) => {
+    const processImage = (imageMessage: any, canvas: HTMLCanvasElement) => {
         if (!(imageMessage && imageMessage.ros)) return;
         const base64Image = `data:image/jpeg;base64,${imageMessage.ros.data}`;
-        setImageUrl(base64Image);
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const image = new Image();
+        image.onload = () => {
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0);
+        };
+
+        image.src = base64Image;
     }
 
     useEffect(() => {
-        processImage(data[data.length - 1])
+        if (!canvas.current) return;
+        processImage(data[data.length - 1], canvas.current)
     }, [data]);
 
     return (
         <div>
-            {imageUrl && <img style={{ width: "100%" }} src={imageUrl} alt="Video Stream" />}
+            <canvas ref={canvas} style={{ width: "100%" }} />
         </div>
     );
 }
@@ -29,15 +42,18 @@ export function VideoDisplayUncompressed(props: { name: string }) {
 
     const { data, setData } = useData();
     const [imageUrl, setImageUrl] = useState("");
+    const canvas = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        const data_url = convertDataToImage(data[data.length - 1])
-        setImageUrl(data_url);
+        if (!canvas.current) {
+            return;
+        }
+        convertDataToImage(data[data.length - 1], canvas.current);
     }, [data]);
 
     return (
         <div>
-            <img style={{ width: "100%" }} src={imageUrl} alt="Video Stream" />
+            <canvas ref={canvas} style={{ width: "100%" }} />
         </div>
     );
 }
@@ -54,22 +70,18 @@ const base64ToArrayBuffer = (base64: string) => {
 };
 
 // Helper function to convert message to dataurl
-const convertDataToImage = (imageMessage: any): any => {
+const convertDataToImage = (imageMessage: any, canvas: HTMLCanvasElement): any => {
     if (!(imageMessage && imageMessage.ros &&
         imageMessage.ros.width && imageMessage.ros.height)) return;
 
     const { width, height, data, encoding } = imageMessage.ros;
     const imageData = base64ToArrayBuffer(data);
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const imgData = ctx.createImageData(width, height);
     encodeRawImage(imageData, imgData, encoding)
     ctx.putImageData(imgData, 0, 0);
-    return canvas.toDataURL('image/jpeg');
 };
 
 const encodeRawImage = (imageData: any, imgData: any, encoding: string) => {
