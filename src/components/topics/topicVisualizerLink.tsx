@@ -59,6 +59,17 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "odom3D",
+        {
+            id: "odom3D",
+            path: "./topics/visualizer/odom/odom3D",
+            name: "Odometry 3D",
+            description: "Odometry 3D visualizer, display odometry data in 3D",
+            types: ["nav_msgs/msg/Odometry"],
+            topics: ["*"]
+        }
+    ],
+    [
         "imu3D",
         {
             id: "imu3D",
@@ -78,7 +89,8 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
                 dataset: "linear_acceleration",
                 title: "IMU Acceleration",
                 min: -50,
-                max: 50
+                max: 50,
+                single: false
             },
             name: "IMU Acceleration",
             description: "IMU Acceleration visualizer, display IMU acceleration data",
@@ -95,7 +107,8 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
                 dataset: "orientation",
                 title: "IMU orientation",
                 min: -1.5,
-                max: 1.5
+                max: 1.5,
+                single: false
             },
             name: "IMU Orientation",
             description: "IMU Orientation visualizer, display IMU orientation data",
@@ -112,11 +125,30 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
                 dataset: "angular_velocity",
                 title: "IMU Angular velocity",
                 min: -20,
-                max: 20
+                max: 20,
+                single: false
             },
             name: "IMU Angular velocity",
             description: "IMU angular velocity visualizer, display IMU orientation data",
             types: ["sensor_msgs/msg/Imu"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "temperature",
+        {
+            id: "temperature",
+            path: "./topics/visualizer/basic/basicGraph",
+            params: {
+                dataset: "temperature",
+                title: "Temperature",
+                min: -10,
+                max: 100,
+                single: true
+            },
+            name: "Temperature",
+            description: "Temperature visualizer, display temperature data",
+            types: ["sensor_msgs/msg/Temperature"],
             topics: ["*"]
         }
     ],
