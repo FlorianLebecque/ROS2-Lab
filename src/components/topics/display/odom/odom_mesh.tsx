@@ -13,27 +13,28 @@ export default function OdomDataDisplayMesh(props: { name: string, OrbitRef: any
         return (<div>Waiting for data</div>);
     }
 
+    const SetRotation = (RosPose: any) => {
+        const { x, y, z, w } = RosPose.orientation;
+        const euler = new THREE.Euler();
+
+        euler.setFromQuaternion(new THREE.Quaternion(x, y, z, w));
+
+        meshRef.current.rotation.x = - euler.x;
+        meshRef.current.rotation.y = - euler.z;
+        meshRef.current.rotation.z = - euler.y;
+    }
+
     useFrame(() => {
 
         const latestData = data[data.length - 1];
 
         if (latestData && latestData.ros && latestData.ros.pose) {
 
-            const { rot_x, rot_y, rot_z, rot_w } = latestData.ros.pose.pose.orientation;
             const { x, y, z } = latestData.ros.pose.pose.position;
 
 
             // In three js , x is right, y is up, z is forward
-
-            // Convert the quaternion to euler angles
-            const euler = new THREE.Euler();
-
-            euler.setFromQuaternion(new THREE.Quaternion(rot_x, rot_y, rot_z, rot_w));
-
-            // Transform the euler angles to the correct orientation
-            meshRef.current.rotation.x = - euler.x;
-            meshRef.current.rotation.y = - euler.z;
-            meshRef.current.rotation.z = - euler.y;
+            SetRotation(latestData.ros.pose.pose);
 
             // Transform the position
             meshRef.current.position.x = x;
@@ -43,13 +44,23 @@ export default function OdomDataDisplayMesh(props: { name: string, OrbitRef: any
             if (props.OrbitRef.current) {
                 //move the camera to the new position
                 props.OrbitRef.current.target.set(x, z, y);
+                // move the camera position if distance is greater than 5
+                if (props.OrbitRef.current.object.position.distanceTo(meshRef.current.position) > 10) {
+
+                    let direction_to_target = new THREE.Vector3().subVectors(meshRef.current.position, props.OrbitRef.current.object.position).normalize();
+
+                    // move the camera using the direction to the target
+                    props.OrbitRef.current.object.position.add(direction_to_target.multiplyScalar(0.1));
+                }
+
+
             }
         }
     });
 
     return (
         <mesh ref={meshRef}>
-            <boxGeometry args={[1, 0.5, 2]} />
+            <boxGeometry args={[2, 0.5, 1]} />
             <meshStandardMaterial color="white" />
         </mesh>
     );
