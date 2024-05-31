@@ -32,6 +32,15 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
     useEffect(() => {
         const handleData = (message: any) => {
 
+            // check the header of the message, if it is older than 2 seconds, ignore it
+            if (message.header && message.header.stamp) {
+                const message_time = new Date(message.header.stamp.secs * 1000 + message.header.stamp.nsecs / 1000000);
+                const current_time = new Date();
+                if (current_time.getTime() - message_time.getTime() > 2000) {
+                    return;
+                }
+            }
+
             const new_data: DataItem = {
                 time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
                 ros: message,
