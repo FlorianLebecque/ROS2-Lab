@@ -20,6 +20,11 @@ services:
     build:
       context: . # Build context (optional, defaults to current directory)
       dockerfile: back.Dockerfile
+      args:
+        PX4_MSGS: True #Will build ROS2 messages from PX4 drones when TRUE
+        ROS2CustomMSGCompil: False #When TRUE will build messages from https://github.com/FlorianLebecque/ROS2CustomMSGCompil.git
+
+
     restart: unless-stopped
     privileged: true
     network_mode: host
