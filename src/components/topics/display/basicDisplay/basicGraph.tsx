@@ -26,16 +26,15 @@ const StringToRGB = (inputString: string) => {
 }
 
 
-export default function BasicGraph(props: { name: string, dataset: string, title: string, min: number, max: number }) {
+export default function BasicGraph(props: { name: string, dataset: string, title: string, min: number, max: number, single: boolean }) {
 
     const { data } = useData();
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const chartRef = useRef<Chart>();
 
-    if (!data[data.length - 1]) return (<div>Waiting for data...</div>);
     // use chart.js to display the pulse data in a line chart with two lines for positive and negative pulses
     // use ref to get the canvas element
 
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const chartRef = useRef<Chart>();
 
     useEffect(() => {
 
@@ -52,17 +51,29 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                     let last_data = data[data.length - 1].ros;
                     let objectKeys = Object.keys(last_data[props.dataset]);
 
-                    for (let subkey of objectKeys) {
-                        datasets_data.set(subkey, []);
+                    if (!props.single) {
+                        for (let subkey of objectKeys) {
+                            datasets_data.set(subkey, []);
+                        }
+                    } else {
+                        datasets_data.set(props.dataset, []);
                     }
 
                     // update the chart with the new data
                     for (let i = 0; i < data.length; i++) {
                         let ros = data[i].ros;
 
-                        for (let subkey of objectKeys) {
-                            let data = ros[props.dataset][subkey];
-                            let subkeyData = datasets_data.get(subkey);
+                        if (!props.single) {
+                            for (let subkey of objectKeys) {
+                                let data = ros[props.dataset][subkey];
+                                let subkeyData = datasets_data.get(subkey);
+                                if (subkeyData) {
+                                    subkeyData.push(data);
+                                }
+                            }
+                        } else {
+                            let data = ros[props.dataset];
+                            let subkeyData = datasets_data.get(props.dataset);
                             if (subkeyData) {
                                 subkeyData.push(data);
                             }
@@ -93,16 +104,27 @@ export default function BasicGraph(props: { name: string, dataset: string, title
 
                     let objectKeys = Object.keys(last_data[props.dataset]);
 
-                    for (let i = 0; i < objectKeys.length; i++) {
-                        let key = objectKeys[i];
-                        let data = last_data[props.dataset][key];
-                        let data_array = [data];
+                    if (!props.single) {
+                        for (let i = 0; i < objectKeys.length; i++) {
+                            let key = objectKeys[i];
+                            let data = last_data[props.dataset][key];
+                            let data_array = [data];
+                            datasets.push({
+                                label: key,
+                                data: data_array,
+                                borderColor: StringToRGB(key),
+                                tension: 0.3
+                            });
+                        }
+                    } else {
                         datasets.push({
-                            label: key,
-                            data: data_array,
-                            borderColor: StringToRGB(key),
+                            label: props.dataset,
+                            data: [last_data[props.dataset]],
+                            borderColor: StringToRGB(props.dataset),
                             tension: 0.3
                         });
+
+                        console.log(datasets);
                     }
 
                     chartRef.current = new Chart(ctx, {
@@ -146,6 +168,9 @@ export default function BasicGraph(props: { name: string, dataset: string, title
         }
 
     }, [data]);
+
+    if (!data[data.length - 1]) return (<div>Waiting for data...</div>);
+
 
     return (
         <div>
