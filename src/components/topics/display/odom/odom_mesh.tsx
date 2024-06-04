@@ -20,7 +20,7 @@ export default function OdomDataDisplayMesh(props: { name: string, OrbitRef: any
         euler.setFromQuaternion(new THREE.Quaternion(x, y, z, w));
 
         meshRef.current.rotation.x = - euler.x;
-        meshRef.current.rotation.y = - euler.z;
+        meshRef.current.rotation.y = euler.z;
         meshRef.current.rotation.z = - euler.y;
     }
 
@@ -45,12 +45,17 @@ export default function OdomDataDisplayMesh(props: { name: string, OrbitRef: any
                 //move the camera to the new position
                 props.OrbitRef.current.target.set(x, z, y);
                 // move the camera position if distance is greater than 5
-                if (props.OrbitRef.current.object.position.distanceTo(meshRef.current.position) > 10) {
+                let distance_to_target = meshRef.current.position.distanceTo(props.OrbitRef.current.object.position);
+                if (distance_to_target > 10) {
 
                     let direction_to_target = new THREE.Vector3().subVectors(meshRef.current.position, props.OrbitRef.current.object.position).normalize();
 
+                    let speed = (distance_to_target - 5) / 100;
+                    // make the speed relative to the distance, so the camera will move faster if the distance is greater and slower if the distance is smaller
+
+
                     // move the camera using the direction to the target
-                    props.OrbitRef.current.object.position.add(direction_to_target.multiplyScalar(0.1));
+                    props.OrbitRef.current.object.position.add(direction_to_target.multiplyScalar(speed));
                 }
 
 
