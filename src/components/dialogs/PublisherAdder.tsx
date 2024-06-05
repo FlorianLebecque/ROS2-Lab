@@ -2,26 +2,29 @@ import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
 import TwoColumnAdderDialog from "./TwoColumnAdder";
 import { useRosWeb } from "../RosContext";
 import IDialogDefinition from "./DialogDefinition";
+import { TopicPublishersLink } from "../topics/topicPublisherLink";
 
 export function PublisherAdder(props: { robot: string }) {
 
     const rosWeb = useRosWeb();
 
-
     const ElementGetter = async () => {
-
         return rosWeb.GetTopicsList();
     }
 
     const ComponentGetter = async (topicName: string): Promise<IDynamicComponent[]> => {
         const topicType = await rosWeb.GetTopicType(topicName);
 
-
-
-        return [];
+        return TopicPublishersLink(topicName, topicType);
     }
 
-    const DynamicComponentParamsSetter = (topicName: string, params: any) => {
+    const DynamicComponentParamsSetter = async (topicName: string, params: any) => {
+
+        let topicType = await rosWeb.GetTopicType(topicName);
+
+        params.topic = topicName;
+        params.type = topicType;
+
         return params;
     }
 
