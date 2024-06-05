@@ -224,6 +224,14 @@ export class RosWebSingleton {
         return topic_listeners;
     }
 
+    CreateTopicPublisher(topic: string, type: string) {
+        return new ROSLIB.Topic({
+            ros: this.ros,
+            name: topic,
+            messageType: type
+        });
+    }
+
     async GetRobotsList() {
         const nodes = await this.GetNodesList();
 
