@@ -4,16 +4,21 @@ import { useEffect, useState } from 'react';
 import style from './page.module.css';
 
 import { DashboardProvider } from '@/components/dashboard/dashboardContext';
-import TopicAdder from '@/components/dialogs/TopicsAdder';
 import DynamicDashboard, { Clear } from '@/components/dashboard/dynamicDashboard';
 import { useSettings } from '@/utils/SettingsProvider';
+
+import IDialogDefinition from '@/components/dialogs/DialogDefinition';
+
+
+import PublisherDialogDefinition from '@/components/dialogs/PublisherAdder';
+import TopicSubscriberDialogDefinition from '@/components/dialogs/TopicsAdder';
 
 
 export default function Page({ params }: { params: { robot: string } }) {
 
     const { settings, setSettings } = useSettings();
     settings.robot = params.robot;
-    setSettings(settings);
+    //setSettings(settings);
 
     let hidden = true;
 
@@ -56,14 +61,21 @@ export default function Page({ params }: { params: { robot: string } }) {
         }
     }
 
+    const Dialogs: IDialogDefinition[] = [
+        PublisherDialogDefinition,
+        TopicSubscriberDialogDefinition
+    ];
+
     return (
         <main>
             <DashboardProvider>
                 <div className={style.addContainer + " d-flex flex-column justify-content-center align-items-center gap-3"}>
                     <div className='d-flex flex-column justify-content-center align-items-stretch gap-3'>
                         <Clear robot={params.robot} />
-                        <button onClick={() => OpenDialog("topics-adder")} name="category" className={style.catbtn + " hide btn btn-outline-primary"}>Topics</button>
-                        <button name="category" className={style.catbtn + " hide btn btn-outline-primary"}>Publisher</button>
+
+                        {Dialogs.map(dialog => (
+                            <button key={dialog.dialog_id + dialog.btn_name} onClick={() => OpenDialog(dialog.dialog_id)} name="category" className={style.catbtn + " hide btn btn-outline-primary"}>{dialog.btn_name}</button>
+                        ))}
                     </div>
                     <button onClick={handleClick} name="add" className={style.addbtn + " rounded-circle btn btn-primary shade"} style={{ width: "5rem", height: "5rem" }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
@@ -72,7 +84,9 @@ export default function Page({ params }: { params: { robot: string } }) {
                     </button>
                 </div>
                 <div>
-                    <TopicAdder robot={currentRobot} />
+                    {Dialogs.map(dialog => (
+                        <div key={dialog.dialog_id + "_container"}>{dialog.dialogComponent({ robot: currentRobot })}</div>
+                    ))}
                 </div>
                 <div>
                     <DynamicDashboard robot={currentRobot} />
