@@ -101,7 +101,7 @@ export default function JoystickXY(props: { topicName: string, lock_x: boolean, 
         <div className="d-flex flex-column justify-content-center align-items-center gap-3" style={{ height: "100%" }}>
             <p>{max_speed}%</p>
             <input onChange={handleSliderChange} type="range" min="1" max="100" defaultValue={20} />
-            <Joystick throttle={50} controlPlaneShape={get_lock_axis()} size={100} sticky={false} baseColor="#778899" stickColor="#b2cbe5" move={handleMove} />
+            <Joystick throttle={16} controlPlaneShape={get_lock_axis()} size={100} sticky={false} baseColor="#778899" stickColor="#b2cbe5" move={handleMove} />
         </div>
     )
 }
