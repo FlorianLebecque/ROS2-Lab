@@ -6,8 +6,6 @@ import ThreadHandleDisplay from './display/emi/thread_handle';
 import PulseRaw from './display/emi/PulseRaw';
 import DiodeTemp from './display/emi/DiodeTemp';
 
-
-
 interface ComponentFactoryProps {
     topicName: string;
     topicType: string;
