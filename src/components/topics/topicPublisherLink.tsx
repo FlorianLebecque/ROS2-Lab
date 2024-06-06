@@ -1,5 +1,6 @@
 import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
 import { IVisualizerDefinition } from "./topicVisualizerLink";
+import { map } from "leaflet";
 
 
 // Path relative to src/components/DynamicFactory.tsx
@@ -9,11 +10,57 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         {
             id: "cmd_vel",
             path: "./topics/publisher/cmd_vel/cmd_vel",
-            name: "Joystick",
+            name: "Joystick 2D differential drive",
+            params: {
+                lock_x: false,
+                lock_y: false,
+                map_x_to: "angular.z",
+                map_y_to: "linear.x",
+                factor_x: -1,
+                factor_y: 1
+            },
             description: "Simple Joystick controller",
             types: ["geometry_msgs/msg/Twist"],
             topics: ["*"]
-        }
+        },
+    ],
+    [
+        "cmd_vel_forward_x",
+        {
+            id: "cmd_vel_forward_x",
+            path: "./topics/publisher/cmd_vel/cmd_vel",
+            name: "Joystick Verticl forward",
+            params: {
+                lock_x: true,
+                lock_y: false,
+                map_x_to: "none",
+                map_y_to: "linear.x",
+                factor_x: 0,
+                factor_y: 1
+            },
+            description: "Simple Joystick controller",
+            types: ["geometry_msgs/msg/Twist"],
+            topics: ["*"]
+        },
+    ],
+    [
+        "cmd_vel_angular_z",
+        {
+            id: "cmd_vel_angular_z",
+            path: "./topics/publisher/cmd_vel/cmd_vel",
+            name: "Joystick Horizontal rotation",
+            params: {
+                lock_x: false,
+                lock_y: true,
+                map_x_to: "angular.z",
+                map_y_to: "none",
+                factor_x: -1,
+                factor_y: 0
+            },
+            description: "Simple Joystick controller",
+            types: ["geometry_msgs/msg/Twist"],
+            topics: ["*"]
+        },
     ]
 ]);
 
