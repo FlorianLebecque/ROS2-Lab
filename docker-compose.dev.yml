@@ -1,30 +1,36 @@
 services:
-  frontend:
-    container_name: summitxllabs-frontend
+  webapp:
+    container_name: summitxl_webapp
     network_mode: host
     build:
       context: .
       target: dev
-      dockerfile: front.Dockerfile
+      dockerfile: Dockerfile.webapp
     restart: always
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
-  backend:
-    container_name: Rosweb-ws
+      - ./webapp:/app
+      - ./webapp:/app/node_modules
+      - ./webapp:/app/.next
+  websocket:
+    container_name: summitxl_websocket
     build:
       context: . # Build context (optional, defaults to current directory)
-      dockerfile: back.Dockerfile
+      dockerfile: Dockerfile.websocket
     restart: unless-stopped
     privileged: true
     network_mode: host
     ipc: host
     pid: host
     command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml
-    # environment:
-    #   - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
+
+  bagapi:
+    container_name: summitxl_bagapi
+    build:
+      context: . # Build context (optional, defaults to current directory)
+      dockerfile: Dockerfile.bagapi
+    restart: unless-stopped
+    network_mode: host
