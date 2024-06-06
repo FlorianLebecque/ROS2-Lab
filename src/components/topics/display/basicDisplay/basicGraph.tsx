@@ -79,7 +79,13 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                             }
                         }
 
-                        times.push(ros.header.stamp.sec);
+                        if (ros.header && ros.header.stamp && ros.header.stamp.sec) {
+                            times.push(ros.header.stamp.sec);
+                        } else {
+                            // push current timestamp
+                            let current_time = new Date();
+                            times.push(current_time.getTime());
+                        }
                     }
 
                     for (let dataset of chartRef.current.data.datasets) {

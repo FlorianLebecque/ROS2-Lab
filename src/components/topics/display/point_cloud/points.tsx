@@ -1,187 +1,166 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useData } from "@/components/topics/topicProvider";
-import { useFrame } from '@react-three/fiber'; // Hook for animation
-
+import { useFrame } from "@react-three/fiber";
+import { useData } from "../../topicProvider";
 import * as THREE from 'three';
-import { Points } from '@react-three/drei';
-import { parse } from 'path';
-import { buffer } from 'stream/consumers';
+import { Points } from "three";
+import { use, useEffect, useRef, useState } from "react";
 
-interface PointCloud {
-    fields: Field[];
+export default function PointsDataDisplay() {
 
-    geometry: THREE.BufferGeometry;
-
-    positions: Float32Array | null;
-    colors: Float32Array | null;
-    size: number;
-    little_endian: boolean;
-}
-
-interface Field {
-    name: string;
-    offset: number;
-    datatypelen: number;
-    count: number;
-}
-
-export default function PointsDataDisplay(props: { name: string }) {
     const { data } = useData();
-    const pointCloudRef = useRef<any>();
 
-    const dataTypeToByteLength = (type: number): number => {
-        const typeToByteLength: { [key: number]: number } = {
-            1: 1, // int8
-            2: 1, // uint8
-            3: 2, // int16
-            4: 2, // uint16
-            5: 4, // int32
-            6: 4, // uint32
-            7: 4, // float32
-            8: 8, // float64
-        };
+    const pointRef = useRef<Points>(null);
 
-        return typeToByteLength[type];
-    }
-
-    function convertUint8ArrayToDecimalFloat32(byteArray: Uint8Array, little_endian = true) {
-        if (byteArray.length < 4) {
-            throw new Error('Byte array must have at least 4 elements for a decimal value');
-        }
-
-        let value = 0;
-
-        let sign = (byteArray[0] & 0x80) >> 7;
-        let exponent = ((byteArray[0] & 0x7F) << 1) | ((byteArray[1] & 0x80) >> 7);
-        let fraction = ((byteArray[1] & 0x7F) << 16) | (byteArray[2] << 8) | byteArray[3];
-
-        if (little_endian) {
-            let temp = exponent;
-            exponent = fraction;
-            fraction = temp;
-        }
-
-        if (exponent === 0 && fraction === 0) {
-            return 0;
-        }
-
-        if (exponent === 0xFF) {
-            if (fraction === 0) {
-                return sign ? -Infinity : Infinity;
-            }
-            return NaN;
-        }
-
-        value = Math.pow(-1, sign) * Math.pow(2, exponent - 127) * (1 + fraction / Math.pow(2, 23));
-
-        return value;
-    }
-
-    const parsePointCloud = (pointCloud: PointCloud, data: string, point_step: number) => {
-
-        let data_len = data.length;
-
-        // convert data to a uint8 array
-        let udata = Buffer.from(data, "ascii");
-
-        const geometry = pointCloud.geometry;
-        const positions = new Float32Array(data.length / point_step * 3);
-        const colors = new Float32Array(data.length / point_step * 3);
-
-        for (let i = 0; i < udata.length; i += point_step) {
-
-            let row_bytes = udata.slice(i, i + point_step);
-
-            let x_bytes_len = pointCloud.fields[0].datatypelen;
-            let y_bytes_len = pointCloud.fields[1].datatypelen;
-            let z_bytes_len = pointCloud.fields[2].datatypelen;
-            let rgb_bytes_len = pointCloud.fields[3].datatypelen;
-
-            let x_offset = pointCloud.fields[0].offset;
-            let y_offset = pointCloud.fields[1].offset;
-            let z_offset = pointCloud.fields[2].offset;
-            let rgb_offset = pointCloud.fields[3].offset;
-
-            let x_bytes = row_bytes.slice(x_offset, x_offset + x_bytes_len) as unknown as Uint8Array;
-            let y_bytes = row_bytes.slice(y_offset, y_offset + y_bytes_len) as unknown as Uint8Array;
-            let z_bytes = row_bytes.slice(z_offset, z_offset + z_bytes_len) as unknown as Uint8Array;
-            let rgb_bytes = row_bytes.slice(rgb_offset, rgb_offset + rgb_bytes_len) as unknown as Uint8Array;
-
-
-            let x = convertUint8ArrayToDecimalFloat32(x_bytes);
-            // let y = convertUint8ArrayToDecimalFloat32(y_bytes);
-            // let z = convertUint8ArrayToDecimalFloat32(z_bytes);
-            let y = new DataView(y_bytes.buffer).getFloat32(0, pointCloud.little_endian);
-            let z = new DataView(z_bytes.buffer).getFloat32(0, pointCloud.little_endian);
-
-            let r = rgb_bytes[0];
-            let g = rgb_bytes[1];
-            let b = rgb_bytes[2];
-
-            // replace NaN values with 0
-            if (isNaN(x)) x = 0;
-            if (isNaN(y)) y = 0;
-            if (isNaN(z)) z = 0;
-
-            let index = i / point_step * 3;
-
-            positions[index] = x;
-            positions[index + 1] = y;
-            positions[index + 2] = z;
-
-            colors[index] = r / 255;
-            colors[index + 1] = g / 255;
-            colors[index + 2] = b / 255;
-        }
-
-        pointCloud.positions = positions;
-        pointCloud.colors = colors;
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        geometry.computeBoundingSphere();
-
-        pointCloudRef
-
-    }
-
-    const getPointCloudDescription = (ros_message: any): PointCloud => {
-
-        let fields = [];
-        for (const field of ros_message.fields) {
-            fields.push({
-                name: field.name,
-                offset: field.offset,
-                datatypelen: dataTypeToByteLength(field.datatype),
-                count: field.count,
-            });
-        }
-
-        return {
-            fields: fields,
-            geometry: new THREE.BufferGeometry(),
-            positions: null,
-            colors: null,
-            size: ros_message.width,
-            little_endian: !ros_message.is_bigendian,
-        }
-
-    }
+    const [nbrOfPoints, setNbrOfPoints] = useState(0);
+    const [objectBuffer, setObjectBuffer] = useState<any>(null);
+    const [possitionBuffer, setPossitionBuffer] = useState(new Float32Array(0));
 
     useEffect(() => {
-        if (data) {
-            const latestData = data[data.length - 1];
-            if (latestData && latestData.ros) {
-                pointCloudRef.current = getPointCloudDescription(latestData.ros);
-                parsePointCloud(pointCloudRef.current, latestData.ros.data, latestData.ros.point_step);
+        if (data.length > 0) {
+            const lastData = data[data.length - 1];
+
+            const ObjectSize = lastData.ros.point_step;
+            const byteData = lastData.ros.data;
+            const nbrOfPoints = lastData.ros.width * lastData.ros.height;
+
+            // number of points rounded to the 1000 : 8728 -> 9000, 10000 -> 10000 , 10001 -> 11000 
+            const roundedNbrOfPoint = Math.ceil(nbrOfPoints / 1000) * 1000;
+            if (!objectBuffer) {
+                setObjectBuffer(createObjectBuffer(ObjectSize, byteData, roundedNbrOfPoint));
             }
+
+            setNbrOfPoints(nbrOfPoints);
+            setObjectBuffer(objectBuffer);
         }
     }, [data]);
 
 
+    useFrame(() => {
+
+        // for each update upload a new object buffer
+        if (pointRef.current) {
+            const lastData = data[data.length - 1];
+
+            // update the object buffer data with the new ros.data
+            let nbrOfPoints = lastData.ros.width * lastData.ros.height;
+            updateObjectBuffer(objectBuffer, lastData.ros.data, nbrOfPoints);
+
+            // update the number of objects
+            const material = pointRef.current.material as THREE.ShaderMaterial; // Cast the material to ShaderMaterial
+            material.uniforms.objects.value = objectBuffer;
+            material.uniforms.numObjects.value = nbrOfPoints;
+        }
+
+    });
+
+    if (!objectBuffer) return null;
 
     return (
-        <Points ref={pointCloudRef} />
+        <points ref={pointRef}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={possitionBuffer.length / 3}
+                    array={possitionBuffer}
+                    itemSize={3}
+                />
+                <bufferAttribute
+                    attach="attributes-object"
+                    count={objectBuffer.count}
+                    array={objectBuffer.array}
+                    itemSize={objectBuffer.itemSize}
+                />
+            </bufferGeometry>
+            <shaderMaterial
+                depthWrite={false}
+                fragmentShader={fragmentShader}
+                vertexShader={vertexShader}
+                uniforms={{
+                    objectSize: { value: objectBuffer.itemSize },
+                    x_offset: { value: 0 },
+                    y_offset: { value: 4 },
+                    z_offset: { value: 8 },
+                    coord_length: { value: 4 },
+                    numObjects: { value: nbrOfPoints },
+                    objects: { value: objectBuffer },
+                }}
+            />
+        </points>
     );
+}
+
+function updateObjectBuffer(objectBuffer: THREE.Uint32BufferAttribute, byteData: Uint8Array, numObjects: number) {
+    // Ensure byteData.length is a multiple of objectSize
+    const paddedLength = numObjects * objectBuffer.itemSize;
+    const paddedData = new Uint8Array(paddedLength);
+
+    let bytesSlice = byteData.slice(0, paddedLength);
+
+    paddedData.set(bytesSlice);
+
+    objectBuffer.set(paddedData);
+
+    return objectBuffer;
 
 }
+
+function createObjectBuffer(objectSize: number, byteData: Uint8Array, numObjects: number) {
+    // Ensure byteData.length is a multiple of objectSize
+    const paddedLength = numObjects * objectSize;
+    const paddedData = new Uint8Array(paddedLength);
+
+    let bytesSlice = byteData.slice(0, paddedLength);
+
+    paddedData.set(bytesSlice);
+
+    const objectBuffer = new THREE.Uint32BufferAttribute(paddedData, objectSize / 4); // Divide by 4 for uint32 elements
+
+    return objectBuffer;
+}
+
+
+const vertexShader = `
+    attribute vec3 position;
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+
+    struct ObjectData {
+        uint data[];
+    };
+      
+    StructuredBuffer<ObjectData> objects : REGISTER(t0); // Bind the object buffer
+    uint objectSize : REGISTER(c0); // Pass object size as a uniform
+    uint x_offset : REGISTER(c1); // Pass x offset as a uniform
+    uint y_offset : REGISTER(c2); // Pass y offset as a uniform
+    uint z_offset : REGISTER(c3); // Pass z offset as a uniform
+    uint coord_length : REGISTER(c4); // Pass coord length as a uniform
+    uint numObjects : REGISTER(c5); // Pass the number of objects as a uniform    
+
+    void main() {
+
+        // vertex Id  -> should be the same as the index of the object in the buffer
+        uint vertexId = gl_VertexID;
+
+        // Get the object data
+        // check if the vertexId is within the bounds of the object buffer
+        if (vertexId >= numObjects ) {
+            gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+
+        ObjectData object = objects[vertexId];
+
+        // Get the object position, the position is stored as 4 uints to be a converted into a float32
+        float x = 0;
+        float y = 0;
+        float z = 0;
+
+        // Set the vertex position to the object position
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(x, y, z, 1.0);
+    }
+`;
+
+const fragmentShader = `
+    void main() {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+`;
+

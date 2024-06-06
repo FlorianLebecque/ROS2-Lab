@@ -153,6 +153,40 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "battery",
+        {
+            id: "battery",
+            path: "./topics/visualizer/basic/basicGraph",
+            params: {
+                dataset: "data",
+                title: "Battery Voltage",
+                min: 0,
+                max: 100,
+                single: true
+            },
+            name: "Battery Voltage",
+            description: "Battery Voltage visualizer, display battery voltage data",
+            types: ["*"],
+            topics: ["/voltage"]
+        }
+    ],
+    [
+        "battery_level",
+        {
+            id: "battery_level",
+            path: "./topics/visualizer/basic/basicProgress",
+            params: {
+                dataset: "data",
+                title: "Battery Voltage",
+                max: 100,
+            },
+            name: "Battery Voltage indicator",
+            description: "Battery Voltage visualizer, display battery voltage data",
+            types: ["*"],
+            topics: ["/voltage"]
+        }
+    ],
+    [
         "emiPulse",
         {
             id: "emiPulse",
