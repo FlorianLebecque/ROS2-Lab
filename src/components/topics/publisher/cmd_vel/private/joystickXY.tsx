@@ -1,11 +1,24 @@
 import { usePublisher } from "@/components/topics/topicPublisher";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Joystick, JoystickShape } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
 
 export default function JoystickXY(props: { topicName: string, lock_x: boolean, lock_y: boolean, map_x_to: string, map_y_to: string, factor_x: number, factor_y: number }) {
 
     const [max_speed, set_max_speed] = useState<number>(20);
+    const [cmd_vel_data, set_cmd_vel_data] = useState<any>({
+        linear: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        angular: {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+    });
+    const [publishing, set_publishing] = useState<boolean>(false);
     const { publish } = usePublisher();
 
     /*
@@ -41,7 +54,13 @@ export default function JoystickXY(props: { topicName: string, lock_x: boolean, 
         cmd_vel_data[linear_or_angular][axis] = value;
     }
 
+    const startMove = (event: IJoystickUpdateEvent) => {
+        set_publishing(true);
+    }
 
+    const stopMove = (event: IJoystickUpdateEvent) => {
+        set_publishing(false);
+    }
 
     const handleMove = (event: IJoystickUpdateEvent) => {
         let { x, y } = event;
@@ -71,19 +90,35 @@ export default function JoystickXY(props: { topicName: string, lock_x: boolean, 
         y *= max_speed / 100;
 
         // forward is x in ros2
-        console.log("x: ", x, "factor_x: ", props.factor_x, "map_x_to: ", props.map_x_to);
 
         update_cmd_vel_from_value(x * props.factor_x, cmd_vel_data, props.map_x_to);
         update_cmd_vel_from_value(y * props.factor_y, cmd_vel_data, props.map_y_to);
 
-        console.log("cmd_vel_data: ", cmd_vel_data);
+        set_cmd_vel_data(cmd_vel_data);
 
-        publish(cmd_vel_data);
     }
 
     const handleSliderChange = (event: any) => {
         set_max_speed(event.target.value);
     }
+
+    useEffect(() => {
+
+        const publish_to_topic = () => {
+
+            if (publishing) {
+                publish(cmd_vel_data);
+            }
+
+        }
+
+        const interval = setInterval(publish_to_topic, 16);
+
+        return () => {
+            clearInterval(interval);
+        }
+
+    }, [publishing, cmd_vel_data])
 
     const get_lock_axis = () => {
         if (props.lock_x) {
@@ -101,7 +136,7 @@ export default function JoystickXY(props: { topicName: string, lock_x: boolean, 
         <div className="d-flex flex-column justify-content-center align-items-center gap-3" style={{ height: "100%" }}>
             <p>{max_speed}%</p>
             <input onChange={handleSliderChange} type="range" min="1" max="100" defaultValue={20} />
-            <Joystick throttle={16} controlPlaneShape={get_lock_axis()} size={100} sticky={false} baseColor="#778899" stickColor="#b2cbe5" move={handleMove} />
+            <Joystick controlPlaneShape={get_lock_axis()} size={100} sticky={false} baseColor="#778899" stickColor="#b2cbe5" move={handleMove} start={startMove} stop={stopMove} />
         </div>
     )
 }
