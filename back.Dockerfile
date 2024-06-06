@@ -18,10 +18,12 @@ RUN apt-get update -y && apt-get install -y \
     libpdal-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/
 
-RUN echo hello
+#RUN git clone --recursive --branch ros2 https://github.com/RobotWebTools/rosbridge_suite.git /ws_rosbridge/src/rosbridge_suite
+RUN git clone --recursive --branch=ros2     https://github.com/FlorianLebecque/rosbridge_suite.git      /ws_rosbridge/src/rosbridge_suite
+RUN git clone --recursive                   https://github.com/FlorianLebecque/ROS2CustomMSGCompil.git  /ws_rosbridge/src/ROS2CustomMSGCompil
+RUN git clone --recursive --branch=humble   https://github.com/ros-planning/navigation_msgs.git         /ws_rosbridge/src/navigation_msgs
+RUN git clone --recursive --branch=ros2     https://github.com/ros-perception/pcl_msgs.git              /ws_rosbridge/src/pcl_msgs
 
-RUN git clone --recursive --branch ros2 https://github.com/RobotWebTools/rosbridge_suite.git /ws_rosbridge/src/rosbridge_suite
-RUN git clone --recursive https://github.com/FlorianLebecque/ROS2CustomMSGCompil.git /ws_rosbridge/src/ROS2CustomMSGCompil
 
 RUN cd /ws_rosbridge &&\
     source /opt/ros/${ROS_DISTRO}/setup.bash &&\
@@ -34,11 +36,11 @@ RUN cd /ws_rosbridge &&\
     && rosdep install -i --from-path src --rosdistro ${ROS_DISTRO} -y \
     && colcon build
 
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y python3-pip \
-    ros-$ROS_DISTRO-rmw-cyclonedds-cpp
+# RUN apt-get update && apt-get upgrade -y
+# RUN apt-get install -y python3-pip \
+#     ros-$ROS_DISTRO-rmw-cyclonedds-cpp
 
-ENV RMW_IMPLEMENTATION rmw_cyclonedds_cpp
+# ENV RMW_IMPLEMENTATION rmw_cyclonedds_cpp
 
 EXPOSE 9090
 

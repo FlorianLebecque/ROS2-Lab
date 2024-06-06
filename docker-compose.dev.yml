@@ -26,5 +26,5 @@ services:
     ipc: host
     pid: host
     command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml
-    environment:
-      - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
+    # environment:
+    #   - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
