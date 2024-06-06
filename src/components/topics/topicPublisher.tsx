@@ -1,5 +1,5 @@
 import { useRosWeb } from '@/components/RosContext';
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
 
 
 interface TopicPublisherContextValue {
@@ -11,26 +11,36 @@ const TopicPublisherContext = createContext<TopicPublisherContextValue>({
 });
 
 
-const TopicPublisher: React.FC<{ children: React.ReactNode; topicName: string, topicType: string }> = ({
+export const TopicPublisher: React.FC<{ children: React.ReactNode; topicName: string, topicType: string }> = ({
     children,
     topicName,
     topicType
 }) => {
     const rosWeb = useRosWeb(); // Assuming useRosWeb provides ROS access
 
-    let publish = (message: any) => { };
+    const topicPublisherRef = useRef<any>();
+
+    const publish = (message: any) => {
+
+        if (topicPublisherRef.current) {
+            topicPublisherRef.current.advertise();
+
+            topicPublisherRef.current.publish(message);
+        }
+    };
 
     useEffect(() => {
 
         if (rosWeb && topicName && topicType) {
-            const topicPublisher = rosWeb.CreateTopicPublisher(topicName, topicType);
 
-            publish = (message: any) => {
-                topicPublisher.publish(message);
+            if (!topicPublisherRef.current) {
+                topicPublisherRef.current = rosWeb.CreateTopicPublisher(topicName, topicType);
             }
 
             return () => {
-                topicPublisher.unadvertise();
+                if (topicPublisherRef.current) {
+                    topicPublisherRef.current.unadvertise();
+                }
             }
         }
 
