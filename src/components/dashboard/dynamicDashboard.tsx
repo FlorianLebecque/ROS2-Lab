@@ -12,12 +12,15 @@ import { useSettings } from '@/utils/SettingsProvider';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export function Clear(props: { robot: string }) {
-    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
+export function Clear(props: { robot: string, checkHidden: () => boolean }) {
+    const { setLayout, setBoxes, setNextBoxId } = useDashboard();
     const { settings, setSettings, saveSettings } = useSettings();
 
     const clearDashboard = () => {
 
+        if (props.checkHidden()) {
+            return;
+        }
         // ask for confirmation
         if (!window.confirm("Are you sure you want to clear the dashboard?")) return;
 

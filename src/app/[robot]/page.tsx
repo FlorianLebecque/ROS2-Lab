@@ -24,7 +24,14 @@ export default function Page({ params }: { params: { robot: string } }) {
 
     const currentRobot = params.robot;
 
+    const checkHidden = (): boolean => {
+        return hidden;
+    }
+
     const OpenDialog = (dialogId: string) => {
+        if (checkHidden()) {
+            return;
+        }
         const dialog = document.getElementById(dialogId) as HTMLDialogElement;
         dialog?.showModal();
         HideShow();
@@ -71,7 +78,7 @@ export default function Page({ params }: { params: { robot: string } }) {
             <DashboardProvider>
                 <div className={style.addContainer + " d-flex flex-column justify-content-center align-items-center gap-3"}>
                     <div className='d-flex flex-column justify-content-center align-items-stretch gap-3'>
-                        <Clear robot={params.robot} />
+                        <Clear checkHidden={checkHidden} robot={params.robot} />
 
                         {Dialogs.map(dialog => (
                             <button key={dialog.dialog_id + dialog.btn_name} onClick={() => OpenDialog(dialog.dialog_id)} name="category" className={style.catbtn + " hide btn btn-outline-primary"}>{dialog.btn_name}</button>
