@@ -13,8 +13,8 @@ services:
       - WATCHPACK_POLLING=true
     volumes:
       - ./webapp:/app
-      - ./webapp:/app/node_modules
-      - ./webapp:/app/.next
+      - /app/node_modules
+      - /app/.next
   websocket:
     container_name: summitxl_websocket
     build:
