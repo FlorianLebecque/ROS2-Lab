@@ -18,7 +18,6 @@ COPY ./webapp/package.json .
 COPY ./webapp/src ./src
 COPY ./webapp/next.config.mjs .
 COPY ./webapp/tsconfig.json .
-COPY ./webapp/next-env.d.ts .
 COPY ./webapp/.eslintrc.json .
 
 RUN ls -la
