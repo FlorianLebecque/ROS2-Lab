@@ -22,10 +22,11 @@ function MapClickHandler() {
 
 export default function GPSMap(props: { robot: string }) {
 
-    return <MapContainer center={[50.843941, 4.3930369]} zoom={20} scrollWheelZoom={true}>
+    return <MapContainer center={[0, 0]} zoom={10} scrollWheelZoom={true}>
         <MapClickHandler />
 
         <TileLayer
+            maxZoom={25} maxNativeZoom={20}
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <RobotMarker robot={props.robot} />

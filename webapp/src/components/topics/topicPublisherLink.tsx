@@ -1,7 +1,5 @@
 import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
 import { IVisualizerDefinition } from "./topicVisualizerLink";
-import { map } from "leaflet";
-
 
 // Path relative to src/components/DynamicFactory.tsx
 export const publishers: Map<string, IVisualizerDefinition> = new Map([
@@ -9,7 +7,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel",
         {
             id: "cmd_vel",
-            path: "./topics/publisher/cmd_vel/cmd_vel",
+            path: "./topics/publisher/cmd_vel/JoystickCmdVel",
             name: "Joystick 2D differential drive",
             params: {
                 lock_x: false,
@@ -28,7 +26,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel_forward_x",
         {
             id: "cmd_vel_forward_x",
-            path: "./topics/publisher/cmd_vel/cmd_vel",
+            path: "./topics/publisher/cmd_vel/JoystickCmdVel",
             name: "Joystick Verticl forward",
             params: {
                 lock_x: true,
@@ -47,7 +45,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel_angular_z",
         {
             id: "cmd_vel_angular_z",
-            path: "./topics/publisher/cmd_vel/cmd_vel",
+            path: "./topics/publisher/cmd_vel/JoystickCmdVel",
             name: "Joystick Horizontal rotation",
             params: {
                 lock_x: false,
@@ -58,6 +56,17 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
                 factor_y: 0
             },
             description: "Simple Joystick controller",
+            types: ["geometry_msgs/msg/Twist"],
+            topics: ["*"]
+        },
+    ],
+    [
+        "cmd_vel_button_zero",
+        {
+            id: "cmd_vel_button_zero",
+            path: "./topics/publisher/cmd_vel/ButtonCmdVelZero",
+            name: "Button Zero",
+            description: "Button when pressed publishes zero velocity",
             types: ["geometry_msgs/msg/Twist"],
             topics: ["*"]
         },

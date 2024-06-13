@@ -28,21 +28,21 @@ export default function Page({ params }: { params: { robot: string } }) {
         return hidden;
     }
 
-    const OpenDialog = (dialogId: string) => {
+    const handleOpenDialogBtn = (dialogId: string) => {
         if (checkHidden()) {
             return;
         }
         const dialog = document.getElementById(dialogId) as HTMLDialogElement;
         dialog?.showModal();
-        HideShow();
+        hideShowBtns();
     }
 
     // display categories buttons when click on the add button
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        HideShow();
+    const handleBtnHideShow = (e: React.MouseEvent<HTMLButtonElement>) => {
+        hideShowBtns();
     }
 
-    const HideShow = () => {
+    const hideShowBtns = () => {
 
         hidden = !hidden;
 
@@ -68,7 +68,7 @@ export default function Page({ params }: { params: { robot: string } }) {
         }
     }
 
-    const Dialogs: IDialogDefinition[] = [
+    const dialogs: IDialogDefinition[] = [
         PublisherDialogDefinition,
         TopicSubscriberDialogDefinition
     ];
@@ -80,18 +80,18 @@ export default function Page({ params }: { params: { robot: string } }) {
                     <div className='d-flex flex-column justify-content-center align-items-stretch gap-3'>
                         <Clear checkHidden={checkHidden} robot={params.robot} />
 
-                        {Dialogs.map(dialog => (
-                            <button key={dialog.dialog_id + dialog.btn_name} onClick={() => OpenDialog(dialog.dialog_id)} name="category" className={style.catbtn + " hide btn btn-outline-primary"}>{dialog.btn_name}</button>
+                        {dialogs.map(dialog => (
+                            <button key={dialog.dialog_id + dialog.btn_name} onClick={() => handleOpenDialogBtn(dialog.dialog_id)} name="category" className={style.catbtn + " hide btn btn-outline-primary"}>{dialog.btn_name}</button>
                         ))}
                     </div>
-                    <button onClick={handleClick} name="add" className={style.addbtn + " rounded-circle btn btn-primary shade"} style={{ width: "5rem", height: "5rem" }}>
+                    <button onClick={handleBtnHideShow} name="add" className={style.addbtn + " rounded-circle btn btn-primary shade"} style={{ width: "5rem", height: "5rem" }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
                             <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
                         </svg>
                     </button>
                 </div>
                 <div>
-                    {Dialogs.map(dialog => (
+                    {dialogs.map(dialog => (
                         <div key={dialog.dialog_id + "_container"}>{dialog.dialogComponent({ robot: currentRobot })}</div>
                     ))}
                 </div>

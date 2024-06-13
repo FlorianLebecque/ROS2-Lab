@@ -10,6 +10,8 @@ import { useDashboard } from './dashboardContext';
 import DynamicFactory from '@/components/DynamicFactory'
 import { useSettings } from '@/utils/SettingsProvider';
 
+import { jsonObjectToMap, mapToJsonObject } from '@/utils/JsonAndMap';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export function Clear(props: { robot: string, checkHidden: () => boolean }) {
@@ -43,7 +45,7 @@ export function Clear(props: { robot: string, checkHidden: () => boolean }) {
 
 export default function DynamicDashboard(props: { robot: string }) {
 
-    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId, getNextYPosition } = useDashboard();
+    const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId } = useDashboard();
     const { settings, setSettings, saveSettings } = useSettings();
 
     useEffect(() => {
@@ -54,7 +56,7 @@ export default function DynamicDashboard(props: { robot: string }) {
         }
     }, [settings]);
 
-    const removeBox = (id: string, event: any) => {
+    const handleRemoveBoxClick = (id: string, event: any) => {
         event.stopPropagation(); // Stop the propagation of the event
         setLayout(prevLayout => prevLayout.filter(box => box.i !== id)); // Filter out the box from layout
 
@@ -71,21 +73,6 @@ export default function DynamicDashboard(props: { robot: string }) {
         updateSettings(l);
     };
 
-    function mapToJsonObject(map: Map<string, any>) {
-        const jsonObject: any = {};
-        for (const [key, value] of map.entries()) {
-            jsonObject[key] = value;
-        }
-        return jsonObject;
-    }
-
-    function jsonObjectToMap(jsonObject: any) {
-        const map = new Map<string, any>();
-        for (const key in jsonObject) {
-            map.set(key, jsonObject[key]);
-        }
-        return map;
-    }
 
     const updateSettings = (l: any = null) => {
 
@@ -129,7 +116,7 @@ export default function DynamicDashboard(props: { robot: string }) {
                     <div key={box.i} data-grid={box} className={"d-flex card border shadow"}>
                         <div className='d-flex flex-row justify-content-between border-bottom p-1'>
                             <div className={style.dragHandle}>{boxes.get(box.i)?.title}</div>
-                            <button onClick={(e) => removeBox(box.i, e)} className={"btn btn-outline-danger"}>
+                            <button onClick={(e) => handleRemoveBoxClick(box.i, e)} className={"btn btn-outline-danger"}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x" viewBox="0 0 16 16">
                                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                                 </svg>
