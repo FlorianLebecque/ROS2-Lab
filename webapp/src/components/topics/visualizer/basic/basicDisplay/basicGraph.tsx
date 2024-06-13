@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Chart from 'chart.js/auto';
 import { useData } from '../../../topicProvider';
 import { useEffect, useRef } from 'react';
@@ -32,9 +32,28 @@ export default function BasicGraph(props: { name: string, dataset: string, title
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chartRef = useRef<Chart>();
 
+    const [max, setMax] = useState<number>(props.max);
+    const [min, setMin] = useState<number>(props.min);
     // use chart.js to display the pulse data in a line chart with two lines for positive and negative pulses
     // use ref to get the canvas element
 
+    const getMaxAndMinFromDataSet = () => {
+        if (!chartRef.current) return;
+        for (let dataset of chartRef.current.data.datasets) {
+            let max = Math.max(...dataset.data as Array<number>);
+            let min = Math.min(...dataset.data as Array<number>);
+            if (max > props.max) {
+                setMax(max * 1.1);
+            }
+            if (min < props.min) {
+                if (min < 0) {
+                    setMin(min * 1.1);
+                } else {
+                    setMin(min * 0.9);
+                }
+            }
+        }
+    }
 
     useEffect(() => {
 
@@ -96,11 +115,16 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                             dataset.data = subkeyData;
                         }
                     }
+                    getMaxAndMinFromDataSet();
 
                     chartRef.current.data.labels = times;
-
                     chartRef.current.update();
                     chartRef.current.resize();
+                    if (chartRef.current.options && chartRef.current.options.scales && chartRef.current.options.scales.y) {
+                        chartRef.current.options.scales.y.max = max;
+                        chartRef.current.options.scales.y.min = min;
+                    }
+
 
                 } else {
 
@@ -153,7 +177,7 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                                 },
                                 y: {
                                     beginAtZero: true,
-                                    max: props.max,
+                                    max: max,
                                     min: props.min
                                 }
                             },
