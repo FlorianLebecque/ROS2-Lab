@@ -1,10 +1,9 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode, useRef } from 'react';
 
 
 interface ISettingsContext {
 
     settings: any;
-    setSettings: React.Dispatch<React.SetStateAction<any>>;
 
     exportToJson: () => void;
     importFromJson: (json: any) => void;
@@ -15,7 +14,6 @@ interface ISettingsContext {
 const SettingsContext = createContext<ISettingsContext>({
 
     settings: {},
-    setSettings: () => { },
 
     exportToJson: () => { },
     importFromJson: () => { },
@@ -25,18 +23,19 @@ const SettingsContext = createContext<ISettingsContext>({
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
-    const [settings, setSettings] = useState<any>({});
+    //const [settings, setSettings] = useState<any>({});
+    const settingsRef = useRef<any>({});
 
     // Load settings from local storage when component mounts
     useEffect(() => {
         const localSettings = localStorage.getItem('settings');
         if (localSettings) {
-            setSettings(JSON.parse(localSettings));
+            settingsRef.current = JSON.parse(localSettings);
         }
     }, []);
 
     const exportToJson = () => {
-        const json = JSON.stringify(settings);
+        const json = JSON.stringify(settingsRef.current);
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -51,16 +50,20 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
 
     const saveSettings = () => {
-        localStorage.setItem('settings', JSON.stringify(settings));
+        localStorage.setItem('settings', JSON.stringify(settingsRef.current));
     };
 
     const importFromJson = (json: any) => {
-        setSettings(json);
+        settingsRef.current = json;
         saveSettings();
     };
 
+    const settings = () => {
+        return settingsRef.current;
+    }
+
     return (
-        <SettingsContext.Provider value={{ settings, setSettings, saveSettings, exportToJson, importFromJson }}>{children}</SettingsContext.Provider> // Use DashboardContext.Provider instead of DashboardProvider.Provider
+        <SettingsContext.Provider value={{ settings, saveSettings, exportToJson, importFromJson }}>{children}</SettingsContext.Provider> // Use DashboardContext.Provider instead of DashboardProvider.Provider
     );
 };
 

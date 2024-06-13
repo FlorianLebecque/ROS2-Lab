@@ -9,7 +9,7 @@ export default function BasicVisualizer(props: { topic: string, type: string, li
 
     return (
         <TopicProvider topicName={props.topic} >
-            <GPSMapHeatMap robot={settings.robot} />
+            <GPSMapHeatMap robot={settings().robot_name} />
         </TopicProvider>
     );
 }

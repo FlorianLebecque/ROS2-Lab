@@ -16,9 +16,8 @@ import TopicSubscriberDialogDefinition from '@/components/Dialogs/TopicsAdder';
 
 export default function Page({ params }: { params: { robot: string } }) {
 
-    const { settings, setSettings } = useSettings();
-    settings.robot = params.robot;
-    //setSettings(settings);
+    const { settings } = useSettings();
+    settings().robot_name = params.robot;
 
     let hidden = true;
 

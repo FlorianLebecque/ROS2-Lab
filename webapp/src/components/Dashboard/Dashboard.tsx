@@ -16,7 +16,7 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export function Clear(props: { robot: string, checkHidden: () => boolean }) {
     const { setLayout, setBoxes, setNextBoxId } = useDashboard();
-    const { settings, setSettings, saveSettings } = useSettings();
+    const { settings, saveSettings } = useSettings();
 
     const clearDashboard = () => {
 
@@ -30,11 +30,10 @@ export function Clear(props: { robot: string, checkHidden: () => boolean }) {
         setBoxes(new Map());
         setNextBoxId(1);
 
-        settings[props.robot].layout = [];
-        settings[props.robot].boxes = [];
-        settings[props.robot].nextBoxId = 1;
+        settings()[props.robot].layout = [];
+        settings()[props.robot].boxes = [];
+        settings()[props.robot].nextBoxId = 1;
 
-        setSettings(settings);
         saveSettings();
     }
 
@@ -46,15 +45,16 @@ export function Clear(props: { robot: string, checkHidden: () => boolean }) {
 export default function Dashboard(props: { robot: string }) {
 
     const { layout, setLayout, boxes, setBoxes, nextBoxId, setNextBoxId } = useDashboard();
-    const { settings, setSettings, saveSettings } = useSettings();
+    const { settings, saveSettings } = useSettings();
 
     useEffect(() => {
-        if (settings[props.robot]) {
-            setLayout(settings[props.robot].layout);
-            setBoxes(jsonObjectToMap(settings[props.robot].boxes));
-            setNextBoxId(settings[props.robot].nextBoxId);
+
+        if (settings()[props.robot]) {
+            setLayout(settings()[props.robot].layout);
+            setBoxes(jsonObjectToMap(settings()[props.robot].boxes));
+            setNextBoxId(settings()[props.robot].nextBoxId);
         }
-    }, [settings]);
+    }, [settings()]);
 
     const handleRemoveBoxClick = (id: string, event: any) => {
         event.stopPropagation(); // Stop the propagation of the event
@@ -81,23 +81,18 @@ export default function Dashboard(props: { robot: string }) {
             current_layout = l;
         }
 
-        // settings[robot][layout] = layout;
-        // settings[robot][boxes] = boxes;
-
         // check if settings[robot] exists
-        if (!settings[props.robot]) settings[props.robot] = {};
+        if (!settings()[props.robot]) settings()[props.robot] = {};
 
         // update the layout and boxes in the settings, add the robot key if it doesn't exist
-        if (!settings[props.robot].layout) settings[props.robot].layout = [];
-        if (!settings[props.robot].boxes) settings[props.robot].boxes = new Map();
-        if (!settings[props.robot].nextBoxId) settings[props.robot].nextBoxId = 1;
-        console.log(boxes);
+        if (!settings()[props.robot].layout) settings()[props.robot].layout = [];
+        if (!settings()[props.robot].boxes) settings()[props.robot].boxes = new Map();
+        if (!settings()[props.robot].nextBoxId) settings()[props.robot].nextBoxId = 1;
 
-        settings[props.robot].layout = current_layout;
-        settings[props.robot].boxes = mapToJsonObject(boxes);
-        settings[props.robot].nextBoxId = nextBoxId;
+        settings()[props.robot].layout = current_layout;
+        settings()[props.robot].boxes = mapToJsonObject(boxes);
+        settings()[props.robot].nextBoxId = nextBoxId;
 
-        setSettings(settings);
         saveSettings();
     }
 
