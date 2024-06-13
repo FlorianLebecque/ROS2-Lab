@@ -1,5 +1,5 @@
 import React from 'react';
-import BasicTopic from '@/components/topics/basic';
+import BasicTopic from '@/components/Topics/basic';
 import { RosWebProvider } from '@/components/RosContext';
 import BasicService from '@/components/services/basic';
 
