@@ -20,7 +20,7 @@ export default function ControlBar(props: { topicName: string, topicType: string
 
 
     return (
-        <div className='d-flex align-items-center justify-content-between mb-3'>
+        <div className='d-flex flex-wrap align-items-center justify-content-between mb-3'>
             <p>{props.topicName}</p>
             <p>{props.topicType}</p>
 
