@@ -20,8 +20,6 @@ COPY ./webapp/next.config.mjs .
 COPY ./webapp/tsconfig.json .
 COPY ./webapp/.eslintrc.json .
 
-RUN ls -la
-RUN cat package.json
 # Copy available lock file
 #COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
