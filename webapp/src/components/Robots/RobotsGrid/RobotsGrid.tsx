@@ -4,6 +4,7 @@ import { useRosWeb } from '@/components/RosContext';
 
 import Robot from '@/utils/Robot';
 import RobotCart from '../RobotCart/RobotCart';
+import { useSettings } from '@/utils/SettingsProvider';
 
 export default function RobotsGrid() {
 
@@ -11,8 +12,11 @@ export default function RobotsGrid() {
 
     const [robots, setRobots] = useState<Robot[]>([]);
     const [connected, setConnected] = useState(rosWeb.connected);
+    const { settings } = useSettings();
 
     useEffect(() => {
+
+        console.log(settings());
 
         const fetchRobots = async () => {
             try {
@@ -52,7 +56,9 @@ export default function RobotsGrid() {
 
             {connected && robots.length === 0 && <div className="alert alert-warning" role="alert"> No robots found... </div>}
 
-            <RobotCart name="Global Dashboard" />
+            {settings().workspaces && settings().workspaces.map((value: string, index: string) => {
+                return <RobotCart name={value} key={"ws_" + index} />
+            })}
 
             {connected && robots.map((robot, index) => {
                 return <RobotCart key={index} name={robot.name} />
