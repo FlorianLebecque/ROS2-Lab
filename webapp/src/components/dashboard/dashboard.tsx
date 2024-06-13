@@ -9,7 +9,7 @@ import 'react-resizable/css/styles.css';
 import { useRosWeb } from '@/components/RosContext';
 import { TopicProvider } from '../topics/topicProvider';
 import TopicVisualizerFactory from '../topics/topicVisualizerFactory';
-import { exportToJson, handleFileUpload } from './export';
+// import { exportToJson, handleFileUpload } from './export';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -68,7 +68,7 @@ export default function DashboardGrid() {
     }
 
     const ImportLayout = async (e: any) => {
-        const parsedJson = await handleFileUpload(e);
+        // const parsedJson = await handleFileUpload(e);
         LoadLayout(parsedJson.layout, parsedJson.boxContent);
     }
 
