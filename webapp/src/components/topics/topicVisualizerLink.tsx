@@ -40,9 +40,42 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "gpsRTK",
         {
             id: "gpsRTK",
-            path: "./topics/visualizer/gps/rtk",
+            path: "./topics/visualizer/gps/Rtk",
             name: "GPS RTK",
             description: "GPS RTK visualizer, display GPS RTK data",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKList",
+        {
+            id: "gpsRTKList",
+            path: "./topics/visualizer/gps/RtkList",
+            name: "GPS RTK List",
+            description: "GPS RTK List visualizer, display marker for all positions",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKHeat",
+        {
+            id: "gpsRTKHeat",
+            path: "./topics/visualizer/gps/RtkHeat",
+            name: "GPS RTK Heatmap",
+            description: "GPS RTK Heatmap visualizer, display heatmap for all positions",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKHeat",
+        {
+            id: "gpsRTKHeatFiltered",
+            path: "./topics/visualizer/gps/RtkHeatFiltered",
+            name: "GPS RTK Filtered Heatmap",
+            description: "GPS RTK Heatmap visualizer, display heatmap for positions filtered by distance",
             types: ["sensor_msgs/msg/NavSatFix"],
             topics: ["*"]
         }
@@ -153,6 +186,24 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "numberGraph",
+        {
+            id: "numberGraph",
+            path: "./topics/visualizer/basic/basicGraph",
+            params: {
+                dataset: "data",
+                title: "Number",
+                min: 0,
+                max: 10000,
+                single: true
+            },
+            name: "Line graph",
+            description: "Number visualizer, display number data",
+            types: ["std_msgs/msg/Float32"],
+            topics: ["*"]
+        }
+    ],
+    [
         "battery",
         {
             id: "battery",
@@ -194,7 +245,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
             name: "IME Pulse",
             description: "IME Pulse visualizer, display IME pulse data",
             types: ["vmc4_msgs/msg/PulseRaw"],
-            topics: ["ime_pulse_raw"]
+            topics: ["*"]
         }
     ],
     [
@@ -205,7 +256,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
             name: "IME Diode Temp",
             description: "IME Diode Temp visualizer, display IME diode temperature data",
             types: ["std_msgs/msg/String"],
-            topics: ["ime_diode_adc_temperatur"]
+            topics: ["ime/diode/adc/temperature"]
         }
     ],
     [
