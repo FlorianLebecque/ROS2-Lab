@@ -4,8 +4,24 @@ import subprocess
 from typing import List, Optional
 from fastapi import FastAPI
 import asyncio
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+# Set CORS policy
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 bag_info = {}
 bag_folder_path = "./bags"
