@@ -12,6 +12,7 @@
         "@loadable/component": "^5.16.4",
         "@react-three/drei": "^9.105.4",
         "@react-three/fiber": "^8.16.2",
+        "@vgrid/react-leaflet-heatmap-layer": "^4.0.3",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
         "chart.js": "4.4.3",
