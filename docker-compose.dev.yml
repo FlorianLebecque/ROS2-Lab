@@ -35,4 +35,4 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /ssd/bags:./bags
+      - /ssd/bags:/app/bags
