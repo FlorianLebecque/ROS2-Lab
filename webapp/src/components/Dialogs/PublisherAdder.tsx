@@ -1,8 +1,8 @@
-import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
+import IDynamicComponent from "@/utils/interfaces/IDynamicComponent";
 import TwoColumnAdderDialog from "./TwoColumnAdder";
 import { useRosWeb } from "../RosContext";
 import IDialogDefinition from "./DialogDefinition";
-import { TopicPublishersLink } from "../topics/topicPublisherLink";
+import { TopicPublishersLink } from "../Topics/topicPublisherLink";
 
 export function PublisherAdder(props: { robot: string }) {
 
