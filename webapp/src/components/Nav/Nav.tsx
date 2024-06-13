@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useSettings } from '@/utils/SettingsProvider';
 import SettingsDialog from './Dialogs/SettingsDialog';
 import { useNavButtons, IButton } from './NavButtonsProvider';
+import BagsDialog from './Dialogs/BagsDialog';
 
 export default function Nav() {
 
@@ -25,6 +26,8 @@ export default function Nav() {
     return (
         <div>
             <SettingsDialog />
+            <BagsDialog />
+
             <nav className="navbar navbar-light bg-light p-3 mb-3 shade">
                 <Link className={first == "" ? style.active : ""} href="/">Home</Link>
 
