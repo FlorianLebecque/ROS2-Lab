@@ -15,13 +15,14 @@ export default function RobotsGrid() {
     const { settings } = useSettings();
 
     useEffect(() => {
-
-        console.log(settings());
-
         const fetchRobots = async () => {
             try {
                 const robots = await rosWeb.GetRobotsList();
-                setRobots(robots);
+
+                setRobots([...settings().workspaces.map((value: string) => {
+                    return new Robot(rosWeb, value);
+                }), ...robots,
+                ]);
             } catch (error) {
                 console.error("Error fetching robots:", error);
             }
@@ -56,13 +57,10 @@ export default function RobotsGrid() {
 
             {connected && robots.length === 0 && <div className="alert alert-warning" role="alert"> No robots found... </div>}
 
-            {settings().workspaces && settings().workspaces.map((value: string, index: string) => {
-                return <RobotCart name={value} key={"ws_" + index} />
-            })}
-
             {connected && robots.map((robot, index) => {
                 return <RobotCart key={index} name={robot.name} />
             })}
+
 
         </div>
     );
