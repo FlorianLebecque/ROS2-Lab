@@ -1,4 +1,4 @@
-import { usePublisher } from "@/components/topics/topicPublisher";
+import { usePublisher } from "@/components/Topics/topicPublisher";
 import { useEffect, useState } from "react";
 import { Joystick, JoystickShape } from "react-joystick-component";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";

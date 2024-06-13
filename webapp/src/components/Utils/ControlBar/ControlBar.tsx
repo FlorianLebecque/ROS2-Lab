@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useData } from "../../topics/topicProvider";
+import { useData } from "../../Topics/topicProvider";
 
 export default function ControlBar(props: { topicName: string, topicType: string }) {
 

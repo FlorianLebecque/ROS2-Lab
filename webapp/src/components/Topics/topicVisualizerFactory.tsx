@@ -1,5 +1,5 @@
 import React from 'react';
-import BasicDisplay from '@/components/topics/visualizer/basic/basicDisplay/basicDisplay';
+import BasicDisplay from '@/components/Topics/visualizer/basic/basicDisplay/basicDisplay';
 import ImuDataDisplay from './visualizer/imu/imu_data/imu_data';
 import { VideoDisplayJPEG, VideoDisplayUncompressed } from './visualizer/image/videoDisplay/videoDisplay';
 import ThreadHandleDisplay from './visualizer/emi/emi/thread_handle';

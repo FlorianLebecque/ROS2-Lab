@@ -1,4 +1,4 @@
-import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
+import IDynamicComponent from "@/utils/interfaces/IDynamicComponent";
 import { IVisualizerDefinition } from "./topicVisualizerLink";
 
 // Path relative to src/components/DynamicFactory.tsx
@@ -7,7 +7,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel",
         {
             id: "cmd_vel",
-            path: "./topics/publisher/cmd_vel/JoystickCmdVel",
+            path: "./Topics/publisher/cmd_vel/JoystickCmdVel",
             name: "Joystick 2D differential drive",
             params: {
                 lock_x: false,
@@ -26,7 +26,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel_forward_x",
         {
             id: "cmd_vel_forward_x",
-            path: "./topics/publisher/cmd_vel/JoystickCmdVel",
+            path: "./Topics/publisher/cmd_vel/JoystickCmdVel",
             name: "Joystick Verticl forward",
             params: {
                 lock_x: true,
@@ -45,7 +45,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel_angular_z",
         {
             id: "cmd_vel_angular_z",
-            path: "./topics/publisher/cmd_vel/JoystickCmdVel",
+            path: "./Topics/publisher/cmd_vel/JoystickCmdVel",
             name: "Joystick Horizontal rotation",
             params: {
                 lock_x: false,
@@ -64,7 +64,7 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         "cmd_vel_button_zero",
         {
             id: "cmd_vel_button_zero",
-            path: "./topics/publisher/cmd_vel/ButtonCmdVelZero",
+            path: "./Topics/publisher/cmd_vel/ButtonCmdVelZero",
             name: "Button Zero",
             description: "Button when pressed publishes zero velocity",
             types: ["geometry_msgs/msg/Twist"],

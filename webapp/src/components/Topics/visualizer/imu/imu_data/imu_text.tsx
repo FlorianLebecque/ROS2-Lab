@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useData } from "@/components/topics/topicProvider";
+import { useData } from "@/components/Topics/topicProvider";
 import { useFrame } from '@react-three/fiber'; // Hook for animation
 
 import { Text } from '@react-three/drei'

@@ -153,8 +153,6 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                             borderColor: StringToRGB(props.dataset),
                             tension: 0.3
                         });
-
-                        console.log(datasets);
                     }
 
                     chartRef.current = new Chart(ctx, {

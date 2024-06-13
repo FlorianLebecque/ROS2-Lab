@@ -1,6 +1,6 @@
 'use client';
 
-import { useData } from "@/components/topics/topicProvider";
+import { useData } from "@/components/Topics/topicProvider";
 import { useEffect, useRef } from "react";
 import ScrollContainer from "@/components/Utils/ScrollContainer";
 

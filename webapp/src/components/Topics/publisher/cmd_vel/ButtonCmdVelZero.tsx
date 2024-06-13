@@ -1,4 +1,4 @@
-import { TopicPublisher } from "@/components/topics/topicPublisher";
+import { TopicPublisher } from "@/components/Topics/topicPublisher";
 import ButtonZero from "./private/Button";
 
 export default function ButtonCmdVelZero(props: { topic: string, type: string }) {

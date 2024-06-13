@@ -1,6 +1,6 @@
 'use client';
 
-import { useData } from "@/components/topics/topicProvider";
+import { useData } from "@/components/Topics/topicProvider";
 import { cp } from "fs";
 import { useEffect, useRef, useState } from "react";
 

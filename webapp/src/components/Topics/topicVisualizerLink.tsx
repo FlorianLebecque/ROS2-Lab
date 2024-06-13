@@ -12,7 +12,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "basic",
         {
             id: "basic",
-            path: "./topics/visualizer/basic/basic",
+            path: "./Topics/visualizer/basic/basic",
             params: {
                 list: false
             },
@@ -26,7 +26,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "basicList",
         {
             id: "basicList",
-            path: "./topics/visualizer/basic/basic",
+            path: "./Topics/visualizer/basic/basic",
             name: "Basic List",
             params: {
                 list: true
@@ -40,7 +40,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "gpsRTK",
         {
             id: "gpsRTK",
-            path: "./topics/visualizer/gps/Rtk",
+            path: "./Topics/visualizer/gps/Rtk",
             name: "GPS RTK",
             description: "GPS RTK visualizer, display GPS RTK data",
             types: ["sensor_msgs/msg/NavSatFix"],
@@ -51,7 +51,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "gpsRTKList",
         {
             id: "gpsRTKList",
-            path: "./topics/visualizer/gps/RtkList",
+            path: "./Topics/visualizer/gps/RtkList",
             name: "GPS RTK List",
             description: "GPS RTK List visualizer, display marker for all positions",
             types: ["sensor_msgs/msg/NavSatFix"],
@@ -62,7 +62,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "gpsRTKHeat",
         {
             id: "gpsRTKHeat",
-            path: "./topics/visualizer/gps/RtkHeat",
+            path: "./Topics/visualizer/gps/RtkHeat",
             name: "GPS RTK Heatmap",
             description: "GPS RTK Heatmap visualizer, display heatmap for all positions",
             types: ["sensor_msgs/msg/NavSatFix"],
@@ -73,7 +73,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "gpsRTKHeat",
         {
             id: "gpsRTKHeatFiltered",
-            path: "./topics/visualizer/gps/RtkHeatFiltered",
+            path: "./Topics/visualizer/gps/RtkHeatFiltered",
             name: "GPS RTK Filtered Heatmap",
             description: "GPS RTK Heatmap visualizer, display heatmap for positions filtered by distance",
             types: ["sensor_msgs/msg/NavSatFix"],
@@ -84,7 +84,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "pointCloud",
         {
             id: "pointCloud",
-            path: "./topics/visualizer/image/pointCloud",
+            path: "./Topics/visualizer/image/pointCloud",
             name: "Point Cloud",
             description: "Point Cloud visualizer, display Point Cloud data",
             types: ["sensor_msgs/msg/PointCloud2"],
@@ -95,7 +95,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "odom3D",
         {
             id: "odom3D",
-            path: "./topics/visualizer/odom/odom3D",
+            path: "./Topics/visualizer/odom/odom3D",
             name: "Odometry 3D",
             description: "Odometry 3D visualizer, display odometry data in 3D",
             types: ["nav_msgs/msg/Odometry"],
@@ -106,7 +106,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imu3D",
         {
             id: "imu3D",
-            path: "./topics/visualizer/imu/imu3D",
+            path: "./Topics/visualizer/imu/imu3D",
             name: "IMU Data",
             description: "IMU Data visualizer, display IMU data in 3D",
             types: ["sensor_msgs/msg/Imu"],
@@ -117,7 +117,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imuACC",
         {
             id: "imuACC",
-            path: "./topics/visualizer/basic/basicGraph",
+            path: "./Topics/visualizer/basic/basicGraph",
             params: {
                 dataset: "linear_acceleration",
                 title: "IMU Acceleration",
@@ -135,7 +135,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imuORR",
         {
             id: "imuORR",
-            path: "./topics/visualizer/basic/basicGraph",
+            path: "./Topics/visualizer/basic/basicGraph",
             params: {
                 dataset: "orientation",
                 title: "IMU orientation",
@@ -153,7 +153,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imuAVEL",
         {
             id: "imuAVEL",
-            path: "./topics/visualizer/basic/basicGraph",
+            path: "./Topics/visualizer/basic/basicGraph",
             params: {
                 dataset: "angular_velocity",
                 title: "IMU Angular velocity",
@@ -171,7 +171,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "temperature",
         {
             id: "temperature",
-            path: "./topics/visualizer/basic/basicGraph",
+            path: "./Topics/visualizer/basic/basicGraph",
             params: {
                 dataset: "temperature",
                 title: "Temperature",
@@ -189,7 +189,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "numberGraph",
         {
             id: "numberGraph",
-            path: "./topics/visualizer/basic/basicGraph",
+            path: "./Topics/visualizer/basic/basicGraph",
             params: {
                 dataset: "data",
                 title: "Number",
@@ -207,7 +207,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "battery",
         {
             id: "battery",
-            path: "./topics/visualizer/basic/basicGraph",
+            path: "./Topics/visualizer/basic/basicGraph",
             params: {
                 dataset: "data",
                 title: "Battery Voltage",
@@ -225,7 +225,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "battery_level",
         {
             id: "battery_level",
-            path: "./topics/visualizer/basic/basicProgress",
+            path: "./Topics/visualizer/basic/basicProgress",
             params: {
                 dataset: "data",
                 title: "Battery Voltage",
@@ -241,7 +241,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "emiPulse",
         {
             id: "emiPulse",
-            path: "./topics/visualizer/emi/pulse",
+            path: "./Topics/visualizer/emi/pulse",
             name: "IME Pulse",
             description: "IME Pulse visualizer, display IME pulse data",
             types: ["vmc4_msgs/msg/PulseRaw"],
@@ -252,7 +252,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "imeDiode",
         {
             id: "imeDiode",
-            path: "./topics/visualizer/emi/diode",
+            path: "./Topics/visualizer/emi/diode",
             name: "IME Diode Temp",
             description: "IME Diode Temp visualizer, display IME diode temperature data",
             types: ["std_msgs/msg/String"],
@@ -263,7 +263,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "jpeg",
         {
             id: "jpeg",
-            path: "./topics/visualizer/image/jpeg",
+            path: "./Topics/visualizer/image/jpeg",
             name: "Video Display JPEG",
             description: "Video Display JPEG visualizer, display video stream in JPEG format",
             types: ["sensor_msgs/msg/CompressedImage"],
@@ -274,7 +274,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         "uncompressed",
         {
             id: "uncompressed",
-            path: "./topics/visualizer/image/uncompressed",
+            path: "./Topics/visualizer/image/uncompressed",
             name: "Video Display Uncompressed",
             description: "Video Display Uncompressed visualizer, display video stream in uncompressed format",
             types: ["sensor_msgs/msg/Image"],
