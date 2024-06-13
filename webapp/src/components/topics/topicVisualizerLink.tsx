@@ -1,4 +1,4 @@
-import IDynamicComponent from "@/utils/interfaces/iDynamicComponent";
+import IDynamicComponent from "@/utils/interfaces/IDynamicComponent";
 
 
 export interface IVisualizerDefinition extends IDynamicComponent {
@@ -194,7 +194,7 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
                 dataset: "data",
                 title: "Number",
                 min: 0,
-                max: 10000,
+                max: 0,
                 single: true
             },
             name: "Line graph",
