@@ -34,3 +34,5 @@ services:
       dockerfile: Dockerfile.bagapi
     restart: unless-stopped
     network_mode: host
+    volumes:
+      - /ssd/bags:./bags
