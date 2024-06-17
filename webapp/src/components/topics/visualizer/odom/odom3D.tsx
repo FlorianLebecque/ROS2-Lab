@@ -1,4 +1,4 @@
-import OdomDisplay from "../../display/odom/odom";
+import OdomDisplay from "./odom/odom";
 import { TopicProvider } from "../../topicProvider";
 
 export default function Odom3DVisualizer(props: { topic: string, type: string }) {

@@ -1,4 +1,4 @@
-import BasicGraph from "../../display/basicDisplay/basicGraph";
+import BasicGraph from "./basicDisplay/basicGraph";
 import { TopicProvider } from "../../topicProvider";
 
 export default function BasicGraphVisualizer(props: { topic: string, type: string, dataset: string, title: string, min: number, max: number, single: boolean }) {

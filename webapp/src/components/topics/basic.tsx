@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { TopicProvider } from './topicProvider';
-import ControlBar from './controlbar/controlbar';
+import ControlBar from '../Utils/ControlBar/ControlBar';
 import TopicVisualizerFactory from './topicVisualizerFactory';
 
 export default function BasicTopic(props: { name: string, type: string }) {

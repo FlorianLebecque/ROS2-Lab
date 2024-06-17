@@ -1,10 +1,10 @@
-import { services_description } from '@/utils/interfaces/iservices';
+import { IServices } from '@/utils/interfaces/IServices';
 import React, { useState, useEffect, useRef } from 'react';
 import GetFieldsFromTypeDef from './serviceFieldsGenerator';
 import { useRosWeb } from '@/components/RosContext';
 
 
-const RosDynamicForm = ({ schema, type, name }: { schema: services_description, type: string, name: string }) => {
+const RosDynamicForm = ({ schema, type, name }: { schema: IServices, type: string, name: string }) => {
     const [formElements, setFormElements] = useState<JSX.Element[] | any>([]); // State for generated form elements
     const [result, setResult] = useState<any>(null); // State for service call result
     const formRef = useRef(null);

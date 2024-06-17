@@ -1,5 +1,5 @@
 import { useRosWeb } from "@/components/RosContext";
-import Spinner from "@/components/spinner/Spinner";
+import Spinner from "@/components/Utils/Spinner/Spinner";
 import { Suspense, useEffect, useState } from "react";
 
 const ResquestForm = (props: any) => {

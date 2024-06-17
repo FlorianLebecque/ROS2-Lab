@@ -3,8 +3,8 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 
-import Nav from '../components/nav/nav';
-import Status from "../components/status/status";
+import Nav from '../components/Nav/Nav';
+import Status from "../components/Utils/Status/Status";
 import Wrapper from '@/components/WrapperContext';
 
 export const metadata: Metadata = {

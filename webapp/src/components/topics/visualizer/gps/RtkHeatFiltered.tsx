@@ -2,7 +2,7 @@
 
 import { useSettings } from "@/utils/SettingsProvider";
 import { TopicProvider } from "../../topicProvider";
-import GPSMapHeatMapFiltered from "../../display/gps/RtkmsgHeatmapFiltered";
+import GPSMapHeatMapFiltered from "./gps/RtkmsgHeatmapFiltered";
 
 export default function BasicVisualizer(props: { topic: string, type: string, list: boolean }) {
     const { settings } = useSettings();

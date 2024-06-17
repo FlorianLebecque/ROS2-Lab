@@ -2,7 +2,7 @@
 
 import { RosWebProvider } from '@/components/RosContext';
 import { Suspense } from 'react';
-import Spinner from './spinner/Spinner';
+import Spinner from './Utils/Spinner/Spinner';
 import { SettingsProvider } from '@/utils/SettingsProvider';
 
 export default function Wrapper(props: { children: any }) {

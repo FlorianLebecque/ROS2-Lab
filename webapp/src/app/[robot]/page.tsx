@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import style from './page.module.css';
 
-import { DashboardProvider } from '@/components/dashboard/dashboardContext';
-import DynamicDashboard, { Clear } from '@/components/dashboard/dynamicDashboard';
+import { DashboardProvider } from '@/components/Dashboard/DashboardContext';
+import Dashboard, { Clear } from '@/components/Dashboard/Dashboard';
 import { useSettings } from '@/utils/SettingsProvider';
 
-import IDialogDefinition from '@/components/dialogs/DialogDefinition';
+import IDialogDefinition from '@/components/Dialogs/DialogDefinition';
 
 
-import PublisherDialogDefinition from '@/components/dialogs/PublisherAdder';
-import TopicSubscriberDialogDefinition from '@/components/dialogs/TopicsAdder';
+import PublisherDialogDefinition from '@/components/Dialogs/PublisherAdder';
+import TopicSubscriberDialogDefinition from '@/components/Dialogs/TopicsAdder';
 
 
 export default function Page({ params }: { params: { robot: string } }) {
@@ -44,9 +44,33 @@ export default function Page({ params }: { params: { robot: string } }) {
 
     const hideShowBtns = () => {
 
+        function inc(category_btn_container: any, i: number, length: number) {
+            console.log(i, length, (i + 1) / length + "");
+            category_btn_container.style.opacity = (i + 1) / length + "";
+        }
+
         hidden = !hidden;
 
         const categories = document.getElementsByName("category");
+        const category_btn_container = document.getElementById("dialog_btn_container");
+
+        if (!category_btn_container) {
+            return;
+        }
+
+
+        if (hidden) {
+            // set invisible after animation
+            setTimeout(() => {
+                category_btn_container.style.display = "none";
+                category_btn_container.style.opacity = "0";
+            }, 100 * categories.length);
+
+        } else {
+            // set visible before animation
+            category_btn_container.style.display = "flex";
+            category_btn_container.style.opacity = "0";
+        }
 
         for (let i = 0; i < categories.length; i++) {
 
@@ -63,9 +87,12 @@ export default function Page({ params }: { params: { robot: string } }) {
                 else {
                     category.classList.remove("hide");
                     category.classList.add("display");
+                    inc(category_btn_container, i, categories.length);
                 }
             }, 100 * i);
         }
+
+
     }
 
     const dialogs: IDialogDefinition[] = [
@@ -76,12 +103,12 @@ export default function Page({ params }: { params: { robot: string } }) {
     return (
         <main>
             <DashboardProvider>
-                <div className={style.addContainer + " d-flex flex-column justify-content-center align-items-center gap-3"}>
-                    <div className='d-flex flex-column justify-content-center align-items-stretch gap-3'>
+                <div className={style.addContainer + " d-flex flex-column justify-content-center align-items-center gap-3"} style={{ width: "6rem" }}>
+                    <div id="dialog_btn_container" className='flex-column justify-content-center align-items-stretch gap-3'>
                         <Clear checkHidden={checkHidden} robot={params.robot} />
 
                         {dialogs.map(dialog => (
-                            <button key={dialog.dialog_id + dialog.btn_name} onClick={() => handleOpenDialogBtn(dialog.dialog_id)} name="category" className={style.catbtn + " hide btn btn-outline-primary"}>{dialog.btn_name}</button>
+                            <button key={dialog.dialog_id + dialog.btn_name} onClick={() => handleOpenDialogBtn(dialog.dialog_id)} name="category" className={"hide btn btn-outline-primary"}>{dialog.btn_name}</button>
                         ))}
                     </div>
                     <button onClick={handleBtnHideShow} name="add" className={style.addbtn + " rounded-circle btn btn-primary shade"} style={{ width: "5rem", height: "5rem" }}>
@@ -96,7 +123,7 @@ export default function Page({ params }: { params: { robot: string } }) {
                     ))}
                 </div>
                 <div>
-                    <DynamicDashboard robot={currentRobot} />
+                    <Dashboard robot={currentRobot} />
                 </div>
             </DashboardProvider>
         </main>

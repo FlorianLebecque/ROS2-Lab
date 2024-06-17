@@ -128,3 +128,18 @@ p {
     height: 100%;
     width: 100%;
 }
+
+.react-grid-item>.react-resizable-handle {
+    width: 3rem !important;
+    height: 3rem !important;
+    z-index: 10000;
+}
+
+.react-resizable-handle {
+    background-image: none !important;
+}
+
+.react-grid-item>.react-resizable-handle::after {
+    width: 1rem !important;
+    height: 1rem !important;
+}

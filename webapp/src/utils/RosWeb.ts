@@ -1,7 +1,7 @@
 const ROSLIB = require('roslib');
 import Robot from './Robot';
-import { NodeDetail } from './interfaces/inodes';
-import { TopicDetail } from './interfaces/itopics';
+import { INode } from './interfaces/INode';
+import { ITopic } from './interfaces/ITopic';
 
 
 
@@ -150,7 +150,7 @@ export class RosWebSingleton {
         return false;
     }
 
-    async GetNodeDetails(node: string): Promise<NodeDetail> {
+    async GetNodeDetails(node: string): Promise<INode> {
 
         if (!await this.NodeExist(node)) {
             return {

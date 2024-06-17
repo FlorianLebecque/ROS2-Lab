@@ -1,4 +1,4 @@
-import PulseRaw from "../../display/emi/PulseRaw";
+import PulseRaw from "./emi/PulseRaw";
 import { TopicProvider } from "../../topicProvider";
 
 export default function EMIPulseVisualizer(props: { topic: string, type: string }) {

@@ -1,5 +1,5 @@
-import Spinner from '@/components/spinner/Spinner';
-import { services_description } from '@/utils/interfaces/iservices';
+import Spinner from '@/components/Utils/Spinner/Spinner';
+import { IServices } from '@/utils/interfaces/IServices';
 import { Suspense } from 'react';
 import loadable from '@loadable/component';
 import { ErrorBoundary } from "react-error-boundary";
@@ -56,7 +56,7 @@ const GetComponentPathForServiceType = (fieldtype: string): string | null => {
 
 }
 
-const GetFieldsFromTypeDef = (schema: services_description, current_typeDef: any, name: string, type: string) => {
+const GetFieldsFromTypeDef = (schema: IServices, current_typeDef: any, name: string, type: string) => {
 
     let fieldtype = TypeTranslator(current_typeDef.type);
 

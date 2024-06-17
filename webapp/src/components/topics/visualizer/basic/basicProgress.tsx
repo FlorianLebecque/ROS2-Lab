@@ -1,7 +1,7 @@
-import BasicDisplay from "../../display/basicDisplay/basicDisplay";
-import ControlBar from "../../controlbar/controlbar";
+import BasicDisplay from "./basicDisplay/basicDisplay";
+import ControlBar from "../../../Utils/ControlBar/ControlBar";
 import { TopicProvider } from "../../topicProvider";
-import BasicProgress from "../../display/basicDisplay/basicProgress";
+import BasicProgress from "./basicDisplay/basicProgress";
 
 export default function BasicVisualizer(props: { topic: string, type: string, dataset: string, title: string, max: number }) {
 

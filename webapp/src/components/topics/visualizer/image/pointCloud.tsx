@@ -1,4 +1,4 @@
-import PointCloudDisplay from "../../display/point_cloud/point_cloud";
+import PointCloudDisplay from "./point_cloud/point_cloud";
 import { TopicProvider } from "../../topicProvider";
 
 export default function PointCloudVisualizer(props: { topic: string, type: string }) {

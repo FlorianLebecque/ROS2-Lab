@@ -3,7 +3,7 @@
 //import loadable from '@loadable/component';
 import { Suspense } from 'react';
 import { ErrorBoundary } from "react-error-boundary";
-import Spinner from '@/components/spinner/Spinner';
+import Spinner from '@/components/Utils/Spinner/Spinner';
 import IDynamicComponent from '@/utils/interfaces/iDynamicComponent';
 import dynamic from 'next/dynamic';
 
@@ -16,9 +16,7 @@ const DynamicFactory = (dynamicComponent?: IDynamicComponent) => {
     //const dynamicComponentPath = "./interfaces/test";
 
 
-    const VisualizerComponent = dynamic(() => import(`${dynamicComponentPath}`), {
-        loading: () => <Spinner />,
-    });
+    const VisualizerComponent = dynamic(() => import(`${dynamicComponentPath}`));
 
     //const VisualizerComponent = loadable(() => import(`${dynamicComponentPath}`));
 
@@ -34,9 +32,8 @@ const DynamicFactory = (dynamicComponent?: IDynamicComponent) => {
                 </div>
             }
         >
-            <Suspense fallback={<Spinner />}>
-                <VisualizerComponent {...dynamicComponent.params} />
-            </Suspense>
+
+            <VisualizerComponent {...dynamicComponent.params} />
         </ErrorBoundary>
     );
 

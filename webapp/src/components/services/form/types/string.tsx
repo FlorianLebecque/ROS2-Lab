@@ -1,6 +1,6 @@
-import { services_description } from "@/utils/interfaces/iservices";
+import { IServices } from "@/utils/interfaces/IServices";
 
-const StringField = ({ fieldname, fieldtype, schema, handleChange }: { fieldname: string, fieldtype: string, schema: services_description, handleChange: any }) => {
+const StringField = ({ fieldname, fieldtype, schema, handleChange }: { fieldname: string, fieldtype: string, schema: IServices, handleChange: any }) => {
     return (
         <div className="input-group mb-3" key={fieldname}>
             <span className="input-group-text">{fieldname}</span>

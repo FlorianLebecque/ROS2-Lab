@@ -1,4 +1,4 @@
-import NodesGrid from "@/components/nodes/nodes_grid/nodes_grid";
+import NodesGrid from "@/components/Nodes/NodesGrid/NodesGrid";
 
 export default function Diagnostic() {
     return (

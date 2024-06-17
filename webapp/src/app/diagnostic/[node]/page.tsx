@@ -1,5 +1,5 @@
 'use client';
-import NodeDiagnostic from "@/components/nodes/node_diagnostic/node_diagnostic";
+import NodeDiagnostic from "@/components/Nodes/NodeDiagnostic/node_diagnostic";
 
 export default function Page({ params }: { params: { node: string } }) {
 

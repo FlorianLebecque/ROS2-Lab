@@ -1,10 +1,10 @@
 import React from 'react';
-import BasicDisplay from '@/components/topics/display/basicDisplay/basicDisplay';
-import ImuDataDisplay from './display/imu_data/imu_data';
-import { VideoDisplayJPEG, VideoDisplayUncompressed } from './display/videoDisplay/videoDisplay';
-import ThreadHandleDisplay from './display/emi/thread_handle';
-import PulseRaw from './display/emi/PulseRaw';
-import DiodeTemp from './display/emi/DiodeTemp';
+import BasicDisplay from '@/components/topics/visualizer/basic/basicDisplay/basicDisplay';
+import ImuDataDisplay from './visualizer/imu/imu_data/imu_data';
+import { VideoDisplayJPEG, VideoDisplayUncompressed } from './visualizer/image/videoDisplay/videoDisplay';
+import ThreadHandleDisplay from './visualizer/emi/emi/thread_handle';
+import PulseRaw from './visualizer/emi/emi/PulseRaw';
+import DiodeTemp from './visualizer/emi/emi/DiodeTemp';
 
 interface ComponentFactoryProps {
     topicName: string;
