@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber'; // Hook for animation
 import { OrbitControls } from '@react-three/drei';
 import OdomDataDisplayMesh from './odom_mesh';
-import OriginMesh from '@/utils/meshes/origin';
+import OriginMesh from '@/utils/meshes/OriginMesh';
 
 export default function OdomDisplay(props: { name: string }) {
 

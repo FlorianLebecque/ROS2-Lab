@@ -4,7 +4,7 @@ import style from './NodeDiagnostic.module.css';
 import React from 'react';
 
 import { useRosWeb } from "@/components/RosContext";
-import { NodeDetail } from "@/utils/interfaces/inodes";
+import { INode } from "@/utils/interfaces/INode";
 import { useState, useEffect } from "react";
 import NodeComponentFactory from './NodeComponentFactory';
 
@@ -14,7 +14,7 @@ export default function NodeDiagnostic(props: { name: string }) {
     const { name } = props;
     const rosWeb = useRosWeb();
 
-    const [nodeDetails, setNodeDetails] = useState<NodeDetail>({ subscribers: [], topics: [], services: [] });
+    const [nodeDetails, setNodeDetails] = useState<INode>({ subscribers: [], topics: [], services: [] });
 
     const [activeComponentType, setActiveComponentType] = useState(null as string | null);
     const [activeComponentProp, setActiveComponentProp] = useState(null) as any;
