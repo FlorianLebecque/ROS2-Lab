@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useEffect } from 'react';
 import { useSettings } from '@/utils/SettingsProvider';
 import SettingsDialog from './Dialogs/SettingsDialog';
-import { useNavButtons } from './NavButtonsProvider';
+import { useNavButtons, IButton } from './NavButtonsProvider';
 
 export default function Nav() {
 
@@ -15,25 +15,27 @@ export default function Nav() {
 
     const { buttons } = useNavButtons();
 
-
+    // Ensure buttons have a defined priority
+    const sortedButtons = buttons ? (
+        Array.from(buttons.values()).sort((a: IButton, b: IButton) => {
+            return a.priority - b.priority;
+        })
+    ) : [];
 
     return (
         <div>
+            <SettingsDialog />
             <nav className="navbar navbar-light bg-light p-3 mb-3 shade">
                 <Link className={first == "" ? style.active : ""} href="/">Home</Link>
 
-                {buttons && buttons.map((button, index) => {
-                    return (
-                        <div key={index} className={style.navButton}>
-                            {button}
+                <div className='d-flex gap-3'>
+                    {sortedButtons.map((button, index) => (
+                        <div key={index}>
+                            {button.button}
                         </div>
-                    );
-                })}
-
+                    ))}
+                </div>
             </nav>
-
-            <SettingsDialog />
         </div>
-
     );
 }
