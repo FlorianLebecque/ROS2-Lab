@@ -1,0 +1,81 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "bags",
+    "collectionId": "52229381-5fa1-4741-a879-54e51683f20d",
+    "dateExported": "2024-06-19T11:30:20.523Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "1a788989-be9d-4033-9975-28cd5a0cec22",
+            "colId": "52229381-5fa1-4741-a879-54e51683f20d",
+            "containerId": "",
+            "name": "play",
+            "url": "play_bag/testvel",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-06-14T09:48:33.881Z",
+            "modified": "2024-06-13T16:07:00.222Z",
+            "headers": []
+        },
+        {
+            "_id": "d6adb2a4-abd1-427a-9b8c-e0765ede409e",
+            "colId": "52229381-5fa1-4741-a879-54e51683f20d",
+            "containerId": "",
+            "name": "stop",
+            "url": "stop_bag/test1",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-06-14T09:49:17.707Z",
+            "modified": "2024-06-19T11:12:31.574Z",
+            "headers": []
+        },
+        {
+            "_id": "322c63d4-84cb-4412-b138-e1d27043e3ec",
+            "colId": "52229381-5fa1-4741-a879-54e51683f20d",
+            "containerId": "",
+            "name": "info",
+            "url": "bag_info/",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-06-14T09:49:46.446Z",
+            "modified": "2024-06-14T09:50:01.653Z",
+            "headers": []
+        },
+        {
+            "_id": "ff7f90fc-d4ba-4371-9b09-08b31ce5061e",
+            "colId": "52229381-5fa1-4741-a879-54e51683f20d",
+            "containerId": "",
+            "name": "start",
+            "url": "start_bag/test1",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-06-14T09:50:16.477Z",
+            "modified": "2024-06-19T11:12:19.954Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "[\n  \"/robot/robotnik_base_control/cmd_vel\",\n  \"/robotaa/fix\"\n]",
+                "form": []
+            }
+        },
+        {
+            "_id": "a4ce1818-62f1-4aee-bcb6-4ab5d53adb7b",
+            "colId": "52229381-5fa1-4741-a879-54e51683f20d",
+            "containerId": "",
+            "name": "delete",
+            "url": "delete_bag/testve",
+            "method": "DELETE",
+            "sortNum": 60000,
+            "created": "2024-06-19T11:26:16.854Z",
+            "modified": "2024-06-19T11:30:15.659Z",
+            "headers": []
+        }
+    ],
+    "settings": {
+        "options": {
+            "baseUrl": "192.168.11.112:8000/"
+        }
+    },
+    "ref": "EJxheRWiDOfxZhc0x8wd5-jSymFisbXj-L0BlXmg1xU2SvBQwej58eL246iG4azuxfXcmjXwENyGH0bnt_nFbw"
+}
