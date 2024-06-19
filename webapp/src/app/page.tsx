@@ -5,7 +5,7 @@ import RobotsGrid from "@/components/Robots/RobotsGrid/RobotsGrid";
 
 export default function Home() {
     return (
-        <main>
+        <main className="mt-3">
             <RobotsGrid />
             <WorkSpacesDialog />
         </main>
