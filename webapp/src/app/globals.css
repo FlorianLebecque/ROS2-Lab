@@ -102,6 +102,23 @@ a.btn {
     text-decoration: none !important;
 }
 
+a.btn.btn-outline-success,
+a.btn.btn-outline-danger,
+a.btn.btn-outline-warning,
+a.btn.btn-outline-info,
+a.btn.btn-outline-primary {
+    color: var(--bs-btn-color) !important;
+}
+
+a.btn.btn-outline-success:hover,
+a.btn.btn-outline-danger:hover,
+a.btn.btn-outline-warning:hover,
+a.btn.btn-outline-info:hover,
+a.btn.btn-outline-primary:hover {
+    color: var(--light) !important;
+}
+
+
 p {
     margin: 0;
 }
