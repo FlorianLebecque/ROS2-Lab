@@ -8,6 +8,7 @@ import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 import yaml
+import time
 
 app = FastAPI()
 # Set CORS policy
@@ -44,7 +45,7 @@ async def start_ros_bag(bagName: str, topics: List[str]):
     command = f"source /opt/ros/humble/setup.bash && ros2 bag record -o {bagPath} {topic_args}"
     process = subprocess.Popen(command, shell=True, executable="/bin/bash")
 
-    bag_info[bagName] = {"bagName": bagName, "metadate":None, "pid": process.pid, "status": "recording"}
+    bag_info[bagName] = {"bagName": bagName, "pid": process.pid, "status": "recording"}
     
     return bag_info[bagName]
 
@@ -166,10 +167,10 @@ def LoadMetaData(bagName: str):
     # if metadata is not None, get the starting time and duration of the bag
     if bag_info[bagName]["metadata"] is not None:
 
-        epochWhenStarted = bag_info[bagName]["metadata"]["rosbag2_bagfile_information"]["starting_time"]["nanoseconds_since_epoch"]
+        nanoEpochWhenStarted = bag_info[bagName]["metadata"]["rosbag2_bagfile_information"]["starting_time"]["nanoseconds_since_epoch"]
         durationNanoseconds = bag_info[bagName]["metadata"]["rosbag2_bagfile_information"]["duration"]["nanoseconds"]
         # convert the epoch time to human readable time
-        bag_info[bagName]["startDate"] = datetime.datetime.fromtimestamp(epochWhenStarted / 1000000000).strftime('%Y-%m-%d %H:%M:%S')
+        bag_info[bagName]["startDate"] = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime(nanoEpochWhenStarted / 1000000000))
         bag_info[bagName]["durationSeconde"] = durationNanoseconds / 1000000000
     else:
         bag_info[bagName]["startDate"] = None

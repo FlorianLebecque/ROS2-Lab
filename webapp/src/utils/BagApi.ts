@@ -1,5 +1,10 @@
 import IBagInfo from "./interfaces/IBagInfo";
 
+export interface IBagApiResponse {
+    code: number,
+    message: string,
+}
+
 export default class BagAPI {
     static PORT = 8000
 
@@ -18,6 +23,7 @@ export default class BagAPI {
     static async getBags(): Promise<IBagInfo[]> {
 
         if (typeof window === 'undefined') {
+            console.error("Cannot fetch bags from server, window is undefined");
             return [];
         }
 
@@ -32,48 +38,119 @@ export default class BagAPI {
 
         // if empty, return empty array
         if (data.length === 0) {
+            console.log("No bags found")
             return [];
         }
 
         // check if data is not an empty object
         if (Object.keys(data).length === 0 && data.constructor === Object) {
+            console.log("No bags found in data object")
             return [];
         }
-
-        // convert to an array of IBagInfo
-        /*
-            {
-                "50": {
-                    "bag_name": "test2",
-                    "topics": [
-                        "/robot/robotnik_base_control/cmd_vel"
-                    ],
-                    "pid": 50,
-                    "status": "stopped"
-                },
-                "71": {
-                    "bag_name": "testvel",
-                    "topics": [
-                        "/robot/robotnik_base_control/cmd_vel"
-                    ],
-                    "pid": 71,
-                    "status": "stopped"
-                }
-            }
-        */
 
         let bags: IBagInfo[] = [];
 
         for (let key in data) {
             bags.push({
-                bag_name: data[key].bag_name,
-                topics: data[key].topics,
+                bagName: data[key].bagName,
+                metadata: data[key].metadata,
                 pid: data[key].pid,
-                status: data[key].status
+                status: data[key].status,
+                size: data[key].size,
+                startDate: data[key].startDate,
+                durationSeconde: data[key].durationSeconde
             } as IBagInfo)
         }
 
         return bags;
+
+    }
+
+
+    static async deleteBag(bagName: string): Promise<IBagApiResponse | false> {
+
+        if (typeof window === 'undefined') {
+            console.error("Cannot delete bag from server, window is undefined");
+            return false;
+        }
+
+        const response = await fetch(`${BagAPI.GATEWAY}/delete_bag/${bagName}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            console.error("Failed to delete bag from API");
+            return false;
+        }
+
+        const data = await response.json();
+
+        return data;
+    }
+
+    static async playBag(bagName: string): Promise<IBagApiResponse | false> {
+
+        if (typeof window === 'undefined') {
+            console.error("Cannot play bag from server, window is undefined");
+            return false;
+        }
+
+        const response = await fetch(`${BagAPI.GATEWAY}/play_bag/${bagName}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error("Failed to play bag from API");
+            return false;
+        }
+
+        const data = await response.json();
+
+        return data;
+    }
+
+    static async record(bagName: string, topics: string[]): Promise<IBagApiResponse | IBagInfo | false> {
+        if (typeof window === 'undefined') {
+            console.error("Cannot record bag from server, window is undefined");
+            return false;
+        }
+
+        const response = await fetch(`${BagAPI.GATEWAY}/start_bag/${bagName}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(topics)
+        });
+
+        if (!response.ok) {
+            console.error("Failed to record bag from API");
+            return false;
+        }
+
+        const data = await response.json();
+
+        return data;
+    }
+
+    static async stopRecording(bagName: string): Promise<IBagApiResponse | false> {
+        if (typeof window === 'undefined') {
+            console.error("Cannot stop recording from server, window is undefined");
+            return false;
+        }
+
+        const response = await fetch(`${BagAPI.GATEWAY}/stop_bag/${bagName}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error("Failed to stop recording from API");
+            return false;
+        }
+
+        const data = await response.json();
+
+        return data;
 
     }
 }

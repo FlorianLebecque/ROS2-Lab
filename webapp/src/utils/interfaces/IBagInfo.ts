@@ -1,6 +1,9 @@
 export default interface IBagInfo {
-    bag_name: string,
-    topics: string[],
+    bagName: string,
     pid: number,
     status: string,
+    metadata: any,
+    size: number,
+    startDate: string,
+    durationSeconde: number
 }

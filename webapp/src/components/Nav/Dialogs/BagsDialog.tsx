@@ -1,11 +1,15 @@
 "use client";
-import { useSettings } from "@/utils/SettingsProvider";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useNavButtons } from "../NavButtonsProvider";
 import OpenCloseDialog from "@/components/Utils/OpenCloseDialog";
 import BagAPI from "@/utils/BagApi";
 import IBagInfo from "@/utils/interfaces/IBagInfo";
+import Bag from "@/components/Bags/Bag";
+
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import BagsList from "../Bags/BagsList";
+import BagRecoder from "../Bags/BagRecorder";
 
 function BagsDialogButton() {
 
@@ -22,52 +26,35 @@ function BagsDialogButton() {
 export default function BagsDialog() {
 
     const { AddButton, RemoveButton } = useNavButtons();
-    const [bags, setBags] = useState<IBagInfo[]>([]);
 
     useEffect(() => {
         const btn = <BagsDialogButton />;
         AddButton("bags", btn);
 
-        const fetchBags = async () => {
-            try {
 
-                const bags_from_api = await BagAPI.getBags();
-
-                setBags(bags_from_api);
-
-            } catch (error) {
-                console.error("Error fetching bags:", error);
-            }
-        }
-
-        fetchBags();
-
-        const bagInterval = setInterval(() => {
-            fetchBags();
-        }, 10000)
 
         return () => {
             RemoveButton("bags");
-            clearInterval(bagInterval);
         };
     }, []);
 
     return (
         <dialog className='border p-3 shade rounded' id="bags-dialog">
-            <h1>Bags</h1>
-            <div className='mt-3'>
+            <h1>ROS Bags</h1>
+            <Tabs
+                defaultActiveKey="bags"
+                className="mb-3"
+            >
+                <Tab eventKey="bags" title="ROS Bags">
+                    <BagsList />
+                </Tab>
 
-                {bags.map((bag) => {
-                    return (
-                        <div key={bag.pid} className='border p-2 shade rounded mt-2'>
-                            <h2>{bag.bag_name}</h2>
-                            <p>Topics: {bag.topics.join(", ")}</p>
-                            <p>Status: {bag.status}</p>
-                        </div>
-                    );
-                })}
+                <Tab eventKey="register" title="Record">
+                    <BagRecoder />
+                </Tab>
 
-            </div>
+            </Tabs>
+
         </dialog>
     );
 }
