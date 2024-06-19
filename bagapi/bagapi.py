@@ -1,3 +1,4 @@
+import datetime
 import os
 import signal
 import subprocess
@@ -5,6 +6,8 @@ from typing import List, Optional
 from fastapi import FastAPI
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
+
+import yaml
 
 app = FastAPI()
 # Set CORS policy
@@ -24,70 +27,169 @@ app.add_middleware(
 )
 
 bag_info = {}
-bag_folder_path = "./bags"
+BAG_FOLDER_PATH = "./bags"
 
-@app.post("/start_bag/{bag_name}")
-async def start_ros_bag(bag_name: str, topics: List[str]):
+@app.post("/start_bag/{bagName}")
+async def start_ros_bag(bagName: str, topics: List[str]):
 
-    if not os.path.isdir(bag_folder_path):
-        os.mkdir(bag_folder_path)
+    if not os.path.isdir(BAG_FOLDER_PATH):
+        os.mkdir(BAG_FOLDER_PATH)
 
-    if os.path.isdir(bag_name):
-        return {"message": "Bag with name " + bag_name + " already exists"}
+    bagPath = os.path.join(BAG_FOLDER_PATH, bagName)
+
+    if os.path.isdir(bagPath):
+        return {"code":1,"message": "Bag with name " + bagName + " already exists"}
 
     topic_args = " ".join(topics)
-    command = f"source /opt/ros/humble/setup.bash && ros2 bag record -o {bag_name} {topic_args}"
+    command = f"source /opt/ros/humble/setup.bash && ros2 bag record -o {bagPath} {topic_args}"
     process = subprocess.Popen(command, shell=True, executable="/bin/bash")
 
-    bag_info[process.pid] = {"bag_name": bag_name, "topics": topics, "pid": process.pid, "status": "recording"}
+    bag_info[bagName] = {"bagName": bagName, "metadate":None, "pid": process.pid, "status": "recording"}
     
-    return bag_info[process.pid]
+    return bag_info[bagName]
 
-@app.get("/bag_info/{pid}")
-def get_bag_info(pid: int):
-    if pid in bag_info:
-        return bag_info[pid]
+@app.get("/bag_info/{bagName}")
+def get_bag_info(bagName: str):
+    ScanBags()
+
+    if bagName in bag_info:
+        return bag_info[bagName]
     else:
-        return {"message": "No bag info found for pid " + str(pid)}
+        return {"code":1,"message": f"No bag named {bagName} found"}
 
 @app.get("/bag_info/")
 def get_all_bag_info():
-
-    # scan the bag folder and get all the bag names, check if they already exist in bag_info, if not add them
-    bag_files = os.listdir(bag_folder_path)
-    for bag_name in bag_files:
-        # check if bag_name already exists in bag_info[x]["bag_name"]
-        bag_exists = False
-        for x in bag_info:
-            if bag_info[x]["bag_name"] == bag_name:
-                bag_exists = True
-                break
-        
-        if not bag_exists:
-            bag_info[-len(bag_info)] = {"bag_name": bag_name, "topics": [], "pid": None, "status": "stopped"}
+    ScanBags()
 
     return bag_info
 
-@app.get("/stop_bag/{pid}")
-def stop_ros_bag(pid: int):
+@app.get("/recoring_bags")
+def get_recording_bags():
+    ScanBags()
 
-    if pid not in bag_info:
-        return {"message": "No bag info found for pid " + str(pid)}
-
-    bag_name = bag_info[pid]["bag_name"]
-    bag_info[pid]["status"] = "stopped"
-
-    os.kill(pid, signal.SIGTERM)
-
-    return {"message": "Stopped recording bag with pid " + str(pid) + " and name " + bag_name}
-
-@app.get("/play_bag/{bag_name}")
-def play_bag(bag_name: str):
-
-    # check if bag exist, bag_name is a valid bag folder
-    if not os.path.isdir(bag_name):
-        return {"message": "Bag with name " + bag_name + " not found"}
+    recording_bags = {}
+    for x in bag_info:
+        if bag_info[x]["status"] == "recording":
+            recording_bags[x] = bag_info[x]
     
-    command = f"source /opt/ros/humble/setup.bash && ros2 bag play {bag_name}"
+    return recording_bags
+
+@app.delete("/delete_bag/{bagName}")
+def delete_bag(bagName: str):
+    if bagName not in bag_info:
+        return {"message": f"No bag named {bagName} found"}
+
+    bagPath = os.path.join(BAG_FOLDER_PATH, bagName)
+    if os.path.isdir(bagPath):
+
+        # remove path, the folder is not empty
+        command = f"rm -rf {bagPath}"
+        subprocess.run(command, check=True, shell=True, executable="/bin/bash")
+
+        del bag_info[bagName]
+        return {"code":0,"message": f"Bag with name {bagName} deleted"}
+    else:
+        return {"code":1,"message": f"No bag named {bagName} found"}
+
+@app.get("/stop_bag/{bagName}")
+def stop_ros_bag(bagName: str):
+
+    if bagName not in bag_info:
+        return {"message": f"No bag named {bagName} found"}
+
+
+    bag = bag_info[bagName]
+    if bag["status"] != "recording":
+        return {"code":1,"message": "Bag with name " + bagName + " is not recording"}
+
+    pid = bag["pid"]
+    if pid is None:
+        return {"code":2,"message": "Bag with name " + bagName + " has no pid"}
+
+    # check if the pid is still running
+    try:
+        os.kill(pid, signal.SIGTERM)
+
+        bag_info[bagName]["status"] = "stopped"
+        bag_info[bagName]["pid"] = None
+
+    except OSError:
+        return {"code":3,"message": "Bag with name " + bagName + " is not running"}
+    
+    return {"code":0,"message": "Stopped recording bag with pid " + str(pid) + " and name " + bagName}
+
+@app.get("/play_bag/{bagName}")
+def play_bag(bagName: str):
+
+    bagPath = os.path.join(BAG_FOLDER_PATH, bagName)
+
+    # check if bag exist, bagName is a valid bag folder
+    if not os.path.isdir(bagPath):
+        return {"code":1,"message": "Bag with name " + bagName + " not found"}
+    
+    bagPath = os.path.join(BAG_FOLDER_PATH, bagName)
+
+    bag_info[bagName]["status"] = "playing"
+
+    command = f"source /opt/ros/humble/setup.bash && ros2 bag play {bagPath}"
     subprocess.run(command, check=True, shell=True, executable="/bin/bash")
-    return {"message": f"{bag_name} played successfully"}
+
+    bag_info[bagName]["status"] = "stopped"
+
+    return {"code":0,"message": f"{bagName} played successfully"}
+
+
+def IsBagAlreadyInBagInfo(bagName: str):
+    for x in bag_info:
+        if bag_info[x]["bagName"] == bagName:
+            return True
+    return False
+
+def LoadMetaData(bagName: str):
+    yamlBagPath = os.path.join(BAG_FOLDER_PATH, bagName, "metadata.yaml")
+    if os.path.isfile(yamlBagPath):
+        with open(yamlBagPath, "r") as file:
+            content = file.read()
+
+            # parse the yaml file
+            bag_info[bagName]["metadata"] = yaml.load(content, Loader=yaml.FullLoader)
+    else:
+        bag_info[bagName]["metadata"] = None
+
+
+    bagPath = os.path.join(BAG_FOLDER_PATH, bagName)
+    if os.path.isdir(bagPath):
+        bag_info[bagName]["size"] = os.path.getsize(os.path.join(BAG_FOLDER_PATH, bagName))
+    else:
+        bag_info[bagName]["size"] = None
+
+    # if metadata is not None, get the starting time and duration of the bag
+    if bag_info[bagName]["metadata"] is not None:
+
+        epochWhenStarted = bag_info[bagName]["metadata"]["rosbag2_bagfile_information"]["starting_time"]["nanoseconds_since_epoch"]
+        durationNanoseconds = bag_info[bagName]["metadata"]["rosbag2_bagfile_information"]["duration"]["nanoseconds"]
+        # convert the epoch time to human readable time
+        bag_info[bagName]["startDate"] = datetime.datetime.fromtimestamp(epochWhenStarted / 1000000000).strftime('%Y-%m-%d %H:%M:%S')
+        bag_info[bagName]["durationSeconde"] = durationNanoseconds / 1000000000
+    else:
+        bag_info[bagName]["startDate"] = None
+        bag_info[bagName]["durationSeconde"] = None
+    
+
+def ScanBags():
+    # scan the bag folder and get all the bag names, check if they already exist in bag_info, if not add them
+    bag_files = os.listdir(BAG_FOLDER_PATH)
+
+    for bagName in bag_files:
+        # check if bagName already exists in bag_info[x]["bagName"]
+        if IsBagAlreadyInBagInfo(bagName):
+            LoadMetaData(bagName)
+            continue
+          
+        bag_info[bagName] = {"bagName": bagName, "status": "stopped", "pid":None}
+
+        # get the metadata of the bag file
+        LoadMetaData(bagName)
+
+        # get the size in bytes of the bag file
+    
