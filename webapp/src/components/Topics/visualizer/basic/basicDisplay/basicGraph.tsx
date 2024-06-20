@@ -57,9 +57,7 @@ export default function BasicGraph(props: { name: string, dataset: string, title
 
     useEffect(() => {
 
-        if (!data) return;
-
-        if (canvasRef.current) {
+        if (data && data[data.length - 1] && canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
             if (ctx) {
                 if (chartRef.current) {
@@ -191,14 +189,12 @@ export default function BasicGraph(props: { name: string, dataset: string, title
                         }
                     });
                 }
-
             }
         }
 
-    }, [data]);
+    });
 
     if (!data[data.length - 1]) return (<div>Waiting for data...</div>);
-
 
     return (
         <div>
