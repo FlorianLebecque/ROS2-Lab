@@ -117,7 +117,7 @@ export default function Dashboard(props: { robot: string }) {
                                 </svg>
                             </button>
                         </div>
-                        <div style={{ overflow: "clip" }} className={style.content}>
+                        <div className={style.content}>
                             {DynamicFactory(boxes.get(box.i)?.contentDef)}
                         </div>
                     </div>
