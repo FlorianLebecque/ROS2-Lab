@@ -22,10 +22,9 @@ export default function BagRecoder() {
 
             let finalTopics: string[] = topics_from_ws;
 
-            console.log(filter);
 
             if (filter !== "") {
-                finalTopics.filter((topic) => {
+                finalTopics = finalTopics.filter((topic) => {
                     return topic.includes(filter);
                 });
             }
@@ -56,7 +55,7 @@ export default function BagRecoder() {
             clearInterval(topicInterval);
         }
 
-    }, [filter, recordings]);
+    }, [rosWeb, filter, recordings]);
 
     const onFilterChange = (e: any) => {
         setFilter(e.target.value);
