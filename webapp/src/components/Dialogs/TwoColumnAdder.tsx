@@ -141,7 +141,9 @@ export default function TwoColumnAdderDialog(props: { dialog_id: string, title: 
 
                 dynamicComponentDefinition.params = await props.dynamicComponentParamsSetter(element, dynamicComponentDefinition.params);
 
-                console.log(dynamicComponentDefinition);
+                if (dynamicComponentDefinition.params !== undefined && dynamicComponentDefinition.params.title !== undefined) {
+                    element = dynamicComponentDefinition.params.title;
+                }
 
                 const newBoxContent = {
                     title: element,
