@@ -19,6 +19,7 @@ export default function BagsList() {
     }
     const [to, setTo] = useState<string>(new Date().toISOString().split('T')[0]);
     const [filter, setFilter] = useState<string>("");
+    const [refresh, setRefresh] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchBags = async () => {
@@ -95,7 +96,7 @@ export default function BagsList() {
         return () => {
             clearInterval(bagInterval);
         };
-    }, [from, to, filter]);
+    }, [from, to, filter, refresh]);
 
     const onFilterChange = (e: any) => {
         setFilter(e.target.value);
@@ -107,6 +108,10 @@ export default function BagsList() {
 
     const onToChange = (e: any) => {
         setTo(e.target.value);
+    }
+
+    const onRefreshClick = () => {
+        setRefresh(!refresh);
     }
 
     return (
@@ -121,7 +126,12 @@ export default function BagsList() {
                 <input type="date" defaultValue={from} onChange={onFromChange} className="form-control" />
                 <span className="input-group-text">To</span>
                 <input type="date" defaultValue={to} onChange={onToChange} className="form-control" />
-
+                <button onClick={onRefreshClick} className="btn btn-outline-secondary" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                    </svg>
+                </button>
             </div>
             <div className="d-flex flex-column gap-3">
                 {bags.map((bag) => {
