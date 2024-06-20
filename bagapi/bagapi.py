@@ -4,11 +4,13 @@ import signal
 import subprocess
 from typing import List, Optional
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 import yaml
 import time
+import zipfile
 
 app = FastAPI()
 # Set CORS policy
@@ -140,6 +142,23 @@ def play_bag(bagName: str):
     return {"code":0,"message": f"{bagName} played successfully"}
 
 
+@app.get("/download_bag/{bagName}")
+def download_bag(bagName: str, response_class:FileResponse):
+    bagPath = os.path.join(BAG_FOLDER_PATH, bagName)
+
+    # check if bag exist, bagName is a valid bag folder
+    if not os.path.isdir(bagPath):
+        return {"code":1,"message": "Bag with name " + bagName + " not found"}
+
+    # check if the bag has been compressed
+    if os.path.isfile(bagPath + ".zip"):
+        return FileResponse(bagPath + ".zip")
+
+    # compress the bag folder into a zip file
+    zip_path = compress_folder(bagName)
+
+    return FileResponse(zip_path)
+
 def IsBagAlreadyInBagInfo(bagName: str):
     for x in bag_info:
         if bag_info[x]["bagName"] == bagName:
@@ -175,13 +194,39 @@ def LoadMetaData(bagName: str):
     else:
         bag_info[bagName]["startDate"] = None
         bag_info[bagName]["durationSeconde"] = None
-    
+
+def compress_folder(bag_name):
+
+    zip_file_path = os.path.join(BAG_FOLDER_PATH, bag_name + ".zip")
+    folder_path = os.path.join(BAG_FOLDER_PATH, bag_name)
+
+    # Validate folder path
+    if not os.path.isdir(folder_path):
+        raise ValueError(f"Invalid folder path: {folder_path}")
+
+    # check if the ZIP file already exists
+    if os.path.isfile(zip_file_path):
+        return zip_file_path
+
+    # Create the ZIP file in write mode with compression
+    with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # Add files to the ZIP with relative paths (preserving folder structure)
+                zip_file.write(file_path, os.path.relpath(file_path, folder_path))
+
+    return zip_file_path
 
 def ScanBags():
     # scan the bag folder and get all the bag names, check if they already exist in bag_info, if not add them
     bag_files = os.listdir(BAG_FOLDER_PATH)
 
     for bagName in bag_files:
+        # check if bagName is a folder
+        if not os.path.isdir(os.path.join(BAG_FOLDER_PATH, bagName)):
+            continue
+
         # check if bagName already exists in bag_info[x]["bagName"]
         if IsBagAlreadyInBagInfo(bagName):
             LoadMetaData(bagName)

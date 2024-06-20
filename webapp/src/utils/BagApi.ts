@@ -153,4 +153,34 @@ export default class BagAPI {
         return data;
 
     }
+
+    static async downloadBag(bagName: string) {
+
+        // download the bag file from the server
+        if (typeof window === 'undefined') {
+            console.error("Cannot download bag from server, window is undefined");
+            return false;
+        }
+
+        const response = await fetch(`${BagAPI.GATEWAY}/download_bag/${bagName}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            console.error("Failed to download bag from API");
+            return false;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        // set the filename
+        a.download = bagName + ".zip";
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        return true;
+    }
 }
