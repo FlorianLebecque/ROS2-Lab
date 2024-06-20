@@ -92,10 +92,10 @@ export default function BagRecoder() {
             (document.getElementById("bag-name") as HTMLInputElement).value = "";
 
             // clear checkboxes
-            const checkboxes = document.querySelectorAll(".form-check-input");
-            checkboxes.forEach((checkbox) => {
-                (checkbox as HTMLInputElement).checked = false;
-            });
+            // const checkboxes = document.querySelectorAll(".form-check-input");
+            // checkboxes.forEach((checkbox) => {
+            //     (checkbox as HTMLInputElement).checked = false;
+            // });
 
             // clear filter input
             (document.getElementById("filter-topic") as HTMLInputElement).value = "";
