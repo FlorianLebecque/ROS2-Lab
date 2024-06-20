@@ -13,17 +13,39 @@ export function PublisherAdder(props: { robot: string }) {
     }
 
     const ComponentGetter = async (topicName: string): Promise<IDynamicComponent[]> => {
-        const topicType = await rosWeb.GetTopicType(topicName);
+
+        let topicType = "";
+
+        // if topic name contain | , the right side is the type
+        if (topicName.includes("|")) {
+            const topicNameType = topicName.split("|");
+            topicName = topicNameType[0];
+            topicType = topicNameType[1];
+        } else {
+            topicType = await rosWeb.GetTopicType(topicName);
+        }
+
+        console.log(topicType);
 
         return TopicPublishersLink(topicName, topicType);
     }
 
     const DynamicComponentParamsSetter = async (topicName: string, params: any) => {
 
-        let topicType = await rosWeb.GetTopicType(topicName);
+        let topicType = "";
+
+        // if topic name contain | , the right side is the type
+        if (topicName.includes("|")) {
+            const topicNameType = topicName.split("|");
+            topicName = topicNameType[0];
+            topicType = topicNameType[1];
+        } else {
+            topicType = await rosWeb.GetTopicType(topicName);
+        }
 
         params.topic = topicName;
         params.type = topicType;
+        params.title = topicName;
 
         return params;
     }
