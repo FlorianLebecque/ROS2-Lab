@@ -70,7 +70,18 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
             types: ["geometry_msgs/msg/Twist"],
             topics: ["*"]
         },
-    ]
+    ],
+    [
+        "string_publisher",
+        {
+            id: "string_publisher",
+            path: "./Topics/publisher/string/StringPublisher",
+            name: "String Publisher",
+            description: "Publishes a string",
+            types: ["std_msgs/msg/String"],
+            topics: ["*"]
+        },
+    ],
 ]);
 
 export function TopicPublishersLink(topicName: string, topicType: string): IVisualizerDefinition[] {
