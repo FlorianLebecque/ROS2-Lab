@@ -5,12 +5,12 @@ import L, { LatLng } from "leaflet";
 import Link from "next/link";
 import { useData } from "../../../topicProvider";
 
-export default function RobotMarker(props: { robot: string }) {
+export default function RobotMarker(props: { robot: string, scale?: number }) {
 
     // use map
     const map = useMap();
 
-    const { data, setData, setPause, pause } = useData();
+    const { data } = useData();
 
     const [location, setLocation] = useState([50.843941, 4.3930369]);
 
@@ -28,7 +28,7 @@ export default function RobotMarker(props: { robot: string }) {
     }, [data]);
 
     return (
-        <Marker icon={L.icon({ iconUrl: "https://api.dicebear.com/8.x/bottts/svg?seed=" + props.robot, iconSize: [30, 30] })} position={new LatLng(location[0], location[1])} >
+        <Marker icon={L.icon({ iconUrl: "https://api.dicebear.com/8.x/bottts/svg?seed=" + props.robot, iconSize: [30 * (props.scale || 1), 30 * (props.scale || 1)] })} position={new LatLng(location[0], location[1])} >
             <Popup>
                 <Link className="btn btn-primary" href={"/" + props.robot}> {props.robot} </Link>
             </Popup>
