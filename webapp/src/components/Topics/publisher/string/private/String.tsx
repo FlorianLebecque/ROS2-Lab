@@ -9,7 +9,7 @@ export default function String(props: { topicName: string }) {
 
         publish({ data: input.value });
 
-        input.value = "";
+        //input.value = "";
     }
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
