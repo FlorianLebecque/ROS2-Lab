@@ -59,6 +59,28 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "gpsRTKListBomb",
+        {
+            id: "gpsRTKListBomb",
+            path: "./Topics/visualizer/gps/RtkListBomb",
+            name: "GPS RTK Bomb List",
+            description: "GPS RTK List visualizer, display bomb marker",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKPath",
+        {
+            id: "gpsRTKPath",
+            path: "./Topics/visualizer/gps/RtkPath",
+            name: "GPS RTK Path",
+            description: "GPS RTK path visualizer, display path",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
         "gpsRTKHeat",
         {
             id: "gpsRTKHeat",
@@ -66,6 +88,21 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
             name: "GPS RTK Heatmap",
             description: "GPS RTK Heatmap visualizer, display heatmap for all positions",
             types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKMulti",
+        {
+            id: "gpsRTKMulti",
+            path: "./Topics/visualizer/gps/RtkMultiTopic",
+            name: "Detection Center",
+            description: "Display path, bomb and detection hit",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            params: {
+                position_topic: "/robotaa/fix",
+                detection_topic: "/emi/fix/detection/adaptive_threshold"
+            },
             topics: ["*"]
         }
     ],
