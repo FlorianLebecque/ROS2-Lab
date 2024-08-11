@@ -29,26 +29,26 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
     const [pause, setPause] = useState(false);
     const [lasttopic, setLastTopic] = useState<string | null>(null);
 
-    useEffect(() => {
-        const handleData = (message: any) => {
+    const handleData = (message: any) => {
 
-            // check the header of the message, if it is older than 2 seconds, ignore it
-            if (message.header && message.header.stamp) {
-                const message_time = new Date(message.header.stamp.secs * 1000 + message.header.stamp.nsecs / 1000000);
-                const current_time = new Date();
-                if (current_time.getTime() - message_time.getTime() > 2000) {
-                    return;
-                }
+        // check the header of the message, if it is older than 2 seconds, ignore it
+        if (message.header && message.header.stamp) {
+            const message_time = new Date(message.header.stamp.secs * 1000 + message.header.stamp.nsecs / 1000000);
+            const current_time = new Date();
+            if (current_time.getTime() - message_time.getTime() > 2000) {
+                return;
             }
+        }
 
-            const new_data: DataItem = {
-                time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
-                ros: message,
-            };
-
-            setData((prevData) => [...prevData.slice(-100), new_data]);
+        const new_data: DataItem = {
+            time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+            ros: message,
         };
 
+        setData((prevData) => [...prevData.slice(-100), new_data]);
+    };
+
+    useEffect(() => {
         if (rosWeb && topicName) {
 
             if (pause) {
@@ -76,7 +76,7 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
             };
         }
 
-        setData((prevData) => prevData.slice(-100)); // Keep only last 100 elements
+        // setData((prevData) => prevData.slice(-100)); // Keep only last 100 elements
 
     }, [rosWeb, topicName, pause]); // Dependency on both rosWeb and topicName
 
