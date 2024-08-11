@@ -92,16 +92,66 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
-        "gpsRTKMulti",
+        "gpsRTKFootPrint",
         {
-            id: "gpsRTKMulti",
+            id: "gpsRTKFootPrint",
+            path: "./Topics/visualizer/gps/RtkFootPrint",
+            name: "GPS RTK FootPrint",
+            description: "GPS RTK FootPrint visualizer, display foot print",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            topics: ["*"],
+            params: {
+                title: "GPS RTK FootPrint",
+                position_topic: "/robotaa/fix",
+                emi_avg_topic: "/robotaa/emi/pulse/avg"
+            }
+        }
+    ],
+    [
+        "gpsRTKMultiAdaptive",
+        {
+            id: "gpsRTKMultiAdaptive",
             path: "./Topics/visualizer/gps/RtkMultiTopic",
-            name: "Detection Center",
+            name: "Detection - Adaptive Threshold",
             description: "Display path, bomb and detection hit",
             types: ["sensor_msgs/msg/NavSatFix"],
             params: {
+                title: "Detection - Adaptive Threshold",
                 position_topic: "/robotaa/fix",
-                detection_topic: "/emi/fix/detection/adaptive_threshold"
+                detection_topic: "/emi/fix/detection/adaptive_threshold",
+                emi_avg_topic: "/robotaa/emi/pulse/avg"
+            },
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKMultiDerivative",
+        {
+            id: "gpsRTKMultiDerivative",
+            path: "./Topics/visualizer/gps/RtkMultiTopic",
+            name: "Detection - Derivative",
+            description: "Display path, bomb and detection hit",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            params: {
+                title: "Detection - Derivative",
+                position_topic: "/robotaa/fix",
+                detection_topic: "/emi/fix/detection/derivative"
+            },
+            topics: ["*"]
+        }
+    ],
+    [
+        "gpsRTKMultiDerivativeBand",
+        {
+            id: "gpsRTKMultiDerivativeBand",
+            path: "./Topics/visualizer/gps/RtkMultiTopic",
+            name: "Detection - Derivative Band",
+            description: "Display path, bomb and detection hit",
+            types: ["sensor_msgs/msg/NavSatFix"],
+            params: {
+                title: "Detection - Derivative Band",
+                position_topic: "/robotaa/fix",
+                detection_topic: "/emi/fix/detection/derivative_band"
             },
             topics: ["*"]
         }

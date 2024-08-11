@@ -23,21 +23,13 @@ export default function BasicVisualizer(props: { topic: string, type: string, li
         <MapContainer center={[0, 0]} zoom={18} maxZoom={50} scrollWheelZoom={true}>
             <TileLayer maxZoom={25} maxNativeZoom={20} url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-
-
             <TopicProvider topicName={props.position_topic} >
                 <GPSPath robot={settings().robot_name} />
             </TopicProvider>
 
-            <TopicProvider topicName={props.detection_topic} >
-                <GPSHeat robot={settings().robot_name} />
-            </TopicProvider>
-
-            {/* <TopicProvider topicName={props.position_topic} >
-                <GPSPath robot={settings().robot_name} />
-            </TopicProvider> */}
-
-
+            <MultiTopicProvider topicsNames={topics}>
+                <GPSColorPath robot={settings().robot_name} />
+            </MultiTopicProvider>
 
             <GPSBombList />
         </MapContainer>
