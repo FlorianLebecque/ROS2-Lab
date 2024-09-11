@@ -26,6 +26,15 @@ services:
     ipc: host
     pid: host
     command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml namespace:=${USER}
+    environment:
+      - "ROBOTNAME=${ROBOTNAME}"
+      - "ROS_DOMAIN_ID=4"
+      - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
+      - CYCLONEDDS_URI=file:///cyclone_profile.xml
+    volumes:
+      - /home/robotaa/cyclone_profile.xml:/cyclone_profile.xml
+
+
   bagapi:
     container_name: summitxl_bagapi
     build:
