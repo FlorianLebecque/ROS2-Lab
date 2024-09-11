@@ -1,11 +1,9 @@
-import datetime
 import os
 import signal
 import subprocess
-from typing import List, Optional
+from typing import List
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
-import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 import yaml
@@ -89,6 +87,19 @@ def delete_bag(bagName: str):
         command = f"rm -rf {bagPath}"
         subprocess.run(command, check=True, shell=True, executable="/bin/bash")
 
+        # check if a _csv folder exists, remove it
+        bag_csv_folder = os.path.join(BAG_FOLDER_PATH, bagName + "_csv")
+        if os.path.isdir(bag_csv_folder):
+            command = f"rm -rf {bag_csv_folder}"
+            subprocess.run(command, check=True, shell=True, executable="/bin/bash")
+
+        # check if _csv.zip exists, remove it
+        zip_file_path = os.path.join(bag_csv_folder + ".zip")
+        if os.path.isfile(zip_file_path):
+            command = f"rm -rf {zip_file_path}"
+            subprocess.run(command, check=True, shell=True, executable="/bin/bash")
+
+
         del bag_info[bagName]
         return {"code":0,"message": f"Bag with name {bagName} deleted"}
     else:
@@ -150,12 +161,27 @@ def download_bag(bagName: str, response_class:FileResponse):
     if not os.path.isdir(bagPath):
         return {"code":1,"message": "Bag with name " + bagName + " not found"}
 
-    # check if the bag has been compressed
-    if os.path.isfile(bagPath + ".zip"):
-        return FileResponse(bagPath + ".zip")
+    
+    # get the db3 file path (the bag file name .db3)
+    db3_file = os.path.join(bagPath, bagName + "_0.db3")
+
+    # output folder is the bag folder _csv
+    bagPath_csv = os.path.join(BAG_FOLDER_PATH, bagName + "_csv")
+
+    # check if the zip file already exists
+    zip_file_path = os.path.join(bagPath_csv + ".zip")
+    if os.path.isfile(zip_file_path):
+        return FileResponse(zip_file_path)
+    
+    # convert the bag to csv, then compress the folder
+        # run script bag2csv.py <input> <output>
+    command = f"python3 bag2csv.py {db3_file} {bagPath_csv}"
+    subprocess.run(command, check=True, shell=True, executable="/bin/bash", stdout=subprocess.PIPE)
+
+
 
     # compress the bag folder into a zip file
-    zip_path = compress_folder(bagName)
+    zip_path = compress_folder(bagPath_csv)
 
     return FileResponse(zip_path)
 
@@ -195,14 +221,13 @@ def LoadMetaData(bagName: str):
         bag_info[bagName]["startDate"] = None
         bag_info[bagName]["durationSeconde"] = None
 
-def compress_folder(bag_name):
+def compress_folder(bag_csv_folder: str):
 
-    zip_file_path = os.path.join(BAG_FOLDER_PATH, bag_name + ".zip")
-    folder_path = os.path.join(BAG_FOLDER_PATH, bag_name)
+    zip_file_path = bag_csv_folder + ".zip"
 
     # Validate folder path
-    if not os.path.isdir(folder_path):
-        raise ValueError(f"Invalid folder path: {folder_path}")
+    if not os.path.isdir(bag_csv_folder):
+        raise ValueError(f"Invalid folder path: {bag_csv_folder}")
 
     # check if the ZIP file already exists
     if os.path.isfile(zip_file_path):
@@ -210,11 +235,11 @@ def compress_folder(bag_name):
 
     # Create the ZIP file in write mode with compression
     with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for root, _, files in os.walk(folder_path):
+        for root, _, files in os.walk(bag_csv_folder):
             for file in files:
                 file_path = os.path.join(root, file)
                 # Add files to the ZIP with relative paths (preserving folder structure)
-                zip_file.write(file_path, os.path.relpath(file_path, folder_path))
+                zip_file.write(file_path, os.path.relpath(file_path, bag_csv_folder))
 
     return zip_file_path
 

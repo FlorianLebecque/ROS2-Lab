@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y python3-pip
 RUN pip3 install -r requirements.txt
 
 COPY ./bagapi/bagapi.py ./
+COPY ./bagapi/bag2csv.py ./
 
 
 RUN apt-get update && apt-get upgrade -y
