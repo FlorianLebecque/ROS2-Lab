@@ -23,6 +23,20 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         },
     ],
     [
+        "cmd_vel_keyboard",
+        {
+            id: "cmd_vel_keyboard",
+            path: "./Topics/publisher/cmd_vel/KeyboardCmdVel",
+            name: "Keyboard ZQSD",
+            params: {
+
+            },
+            description: "Simple Keyboard controller",
+            types: ["geometry_msgs/msg/Twist"],
+            topics: ["*"]
+        },
+    ],
+    [
         "cmd_vel_forward_x",
         {
             id: "cmd_vel_forward_x",

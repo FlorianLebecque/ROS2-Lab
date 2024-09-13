@@ -1,0 +1,14 @@
+.key {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    aspect-ratio: 1;
+    text-align: center;
+    border-radius: 0.5rem;
+    border: rgba(0, 0, 0, 0.1) 0.2rem solid;
+}
+
+.key[data-active="true"] {
+    background-color: rgba(0, 155, 0, 0.2);
+    scale: 1.1;
+    transition: 0.1s;
+}
