@@ -54,11 +54,13 @@ const WebrtcRos2VideoStream = (props: { topic: string }) => {
 
                 console.log("Sending offer to server");
 
-                const response = await fetch(`http://${host}:8080/offer?topic='${topic}'`, {
+
+                const response = await fetch(`http://${host}:8080/offer`, {
                     method: 'POST',
                     body: JSON.stringify({
                         sdp: pc.localDescription?.sdp,
                         type: pc.localDescription?.type,
+                        topic: topic,
                     }),
                     headers: {
                         'Content-Type': 'application/json',
