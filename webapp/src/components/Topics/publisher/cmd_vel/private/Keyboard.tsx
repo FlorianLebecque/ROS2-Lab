@@ -6,7 +6,7 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import style from "./keyboard.module.css";
 
 export default function KeyboardControl(props: { topicName: string }) {
-    const [publishing, setPublishing] = useState<boolean>(false);
+    const [enable, setEnable] = useState<boolean>(false);
 
     const [forward, setForward] = useState<boolean>(false);
     const [backward, setBackward] = useState<boolean>(false);
@@ -42,14 +42,14 @@ export default function KeyboardControl(props: { topicName: string }) {
             }
 
             if (left) {
-                x = max_speed / 80;
+                x = max_speed / 100;
             }
 
             if (right) {
-                x = -max_speed / 80;
+                x = -max_speed / 100;
             }
 
-            if (publishing) {
+            if ((forward || backward || left || right) && enable) {
                 publish({
                     linear: {
                         x: y,
@@ -71,21 +71,13 @@ export default function KeyboardControl(props: { topicName: string }) {
 
             if (KEY_MAP["forward"].includes(key) || KEY_MAP["backward"].includes(key) || KEY_MAP["left"].includes(key) || KEY_MAP["right"].includes(key)) {
 
-                setPublishing(true);
-
                 if (KEY_MAP["forward"].includes(key)) {
                     setForward(true);
-                }
-
-                if (KEY_MAP["backward"].includes(key)) {
+                } else if (KEY_MAP["backward"].includes(key)) {
                     setBackward(true);
-                }
-
-                if (KEY_MAP["left"].includes(key)) {
+                } else if (KEY_MAP["left"].includes(key)) {
                     setLeft(true);
-                }
-
-                if (KEY_MAP["right"].includes(key)) {
+                } else if (KEY_MAP["right"].includes(key)) {
                     setRight(true);
                 }
 
@@ -97,33 +89,24 @@ export default function KeyboardControl(props: { topicName: string }) {
             let key = event.key.toUpperCase();
 
             if (KEY_MAP["forward"].includes(key) || KEY_MAP["backward"].includes(key) || KEY_MAP["left"].includes(key) || KEY_MAP["right"].includes(key)) {
-                setPublishing(false);
 
                 if (KEY_MAP["forward"].includes(key)) {
                     setForward(false);
-                }
-
-                if (KEY_MAP["backward"].includes(key)) {
+                } else if (KEY_MAP["backward"].includes(key)) {
                     setBackward(false);
-                }
-
-                if (KEY_MAP["left"].includes(key)) {
+                } else if (KEY_MAP["left"].includes(key)) {
                     setLeft(false);
-                }
-
-                if (KEY_MAP["right"].includes(key)) {
+                } else if (KEY_MAP["right"].includes(key)) {
                     setRight(false);
                 }
 
             }
         };
 
-
-
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
 
-        const interval = setInterval(publishToTopic, 5);
+        const interval = setInterval(publishToTopic, 16);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
@@ -131,10 +114,14 @@ export default function KeyboardControl(props: { topicName: string }) {
 
             clearInterval(interval);
         };
-    }, [publishing, publish]);
+    }, [publish, max_speed, enable, forward, backward, left, right]);
 
     const handleSliderChange = (event: any) => {
         set_max_speed(event.target.value);
+    }
+
+    const checkBoxChange = (event: any) => {
+        setEnable(event.target.checked);
     }
 
     return (
@@ -142,6 +129,10 @@ export default function KeyboardControl(props: { topicName: string }) {
             <div>
                 <p>{max_speed}%</p>
                 <input onChange={handleSliderChange} type="range" min="1" max="500" defaultValue={20} />
+            </div>
+            <div className="form-check form-switch">
+                <input onChange={checkBoxChange} className="form-check-input" type="checkbox" id="keyboardEnable" />
+                <label className="form-check-label" htmlFor="keyboardEnable">Enable</label>
             </div>
             <div className="gap-3" style={{ gridTemplateColumns: "1fr 1fr 1fr", display: "grid", gridTemplateRows: "1fr 1fr" }}>
                 <span></span>
