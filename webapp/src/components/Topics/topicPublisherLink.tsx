@@ -37,6 +37,20 @@ export const publishers: Map<string, IVisualizerDefinition> = new Map([
         },
     ],
     [
+        "cmd_vel_gamepad",
+        {
+            id: "cmd_vel_gamepad",
+            path: "./Topics/publisher/cmd_vel/GamepadCmdVel",
+            name: "Gamepad",
+            params: {
+
+            },
+            description: "Simple gamepad controller",
+            types: ["geometry_msgs/msg/Twist"],
+            topics: ["*"]
+        },
+    ],
+    [
         "cmd_vel_forward_x",
         {
             id: "cmd_vel_forward_x",
