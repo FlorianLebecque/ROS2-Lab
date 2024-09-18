@@ -358,6 +358,17 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "webRTCImage",
+        {
+            id: "webRTCImage",
+            path: "./Topics/visualizer/image/rawWebRTC",
+            name: "Video Display over WebRTC",
+            description: "Video Display JPEG visualizer, display video stream in JPEG format",
+            types: ["sensor_msgs/msg/CompressedImage"],
+            topics: ["*"]
+        }
+    ],
+    [
         "uncompressed",
         {
             id: "uncompressed",
