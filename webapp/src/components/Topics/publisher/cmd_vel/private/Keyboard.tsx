@@ -134,7 +134,7 @@ export default function KeyboardControl(props: { topicName: string }) {
                 <input onChange={checkBoxChange} className="form-check-input" type="checkbox" id="keyboardEnable" />
                 <label className="form-check-label" htmlFor="keyboardEnable">Enable</label>
             </div>
-            <div className="gap-3" style={{ width: "100%", gridTemplateColumns: "1fr 1fr 1fr", display: "grid", gridTemplateRows: "1fr 1fr" }}>
+            <div className="gap-3" style={{ width: "80%", gridTemplateColumns: "1fr 1fr 1fr", display: "grid", gridTemplateRows: "1fr 1fr" }}>
                 <span></span>
                 <span data-active={forward} className={style.key}>Z</span>
                 <span> </span>
