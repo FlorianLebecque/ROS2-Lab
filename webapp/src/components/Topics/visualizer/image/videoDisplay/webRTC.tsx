@@ -23,17 +23,24 @@ const WebrtcRos2VideoStream: React.FC = () => {
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
 
-                // Wait for ICE gathering to complete
+                // Wait for ICE gathering to complete with a timeout
                 await new Promise<void>((resolve) => {
+                    const timeout = setTimeout(() => {
+                        console.warn('ICE gathering timed out');
+                        resolve();
+                    }, 1000); // Adjust timeout as needed
+
                     if (pc.iceGatheringState === 'complete') {
+                        clearTimeout(timeout);
                         resolve();
                     } else {
                         const checkState = () => {
                             if (pc.iceGatheringState === 'complete') {
                                 pc.removeEventListener('icegatheringstatechange', checkState);
+                                clearTimeout(timeout);
                                 resolve();
                             }
-                        };
+                        }
                         pc.addEventListener('icegatheringstatechange', checkState);
                     }
                 });
@@ -77,6 +84,7 @@ const WebrtcRos2VideoStream: React.FC = () => {
             <video
                 id="video"
                 autoPlay
+                muted
                 playsInline
                 ref={videoRef}
                 style={{ width: '100%', height: 'auto' }}
