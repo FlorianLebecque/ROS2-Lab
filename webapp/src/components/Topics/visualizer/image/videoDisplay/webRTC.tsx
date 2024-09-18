@@ -1,9 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 
-const WebrtcRos2VideoStream: React.FC = () => {
+const WebrtcRos2VideoStream = (props: { topic: string }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
 
+    const host = window.location.origin.replace("https://", "").replace("http://", "").split(":")[0];
+
+    const topic = props.topic;
+
     useEffect(() => {
+
+        console.log(host);
+
         const pc = new RTCPeerConnection({
             iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
         });
@@ -47,7 +54,7 @@ const WebrtcRos2VideoStream: React.FC = () => {
 
                 console.log("Sending offer to server");
 
-                const response = await fetch('http://192.168.11.112:8080/offer', {
+                const response = await fetch(`http://${host}:8080/offer?topic='${topic}'`, {
                     method: 'POST',
                     body: JSON.stringify({
                         sdp: pc.localDescription?.sdp,
