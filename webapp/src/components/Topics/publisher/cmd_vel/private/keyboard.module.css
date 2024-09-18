@@ -1,10 +1,13 @@
 .key {
     background-color: rgba(0, 0, 0, 0.1);
-    padding: 2rem;
+    padding: 5%;
+    width: 100%;
     aspect-ratio: 1;
-    text-align: center;
     border-radius: 0.5rem;
     border: rgba(0, 0, 0, 0.1) 0.2rem solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .key[data-active="true"] {
