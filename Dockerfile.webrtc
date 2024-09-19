@@ -1,0 +1,23 @@
+# Use the official ROS2 Docker image as the base image
+FROM ros:humble
+
+WORKDIR /ws_webrtc
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && apt-get install -y python3-pip \
+    ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    ffmpeg \
+    python3-opencv
+
+RUN pip install aiortc aiohttp aiohttp_cors av asyncio numpy
+
+ENV RMW_IMPLEMENTATION rmw_cyclonedds_cpp
+
+EXPOSE 8080
+
+COPY ros_entrypoint2.sh /sbin/ros_entrypoint.sh
+RUN chmod 755 /sbin/ros_entrypoint.sh
+
+ENTRYPOINT ["/sbin/ros_entrypoint.sh"]
+CMD ["bash"]

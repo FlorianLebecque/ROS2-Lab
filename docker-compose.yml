@@ -15,6 +15,7 @@ services:
       - ./webapp:/app
       - ./webapp/node_modules:/app/node_modules
       - ./webapp/.next:/app/.next
+  
   websocket:
     container_name: summitxl_websocket
     build:
@@ -34,6 +35,25 @@ services:
     volumes:
       - /home/robotaa/cyclone_profile.xml:/cyclone_profile.xml
 
+  webrtc:
+    container_name: summitxl_webrtc
+    build:
+      context: . # Build context (optional, defaults to current directory)
+      dockerfile: Dockerfile.webrtc
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    ipc: host
+    pid: host
+    command: python3 webrtc_server.py
+    environment:
+      - "ROBOTNAME=${ROBOTNAME}"
+      - "ROS_DOMAIN_ID=4"
+      - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
+      - CYCLONEDDS_URI=file:///cyclone_profile.xml
+    volumes:
+      - /home/robotaa/cyclone_profile.xml:/cyclone_profile.xml
+      - ./webrtc/webrtc_server.py:/ws_webrtc/webrtc_server.py
 
   bagapi:
     container_name: summitxl_bagapi
