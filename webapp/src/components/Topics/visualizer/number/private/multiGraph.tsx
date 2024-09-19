@@ -1,6 +1,8 @@
 
 import React from 'react';
 import Chart from 'chart.js/auto';
+import { fr } from 'date-fns/locale';
+import 'chartjs-adapter-date-fns';
 
 import { useEffect, useRef } from 'react';
 
@@ -52,8 +54,27 @@ export default function MultiGraph(props: { topics: Map<string, string>, colors:
                 animation: false,
                 scales: {
                     x: {
-                        type: 'linear',
+                        type: 'time',
                         position: 'bottom',
+                        adapters: {
+                            date: {
+                                locale: fr
+                            }
+                        },
+                        time: {
+                            displayFormats: {
+                                millisecond: 'HH:mm:ss.SSS',
+                                second: 'HH:mm:ss.SSS',
+                                minute: 'HH:mm:ss.SSS',
+                                hour: 'HH:mm',
+                                day: 'HH:mm',
+                                week: 'HH:mm',
+                                month: 'HH:mm',
+                                quarter: 'HH:mm',
+                                year: 'HH:mm',
+                            },
+                            unit: 'second',
+                        }
                     },
                 },
             },
