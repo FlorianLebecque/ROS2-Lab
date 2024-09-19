@@ -16,6 +16,8 @@
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
         "chart.js": "4.4.3",
+        "chartjs-adapter-date-fns": "^3.0.0",
+        "date-fns": "^4.1.0",
         "leaflet": "^1.9.4",
         "next": "14.1.4",
         "react": "^18",

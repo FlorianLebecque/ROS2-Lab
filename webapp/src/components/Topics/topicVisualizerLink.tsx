@@ -336,6 +336,52 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "robotaaEmiPulseWDerivative",
+        {
+            id: "robotaaEmiPulseWDerivative",
+            path: "./Topics/visualizer/number/multiTopicGraph",
+            name: "IME Pulse & derivative",
+            description: "IME pulses and derivative",
+            types: ["*"],
+            topics: ["emi/pulse/avg"],
+            params: {
+                title: "IME Pulse and Derivative",
+                topics: {
+                    'derivative': 'robotaa/emi/pulse/derivative',
+                    'avg': 'robotaa/emi/pulse/avg',
+                },
+                colors: {
+                    'derivative': 'rgba(143, 237, 119, 1)',
+                    'avg': 'rgba(237, 139, 119, 1)',
+                }
+            }
+        }
+    ],
+    [
+        "robotaaEmiDerivativeBand",
+        {
+            id: "robotaaEmiDerivativeBand",
+            path: "./Topics/visualizer/number/multiTopicGraph",
+            name: "IME Derivative Bands",
+            description: "IME derivative bands visualizer, display IME derivative bands data",
+            types: ["*"],
+            topics: ["emi/pulse/derivative"],
+            params: {
+                title: "IME Derivative Bands",
+                topics: {
+                    'derivative': 'robotaa/emi/pulse/derivative',
+                    'upper_band': 'robotaa/emi/pulse/derivative_noise_band_upper',
+                    'lower_band': 'robotaa/emi/pulse/derivative_noise_band_lower'
+                },
+                colors: {
+                    'derivative': 'rgba(143, 237, 119, 1)',
+                    'upper_band': 'rgba(237, 139, 119, 1)',
+                    'lower_band': 'rgba(178, 119, 237, 1)'
+                }
+            }
+        }
+    ],
+    [
         "imeDiode",
         {
             id: "imeDiode",

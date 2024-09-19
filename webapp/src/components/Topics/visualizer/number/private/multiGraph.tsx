@@ -51,7 +51,6 @@ export default function MultiGraph(props: { topics: Map<string, string>, colors:
                 datasets: datasets,
             },
             options: {
-                animation: false,
                 scales: {
                     x: {
                         type: 'time',
