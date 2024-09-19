@@ -2,7 +2,7 @@ import { useRosWeb } from '@/components/RosContext';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 interface DataItem {
-    time: string;
+    time: number;
     ros: any;
 }
 
@@ -30,6 +30,7 @@ export const MultiTopicProvider: React.FC<{ children: React.ReactNode; topicsNam
     const [lasttopics, setLastTopics] = useState<Map<string, string> | null>(null);
 
     useEffect(() => {
+
         const handleData = (name: string, message: any) => {
 
             // check the header of the message, if it is older than 2 seconds, ignore it
@@ -42,13 +43,14 @@ export const MultiTopicProvider: React.FC<{ children: React.ReactNode; topicsNam
             }
 
             const new_data: DataItem = {
-                time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+                time: Date.now(),
                 ros: message,
             };
 
             setData((prevData) => {
                 const prevDataCopy = new Map(prevData);
                 const prevDataArray = prevDataCopy.get(name) || [];
+
                 return prevDataCopy.set(name, [...prevDataArray.slice(-100), new_data]);
             });
         };
@@ -65,14 +67,24 @@ export const MultiTopicProvider: React.FC<{ children: React.ReactNode; topicsNam
 
             // key -> name, value -> topic
             const topic_listeners = new Map<string, any>();
+
+
             topicsNames.forEach((topic, name) => {
 
+                // if topic is missong '/' add it to the front
+                if (topic.substring(0, 1) != '/') {
+                    topic = '/' + topic;
+                }
+
                 const handle = (message: any) => {
-                    handleData(name, message);
+                    const topic_name = name;
+                    handleData(topic_name, message);
                 }
 
                 topic_listeners.set(name, rosWeb.SubscribeToTopic(topic, handle));
             });
+
+            console.log(topic_listeners);
 
             setLastTopics(topicsNames);
 
