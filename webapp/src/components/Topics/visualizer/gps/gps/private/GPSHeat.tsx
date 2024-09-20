@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, Marker, Popup, TileLayer, Tooltip, useMapEvents } from "react-leaflet"
+import { MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { useEffect, useState } from "react";
 import L, { LatLng } from "leaflet";
@@ -11,6 +11,8 @@ export default function GPSHeat(props: { robot: string }) {
 
     const { data } = useData();
     const [locations, setLocations] = useState<any>([]);
+
+    const map = useMap();
 
     const HeatmapLayer = HeatmapLayerFactory<[number, number, number]>()
 
@@ -29,6 +31,9 @@ export default function GPSHeat(props: { robot: string }) {
                         return;
                     }
                 }
+
+                // pan to the last location
+                map.panTo(new LatLng(lastData.latitude, lastData.longitude), { animate: true, duration: 1 });
 
                 setLocations([...locations, [lastData.latitude, lastData.longitude]]);
 

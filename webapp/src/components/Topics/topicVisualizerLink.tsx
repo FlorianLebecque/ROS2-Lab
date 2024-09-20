@@ -346,9 +346,10 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
             topics: ["emi/pulse/avg"],
             params: {
                 title: "IME Pulse and Derivative",
+                namespaceExtractor: 'emi', // first part of the topic name -> /robotaa/emi/pulse/avg -> robotaa // allow to extract the namespace from the topic
                 topics: {
-                    'derivative': 'robotaa/emi/pulse/derivative',
-                    'avg': 'robotaa/emi/pulse/avg',
+                    'derivative': '/emi/pulse/derivative',
+                    'avg': '/emi/pulse/avg',
                 },
                 colors: {
                     'derivative': 'rgba(143, 237, 119, 1)',
@@ -368,10 +369,11 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
             topics: ["emi/pulse/derivative"],
             params: {
                 title: "IME Derivative Bands",
+                namespaceExtractor: 'emi', // first part of the topic name
                 topics: {
-                    'derivative': 'robotaa/emi/pulse/derivative',
-                    'upper_band': 'robotaa/emi/pulse/derivative_noise_band_upper',
-                    'lower_band': 'robotaa/emi/pulse/derivative_noise_band_lower'
+                    'derivative': '/emi/pulse/derivative',
+                    'upper_band': '/emi/pulse/derivative_noise_band_upper',
+                    'lower_band': '/emi/pulse/derivative_noise_band_lower'
                 },
                 colors: {
                     'derivative': 'rgba(143, 237, 119, 1)',
