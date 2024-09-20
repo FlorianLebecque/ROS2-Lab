@@ -39,7 +39,7 @@ export default function MultiGraph(props: { topics: Map<string, string>, colors:
                 }) as { x: number; y: any }[],
                 borderColor: props.colors.get(labels[index]),
                 fill: false,
-                tension: 0.3
+                tension: 0
             };
         });
 
@@ -52,6 +52,8 @@ export default function MultiGraph(props: { topics: Map<string, string>, colors:
             },
             options: {
                 animation: false,
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         type: 'time',
