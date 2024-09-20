@@ -291,6 +291,21 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
         }
     ],
     [
+        "fancyNumberGraph",
+        {
+            id: "fancyNumberGraph",
+            path: "./Topics/visualizer/number/multiTopicGraph",
+            params: {
+                topics: {},
+                colors: {},
+            },
+            name: "Fancy line graph",
+            description: "Number visualizer, display number data",
+            types: ["std_msgs/msg/Float32"],
+            topics: ["*"]
+        }
+    ],
+    [
         "battery",
         {
             id: "battery",
@@ -373,7 +388,9 @@ export const visualizers: Map<string, IVisualizerDefinition> = new Map([
                 topics: {
                     'derivative': '/emi/pulse/derivative',
                     'upper_band': '/emi/pulse/derivative_noise_band_upper',
-                    'lower_band': '/emi/pulse/derivative_noise_band_lower'
+                    'lower_band': '/emi/pulse/derivative_noise_band_lower',
+                    'avg_upper_band': '/emi/pulse/derivative_noise_avg_upper',
+                    'avg_lower_band': '/emi/pulse/derivative_noise_avg_lower',
                 },
                 colors: {
                     'derivative': 'rgba(143, 237, 119, 1)',
