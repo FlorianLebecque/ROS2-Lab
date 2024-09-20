@@ -2,7 +2,7 @@ import { useRosWeb } from '@/components/RosContext';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 interface DataItem {
-    time: string;
+    time: number;
     ros: any;
 }
 
@@ -41,7 +41,7 @@ export const TopicProvider: React.FC<{ children: React.ReactNode; topicName: str
         }
 
         const new_data: DataItem = {
-            time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+            time: Date.now(),
             ros: message,
         };
 

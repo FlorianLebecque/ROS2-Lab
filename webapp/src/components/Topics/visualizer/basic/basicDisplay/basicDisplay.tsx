@@ -15,7 +15,7 @@ export default function BasicDisplay(props: { name: string, list: boolean }) {
                 {data.map((message, index) => {
                     return (
                         <div key={index}>
-                            <p>{message.time}</p>
+                            <p>{new Date(message.time).toLocaleString()}</p>
                             <hr />
                             <pre>{JSON.stringify(message.ros, null, 2)}</pre>
                         </div>
@@ -25,7 +25,7 @@ export default function BasicDisplay(props: { name: string, list: boolean }) {
 
             {!list && data[data.length - 1] && (
                 <div>
-                    <p>{data[data.length - 1].time}</p>
+                    <p>{new Date(data[data.length - 1].time).toLocaleString()}</p>
                     <hr />
                     <pre>{JSON.stringify(data[data.length - 1].ros, null, 2)}</pre>
                 </div>
