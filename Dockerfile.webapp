@@ -3,7 +3,8 @@
 # **********
 # base stage
 # **********
-FROM node:20.9.0-alpine AS base
+# Bun 
+FROM oven/bun:latest AS base
 
 WORKDIR /app
 
@@ -21,7 +22,7 @@ COPY ./webapp/tsconfig.json .
 COPY ./webapp/.eslintrc.json .
 
 # Instal dependencies according to the lockfile
-RUN npm i
+RUN bun install
 
 # Disable the telementary
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -33,22 +34,9 @@ FROM deps AS inter
 
 # Copy all other files excluding the ones in .dockerignore
 
-
-# exposing the port
-EXPOSE 3000
-
-# **********
-# prod stage
-# **********
-#FROM inter AS prod
-
-#RUN npm run build
-
-#CMD ["npm", "start"]
-
 # **********
 # dev stage
 # **********
 FROM inter AS dev
 
-CMD ["npm", "run", "dev"]
+CMD ["bun", "--hot", "run", "dev"]
