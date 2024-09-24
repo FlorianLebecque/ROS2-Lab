@@ -15,7 +15,7 @@ services:
       - ./webapp:/app
       - ./webapp/node_modules:/app/node_modules
       - ./webapp/.next:/app/.next
-  
+
   websocket:
     container_name: summitxl_websocket
     build:
@@ -52,8 +52,8 @@ services:
       - "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
       - CYCLONEDDS_URI=file:///cyclone_profile.xml
     volumes:
-      - /home/robotaa/cyclone_profile.xml:/cyclone_profile.xml
-      - ./webrtc/webrtc_server.py:/ws_webrtc/webrtc_server.py
+      - /home/robotaa/cyclone_profile.xml:/cyclone_profile.xml #- ./webrtc/webrtc_server.py:/ws_webrtc/webrtc_server.py
+      - ./webrtc/:/ws_webrtc/
 
   bagapi:
     container_name: summitxl_bagapi
