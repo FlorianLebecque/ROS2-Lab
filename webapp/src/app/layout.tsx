@@ -8,13 +8,17 @@ import Status from "../components/Utils/Status/Status";
 import Wrapper from '@/components/WrapperContext';
 
 export const metadata: Metadata = {
-    title: "SummitXL Labs",
+    title: "ROS2 Labs",
     description: "...",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
     return (
         <html lang="en">
+            <head>
+                <meta charSet="utf-8" />
+                <link rel="icon" href="/favicon.svg" />
+            </head>
             <body>
                 <Wrapper>
                     <Nav />
