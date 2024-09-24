@@ -7,7 +7,7 @@ interface ISettingsContext {
 
     exportToJson: () => void;
     importFromJson: (json: any) => void;
-    saveSettings: () => void;
+    saveSettings: (json: any) => void;
 }
 
 
@@ -17,25 +17,25 @@ const SettingsContext = createContext<ISettingsContext>({
 
     exportToJson: () => { },
     importFromJson: () => { },
-    saveSettings: () => { },
+    saveSettings: (json: any) => { },
 });
 
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
-    //const [settings, setSettings] = useState<any>({});
-    const settingsRef = useRef<any>({});
+    const [settings_store, setSettings] = useState<any>({});
+    //const settingsRef = useRef<any>({});
 
     // Load settings from local storage when component mounts
     useEffect(() => {
         const localSettings = localStorage.getItem('settings');
         if (localSettings) {
-            settingsRef.current = JSON.parse(localSettings);
+            setSettings(JSON.parse(localSettings));
         }
     }, []);
 
     const exportToJson = () => {
-        const json = JSON.stringify(settingsRef.current);
+        const json = JSON.stringify(settings_store);
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -49,17 +49,17 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         a.click();
     };
 
-    const saveSettings = () => {
-        localStorage.setItem('settings', JSON.stringify(settingsRef.current));
+    const saveSettings = (new_settings: any) => {
+        setSettings(new_settings);
+        localStorage.setItem('settings', JSON.stringify(new_settings));
     };
 
     const importFromJson = (json: any) => {
-        settingsRef.current = json;
-        saveSettings();
+        saveSettings(json);
     };
 
     const settings = () => {
-        return settingsRef.current;
+        return settings_store;
     }
 
     return (

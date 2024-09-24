@@ -17,7 +17,6 @@ function WorkSpacesDialogButton() {
 
 function WorkSpaceElement(props: { id: string, value?: string, onDelete: (e: any) => void }) {
     const rosWeb = useRosWeb();
-    const { settings, saveSettings } = useSettings();
 
     const isValid = async (e: HTMLInputElement, value: string): Promise<boolean> => {
         const robots = await rosWeb.GetRobotsList();
@@ -37,14 +36,6 @@ function WorkSpaceElement(props: { id: string, value?: string, onDelete: (e: any
                 return false;
             }
         }
-
-        // check if each key of settings
-        // for (const key in settings()) {
-        //     if (key === value) {
-        //         return false;
-        //     }
-        // }
-
 
         return true
     }
@@ -90,13 +81,15 @@ export default function WorkSpacesDialog() {
 
     useEffect(() => {
 
-        if (settings().workspaces === undefined) {
-            settings().workspaces = [];
+        let cur_settings = settings();
+
+        if (cur_settings.workspaces === undefined) {
+            cur_settings.workspaces = [];
+        } else if (cur_settings.workspaces !== undefined) {
+            setWorkspaces(cur_settings.workspaces);
         }
 
-        if (settings().workspaces !== undefined) {
-            setWorkspaces(settings().workspaces);
-        }
+        saveSettings(cur_settings);
 
         // Code to add button on mount of the component
         AddButton("Workspaces", <WorkSpacesDialogButton />);
@@ -130,15 +123,9 @@ export default function WorkSpacesDialog() {
         newWorkspaces.length = 0;
         unique.forEach((value) => newWorkspaces.push(value));
 
-        // remove all that are a key in settings
-        // for (const key in settings()) {
-        //     if (newWorkspaces.includes(key)) {
-        //         newWorkspaces.splice(newWorkspaces.indexOf(key), 1);
-        //     }
-        // }
-
-        settings().workspaces = newWorkspaces;
-        saveSettings();
+        let cur_settings = settings();
+        cur_settings.workspaces = newWorkspaces;
+        saveSettings(cur_settings);
         setWorkspaces(newWorkspaces);
     }
 

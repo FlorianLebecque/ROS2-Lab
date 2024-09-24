@@ -30,11 +30,13 @@ export function Clear(props: { robot: string, checkHidden: () => boolean }) {
         setBoxes(new Map());
         setNextBoxId(1);
 
-        settings()[props.robot].layout = [];
-        settings()[props.robot].boxes = [];
-        settings()[props.robot].nextBoxId = 1;
+        let cur_settings = settings();
 
-        saveSettings();
+        cur_settings[props.robot].layout = [];
+        cur_settings[props.robot].boxes = [];
+        cur_settings[props.robot].nextBoxId = 1;
+
+        saveSettings(cur_settings);
     }
 
     return (
@@ -89,11 +91,13 @@ export default function Dashboard(props: { robot: string }) {
         if (!settings()[props.robot].boxes) settings()[props.robot].boxes = new Map();
         if (!settings()[props.robot].nextBoxId) settings()[props.robot].nextBoxId = 1;
 
-        settings()[props.robot].layout = current_layout;
-        settings()[props.robot].boxes = mapToJsonObject(boxes);
-        settings()[props.robot].nextBoxId = nextBoxId;
+        let cur_settings = settings();
 
-        saveSettings();
+        cur_settings[props.robot].layout = current_layout;
+        cur_settings[props.robot].boxes = mapToJsonObject(boxes);
+        cur_settings[props.robot].nextBoxId = nextBoxId;
+
+        saveSettings(cur_settings);
     }
 
     return (
