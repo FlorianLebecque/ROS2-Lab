@@ -9,8 +9,6 @@ const WebrtcRos2VideoStream = (props: { topic: string }) => {
 
     useEffect(() => {
 
-        console.log(host);
-
         const pc = new RTCPeerConnection({
             iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
         });
@@ -25,7 +23,6 @@ const WebrtcRos2VideoStream = (props: { topic: string }) => {
 
         const negotiate = async () => {
             try {
-                console.log("Starting negotiation");
 
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
@@ -52,8 +49,6 @@ const WebrtcRos2VideoStream = (props: { topic: string }) => {
                     }
                 });
 
-                console.log("Sending offer to server");
-
 
                 const response = await fetch(`http://${host}:8080/offer`, {
                     method: 'POST',
@@ -72,10 +67,8 @@ const WebrtcRos2VideoStream = (props: { topic: string }) => {
                 }
 
                 const answer = await response.json();
-                console.log("Received answer from server");
 
                 await pc.setRemoteDescription(answer);
-                console.log("Set remote description");
             } catch (error) {
                 console.error("Negotiation failed:", error);
             }
