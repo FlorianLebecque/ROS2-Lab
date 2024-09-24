@@ -16,7 +16,7 @@ const DynamicFactory = (dynamicComponent?: IDynamicComponent) => {
     //const dynamicComponentPath = "./interfaces/test";
 
 
-    const VisualizerComponent = dynamic(() => import(`${dynamicComponentPath}`));
+    const VisualizerComponent = dynamic(() => import(`${dynamicComponentPath}`), { ssr: false });
 
     return (
         <ErrorBoundary
