@@ -9,38 +9,25 @@ export default function Status() {
 
     const rosWeb = useRosWeb();
 
-
     const [connected, setConnected] = useState(false);
     const [time, setTime] = useState("");
 
 
     useEffect(() => {
 
-        const fetchConnectionStatus = () => {
-            setConnected(rosWeb.connected);
-        }
-
-        fetchConnectionStatus();
-
         const interval = setInterval(() => {
-            fetchConnectionStatus();
+            setConnected(rosWeb.connected);
         }, 5000);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, [rosWeb, rosWeb.connected]);
-
-    useEffect(() => {
 
         const timer = setInterval(() => {
             setTime(new Date().toLocaleTimeString());
         }, 1000);
 
+
         return () => {
+            clearInterval(interval);
             clearInterval(timer);
         };
-
     }, []);
 
     return (
