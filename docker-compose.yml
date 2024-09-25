@@ -1,6 +1,6 @@
 services:
   webapp:
-    container_name: summitxl_webapp
+    container_name: ros2_lab_webapp
     network_mode: host
     build:
       context: .
@@ -17,7 +17,7 @@ services:
       - ./webapp/.next:/app/.next
 
   websocket:
-    container_name: summitxl_websocket
+    container_name: ros2_lab_websocket
     build:
       context: . # Build context (optional, defaults to current directory)
       dockerfile: Dockerfile.websocket
@@ -36,7 +36,7 @@ services:
       - /home/robotaa/cyclone_profile.xml:/cyclone_profile.xml
 
   webrtc:
-    container_name: summitxl_webrtc
+    container_name: ros2_lab_webrtc
     build:
       context: . # Build context (optional, defaults to current directory)
       dockerfile: Dockerfile.webrtc
@@ -56,7 +56,7 @@ services:
       - ./webrtc/:/ws_webrtc/
 
   bagapi:
-    container_name: summitxl_bagapi
+    container_name: ros2_lab_bagapi
     build:
       context: . # Build context (optional, defaults to current directory)
       dockerfile: Dockerfile.bagapi
