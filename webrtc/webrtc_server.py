@@ -1,4 +1,3 @@
-
 import asyncio
 import json
 import logging
@@ -53,32 +52,50 @@ class VideoStreamTrack(MediaStreamTrack):
     def __init__(self, image_subscriber):
         super().__init__()
         self.image_subscriber = image_subscriber
+        self.queue = asyncio.Queue(maxsize=1)
+        # Get the event loop
+        self.loop = asyncio.get_event_loop()
+        # Pass the queue and loop to the image subscriber
+        self.image_subscriber.set_queue(self.queue, self.loop)
         self.start = time.time()
         self.timestamp = 0
 
     async def recv(self):
-        with self.image_subscriber.lock:
-            cur_image = self.image_subscriber.cur_image
-
-        if cur_image is None:
-            # Create a black frame if no image is available
-            frame = np.zeros((480, 640, 3), dtype=np.uint8)
-            logger.debug('Using black frame')
-        else:
-            frame = cur_image
-            logger.debug('Using cur_image with shape: {}'.format(frame.shape))
+        frame = await self.queue.get()
 
         # Create a VideoFrame to send via aiortc
-        video_frame = VideoFrame.from_ndarray(frame, format='rgb24')
+        video_frame = VideoFrame.from_ndarray(frame, format='bgr24')
 
-        pts, time_base = await self.next_timestamp()
-        video_frame.pts = pts
-        video_frame.time_base = time_base
+        video_frame.pts, video_frame.time_base = self.next_timestamp()
         return video_frame
 
-    async def next_timestamp(self):
-        self.timestamp += int(VIDEO_PTIME * VIDEO_CLOCK_RATE)
-        await asyncio.sleep(VIDEO_PTIME)
+        # New: go in bgr format directly
+        # Create a VideoFrame to send via aiortc
+        # video_frame = VideoFrame.from_ndarray(frame, format='rgb24')
+        #video_frame = VideoFrame.from_ndarray(frame, format='bgr24')
+
+        #pts, time_base = await self.next_timestamp()
+        #video_frame.pts = pts
+        #video_frame.time_base = time_base
+        #video_frame.pts, video_frame.time_base = self.next_timestamp()
+        #return video_frame
+
+
+    # new Remove asyncio.sleep: Let the consumer control the pacing ??
+    #async def next_timestamp(self):
+        #self.timestamp += int(VIDEO_PTIME * VIDEO_CLOCK_RATE)
+        #await asyncio.sleep(VIDEO_PTIME)
+        #return self.timestamp, VIDEO_TIME_BASE
+
+    #def next_timestamp(self):
+        #self.timestamp += int(VIDEO_PTIME * VIDEO_CLOCK_RATE)
+        #return self.timestamp, VIDEO_TIME_BASE
+
+    # New: Use Actual Timestamps: Align PTS with actual frame capture times.
+    def next_timestamp(self):
+        # Use actual time for PTS
+        now = time.time()
+        self.timestamp = int(now * VIDEO_CLOCK_RATE)
         return self.timestamp, VIDEO_TIME_BASE
 
 
@@ -86,15 +103,16 @@ class ImageSubscriber(Node):
     def __init__(self, image_topic):
         super().__init__('image_subscriber_' + image_topic.replace('/', '_'))
         self.image_topic = image_topic
-        self.cur_image = None
-        self.lock = threading.Lock()
+        self.peer_connections = set()
+        self.queue = None
+        self.loop = None
 
         # Determine the message type of the topic
         self.msg_type = self.get_topic_msg_type(image_topic)
-        #self.msg_type = 'sensor_msgs/msg/CompressedImage'
         if self.msg_type is None:
             self.get_logger().error(f"Cannot determine message type for topic '{image_topic}'.")
-            raise ValueError(f"Cannot determine message type for topic '{image_topic}'.")
+            self.msg_type = 'sensor_msgs/msg/CompressedImage'
+            #raise ValueError(f"Cannot determine message type for topic '{image_topic}'.")
 
         # Create subscription based on message type
         if self.msg_type == 'sensor_msgs/msg/Image':
@@ -115,12 +133,16 @@ class ImageSubscriber(Node):
             self.get_logger().error(f"Unsupported message type '{self.msg_type}' for topic '{image_topic}'.")
             raise ValueError(f"Unsupported message type '{self.msg_type}' for topic '{image_topic}'.")
 
-        self.peer_connections = set()
+    def set_queue(self, queue, loop):
+        self.queue = queue
+        self.loop = loop
 
     def get_topic_msg_type(self, topic_name):
+        #self.get_logger().error("TOPIC to get type")
         names_and_types = self.get_topic_names_and_types()
+        #self.get_logger().error(topic_name)
         for (name, types) in names_and_types:
-            self.get_logger().debug(f"{name} {types}")
+            #self.get_logger().error(f"{name} {types}")
             if name.lstrip('/') == topic_name.lstrip('/'):
                 return types[0]
         return None
@@ -128,30 +150,42 @@ class ImageSubscriber(Node):
     def listener_callback_image(self, msg):
         image = self.ros_image_to_numpy(msg)
         if image is not None:
-            with self.lock:
-                self.cur_image = image
-            self.get_logger().debug('Received Image message of shape: {}'.format(image.shape))
+            future = asyncio.run_coroutine_threadsafe(
+                self.queue_put_latest(image), self.loop)
+            try:
+                future.result()
+            except Exception as e:
+                self.get_logger().error(f'Error putting image into queue: {e}')
         else:
             self.get_logger().warning('Failed to convert Image message')
 
     def listener_callback_compressed_image(self, msg):
         image = self.ros_compressed_image_to_numpy(msg)
         if image is not None:
-            with self.lock:
-                self.cur_image = image
-            self.get_logger().debug('Received CompressedImage message of shape: {}'.format(image.shape))
+            future = asyncio.run_coroutine_threadsafe(
+                self.queue_put_latest(image), self.loop)
+            try:
+                future.result()
+            except Exception as e:
+                self.get_logger().error(f'Error putting image into queue: {e}')
         else:
             self.get_logger().warning('Failed to convert CompressedImage message')
 
+    async def queue_put_latest(self, image):
+        if self.queue.full():
+            try:
+                self.queue.get_nowait()
+            except asyncio.QueueEmpty:
+                pass
+        await self.queue.put(image)
+
     def ros_image_to_numpy(self, msg):
         import numpy as np
-        import cv2
+        # import cv2
+        # New: no need for cv2 ?
 
-        # Get data type and number of channels based on encoding
-        if msg.encoding == 'rgb8':
-            dtype = np.uint8
-            channels = 3
-        elif msg.encoding == 'bgr8':
+        # Handle different encodings without converting to RGB
+        if msg.encoding in ['rgb8', 'bgr8']:
             dtype = np.uint8
             channels = 3
         elif msg.encoding == 'bgra8':
@@ -159,9 +193,6 @@ class ImageSubscriber(Node):
             channels = 4
         elif msg.encoding == 'mono8':
             dtype = np.uint8
-            channels = 1
-        elif msg.encoding == 'mono16':
-            dtype = np.uint16
             channels = 1
         else:
             self.get_logger().warning('Unsupported encoding: {}'.format(msg.encoding))
@@ -181,15 +212,17 @@ class ImageSubscriber(Node):
             self.get_logger().warning('Failed to reshape image array: {}'.format(e))
             return None
 
-        # Handle specific encodings
-        if msg.encoding == 'bgr8':
-            data = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
-        elif msg.encoding == 'bgra8':
-            data = cv2.cvtColor(data, cv2.COLOR_BGRA2RGB)
+        # New: No need to convert color space ???
 
-        # Convert grayscale to RGB
-        if channels == 1:
-            data = cv2.cvtColor(data, cv2.COLOR_GRAY2RGB)
+        ## Handle specific encodings
+        #if msg.encoding == 'bgr8':
+            #data = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
+        #elif msg.encoding == 'bgra8':
+            #data = cv2.cvtColor(data, cv2.COLOR_BGRA2RGB)
+
+        ## Convert grayscale to RGB
+        #if channels == 1:
+            #data = cv2.cvtColor(data, cv2.COLOR_GRAY2RGB)
 
         return data
 
@@ -206,7 +239,8 @@ class ImageSubscriber(Node):
             return None
 
         # Convert BGR to RGB
-        image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+        # image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+        # New: No need to convert BGR to RGB ???
 
         return image_np
 
@@ -217,7 +251,7 @@ async def index(request):
 
 
 async def offer(request):
-    logger.debug(await request.json())
+    logger.info(await request.json())
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
     topic = params.get("topic")
@@ -225,8 +259,9 @@ async def offer(request):
     if not topic:
         return web.Response(status=400, text="Missing 'topic' parameter")
 
-    # Access the executor from the app
+    # Access the executor and loop from the app
     executor = request.app['executor']
+    loop = request.app['loop']
 
     # Configure STUN server
     ice_servers = [RTCIceServer(urls=['stun:stun.l.google.com:19302'])]
@@ -242,14 +277,11 @@ async def offer(request):
             image_subscribers[topic] = image_subscriber
             # Add the node to the executor
             executor.add_node(image_subscriber)
-            logger.info(f"New exec node for topic {topic}")
         except ValueError as e:
             return web.Response(status=400, text=str(e))
     else:
         image_subscriber = image_subscribers[topic]
-        logger.info(f"using existing node for topic {topic}")
 
-    logger.info(f"Total executors: {len(image_subscribers)}")
     # Register this pc with the image_subscriber
     image_subscriber.peer_connections.add(pc)
 
@@ -277,6 +309,16 @@ async def offer(request):
     answer = await pc.createAnswer()
     await pc.setLocalDescription(answer)
 
+    # Set RTP sender parameters to control bandwidth
+    #for sender in pc.getSenders():
+    #    if sender.track.kind == 'video':
+    #        params = sender.getParameters()
+    #        if not params.encodings:
+    #            params.encodings = [{}]
+    #        params.encodings[0]['maxBitrate'] = 500000  # 500 kbps
+    #        params.encodings[0]['maxFramerate'] = FPS    # 15 fps
+    #        await sender.setParameters(params)
+
     return web.Response(
         content_type="application/json",
         text=json.dumps(
@@ -296,7 +338,6 @@ async def on_shutdown(app):
     for topic, image_subscriber in image_subscribers.items():
         executor.remove_node(image_subscriber)
         image_subscriber.destroy_node()
-        logger.info(f"Removing node for topic {topic}")
 
     # Shutdown the executor
     executor.shutdown()
@@ -313,7 +354,7 @@ def main(args=None):
     executor_thread.start()
 
     # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     # Web server setup
     app = web.Application()
@@ -321,8 +362,9 @@ def main(args=None):
     app.router.add_get("/", index)
     app.router.add_post("/offer", offer)
 
-    # Store the executor in the app
+    # Store the executor and loop in the app
     app['executor'] = executor
+    app['loop'] = asyncio.get_event_loop()
 
     # Configure CORS
     cors = aiohttp_cors.setup(app, defaults={

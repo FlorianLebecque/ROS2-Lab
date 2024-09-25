@@ -15,11 +15,17 @@
         // Add transceiver for video with codec preferences
         const transceiver = pc.addTransceiver('video', { direction: 'recvonly' });
 
-        // Optionally set codec preferences to VP8
+        // New: limit bw to 500kbps
+        const parameters = transceiver.sender.getParameters();
+        parameters.encodings = [{ maxBitrate: 500000 }]; // 500 kbps
+        await transceiver.sender.setParameters(parameters);
+
+        // New: set codec preferences to h264
         const codecs = RTCRtpSender.getCapabilities('video').codecs;
-        const vp8Codec = codecs.find(codec => codec.mimeType === 'video/VP8');
-        if (vp8Codec) {
-            transceiver.setCodecPreferences([vp8Codec]);
+        console.log("available codecs:" + codecs);
+        const h264Codec = codecs.find(codec => codec.mimeType === 'video/H264');
+        if (h264Codec) {
+            transceiver.setCodecPreferences([h264Codec]);
         }
 
         pc.ontrack = function (event) {
@@ -31,27 +37,22 @@
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
 
-            // Wait for ICE gathering to complete with a timeout
-            await new Promise(resolve => {
-                const timeout = setTimeout(() => {
-                    console.warn('ICE gathering timed out');
-                    resolve();
-                }, 2000);
-
-                if (pc.iceGatheringState === 'complete') {
-                    clearTimeout(timeout);
-                    resolve();
-                } else {
+            if (pc.iceGatheringState !== 'complete') {
+                await new Promise(resolve => {
                     function checkState() {
                         if (pc.iceGatheringState === 'complete') {
                             pc.removeEventListener('icegatheringstatechange', checkState);
-                            clearTimeout(timeout);
                             resolve();
                         }
                     }
                     pc.addEventListener('icegatheringstatechange', checkState);
-                }
-            });
+                    // Add a timeout as a fallback
+                    setTimeout(() => {
+                        pc.removeEventListener('icegatheringstatechange', checkState);
+                        resolve();
+                    }, 2000);
+                });
+            }
 
             const response = await fetch('/offer', {
                 method: 'POST',
@@ -73,4 +74,3 @@
     </script>
 </body>
 </html>
-
