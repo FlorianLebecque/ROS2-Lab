@@ -1,19 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ROS2-Lab
+It is a web interface to interact with ROS2 environment made in NextJS, it was part of my master thesis at ECAM.
+The project won't be developed further in this repository.
 
-[Create Docker with hotreload NEXTJS](https://blog.devops.dev/using-next-js-13-app-directory-with-hot-reload-enabled-in-docker-simple-guide-60de42840d7e)
+- Data visualization
+- Allow remote teleoperation
+- ROS Bag management
 
-## Getting Started
+# Getting Started
 
 First, run the development server:
 
 ```bash
-# For Development:
+# Start by moving in the "webapp/" folder and install dependency
+bun install
+
+# Run the docker:
 docker-compose -f .\docker-compose.dev.yaml up
 
-# For Production:
-docker-compose -f .\docker-compose.prod.yaml up
+# The ROSBridge_suite need to have the custom message compile in its docker, you may need to edit its docker file (websocket)
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
