@@ -17,7 +17,7 @@ First, run the development server:
 bun install
 
 # Run the docker:
-docker-compose -f .\docker-compose.dev.yaml up
+docker-compose -f .\docker-compose.yaml up
 
 # The ROSBridge_suite need to have the custom message compile in its docker, you may need to edit its docker file (websocket)
 
