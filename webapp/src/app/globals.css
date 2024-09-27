@@ -1,0 +1,162 @@
+:root {
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+
+    --background: var(--light);
+    --text: var(--dark);
+
+    --radius: 0.25rem;
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --transition: 0.3s;
+    --border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+body {
+    width: 100vw;
+    overflow-x: hidden;
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: 5em 1fr 2em;
+    grid-template-columns: 1fr;
+    justify-content: space-between;
+    background: var(--background) !important;
+    color: var(--text) !important;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+dialog {
+    width: 75dvw;
+}
+
+dialog[open] {
+    animation: myFadeIn 0.5s ease normal;
+}
+
+@keyframes myFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes myFadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.display {
+    animation: myFadeIn 0.3s ease normal;
+    opacity: 1;
+    transition: 0.3;
+}
+
+.hide {
+    animation: myFadeOut 0.3s ease normal;
+    opacity: 0;
+    transition: 0.3;
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(0.5rem);
+}
+
+main {
+    padding: 1rem;
+    height: 100%;
+    overflow-y: auto;
+}
+
+pre {
+    background-color: lightslategrey;
+    padding: 0.5rem;
+    color: var(--bs-gray-100);
+    counter-reset: line;
+    border-radius: var(--radius);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+a {
+    color: var(--text) !important;
+    text-decoration: none !important;
+}
+
+a.btn {
+    color: var(--light) !important;
+    text-decoration: none !important;
+}
+
+a.btn.btn-outline-success,
+a.btn.btn-outline-danger,
+a.btn.btn-outline-warning,
+a.btn.btn-outline-info,
+a.btn.btn-outline-primary {
+    color: var(--bs-btn-color) !important;
+}
+
+a.btn.btn-outline-success:hover,
+a.btn.btn-outline-danger:hover,
+a.btn.btn-outline-warning:hover,
+a.btn.btn-outline-info:hover,
+a.btn.btn-outline-primary:hover {
+    color: var(--light) !important;
+}
+
+
+p {
+    margin: 0;
+}
+
+.shade {
+    box-shadow: var(--shadow);
+}
+
+.d-iflex {
+    display: inline-flex;
+}
+
+.overflow-x {
+    overflow-x: auto;
+}
+
+.card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+}
+
+.react-grid-item>.react-resizable-handle {
+    width: 3rem !important;
+    height: 3rem !important;
+    z-index: 10000;
+}
+
+.react-resizable-handle {
+    background-image: none !important;
+}
+
+.react-grid-item>.react-resizable-handle::after {
+    width: 1rem !important;
+    height: 1rem !important;
+}

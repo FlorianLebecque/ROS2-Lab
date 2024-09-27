@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC ROS2 Video Stream</title>
+</head>
+<body>
+    <video id="video" autoplay playsinline muted></video>
+    <script>
+        const pc = new RTCPeerConnection({
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+            iceCandidatePoolSize: 0
+        });
+
+        // Add transceiver for video with codec preferences
+        const transceiver = pc.addTransceiver('video', { direction: 'recvonly' });
+
+        // New: limit bw to 500kbps
+        const parameters = transceiver.sender.getParameters();
+        parameters.encodings = [{ maxBitrate: 500000 }]; // 500 kbps
+        await transceiver.sender.setParameters(parameters);
+
+        // New: set codec preferences to h264
+        const codecs = RTCRtpSender.getCapabilities('video').codecs;
+        console.log("available codecs:" + codecs);
+        const h264Codec = codecs.find(codec => codec.mimeType === 'video/H264');
+        if (h264Codec) {
+            transceiver.setCodecPreferences([h264Codec]);
+        }
+
+        pc.ontrack = function (event) {
+            const video = document.getElementById('video');
+            video.srcObject = event.streams[0];
+        };
+
+        async function negotiate() {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            if (pc.iceGatheringState !== 'complete') {
+                await new Promise(resolve => {
+                    function checkState() {
+                        if (pc.iceGatheringState === 'complete') {
+                            pc.removeEventListener('icegatheringstatechange', checkState);
+                            resolve();
+                        }
+                    }
+                    pc.addEventListener('icegatheringstatechange', checkState);
+                    // Add a timeout as a fallback
+                    setTimeout(() => {
+                        pc.removeEventListener('icegatheringstatechange', checkState);
+                        resolve();
+                    }, 2000);
+                });
+            }
+
+            const response = await fetch('/offer', {
+                method: 'POST',
+                body: JSON.stringify({
+                    sdp: pc.localDescription.sdp,
+                    type: pc.localDescription.type,
+                    topic: "/zed/zed_node/right_raw/image_raw_color/compressed"
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("HEllo")
+            console.log(await response)
+            const answer = await response.json();
+            await pc.setRemoteDescription(answer);
+        }
+        negotiate();
+    </script>
+</body>
+</html>

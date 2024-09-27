@@ -1,0 +1,42 @@
+# Dockerfile
+
+# **********
+# base stage
+# **********
+# Bun 
+FROM oven/bun:latest AS base
+
+WORKDIR /app
+
+# **********
+# deps stage
+# **********
+FROM base AS deps
+
+WORKDIR /app
+# Copy package.json to /app
+COPY ./webapp/package.json .
+COPY ./webapp/src ./src
+COPY ./webapp/next.config.mjs .
+COPY ./webapp/tsconfig.json .
+COPY ./webapp/.eslintrc.json .
+
+# Instal dependencies according to the lockfile
+RUN bun install
+
+# Disable the telementary
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# ***********
+# inter stage
+# ***********
+FROM deps AS inter
+
+# Copy all other files excluding the ones in .dockerignore
+
+# **********
+# dev stage
+# **********
+FROM inter AS dev
+
+CMD ["bun", "--hot", "run", "dev"]

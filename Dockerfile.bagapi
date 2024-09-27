@@ -1,0 +1,26 @@
+# Use the official ROS base image
+FROM ros:humble
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the package files to the container
+COPY ./bagapi/requirements.txt ./
+
+# install pip requirements
+RUN apt-get update && apt-get install -y python3-pip
+RUN pip3 install -r requirements.txt
+
+COPY ./bagapi/bagapi.py ./
+COPY ./bagapi/bag2csv.py ./
+
+
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y python3-pip \
+    ros-$ROS_DISTRO-rmw-cyclonedds-cpp
+
+ENV RMW_IMPLEMENTATION rmw_cyclonedds_cpp
+
+EXPOSE 8000
+
+CMD ["uvicorn","bagapi:app","--host","0.0.0.0"]
