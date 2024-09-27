@@ -5,6 +5,8 @@ The project won't be developed further in this repository.
 - Data visualization
 - Allow remote teleoperation
 - ROS Bag management
+  
+![Screenshot from 2024-09-27 12-53-23](https://github.com/user-attachments/assets/d54f7adc-2abd-41f9-89d3-c0aad2ada99b)
 
 # Getting Started
 
